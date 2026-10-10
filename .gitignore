@@ -1,0 +1,28 @@
+# Third-party replication package (1.1 GB; snpk.dta exceeds GitHub's 100 MB limit)
+data/AEJApp_2019_0309_Replication/
+
+# Not research inputs: literature, official documents, manuscripts, books
+Book/
+Official's Document/
+New Literature/
+Paper/
+
+# Manuscripts, backups, and handoff notes at root (Result/*.docx stays tracked)
+/*.docx
+Final Report/
+docs/
+HANDOFF.md
+
+# Scraper caches (intermediate, not raw data)
+.dikmen_cache/
+.smk_cache/
+
+# Archive duplicate and Office lock files
+Data.rar
+~$*
+
+# Python and tool caches
+__pycache__/
+.claude/
+/ANRI List.*
+charts/

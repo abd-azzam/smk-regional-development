@@ -1,0 +1,3396 @@
+-----------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\Users\HP\Documents\UIII\Research Project\Pak Siro - MORA\data\DAPOER\descriptive_chec
+> k.log
+  log type:  text
+ opened on:   5 Aug 2026, 16:39:08
+
+. 
+. use "dapoer_wide.dta", clear
+
+. 
+. * ---- GUARD: dapoer_wide.dta is a GENERATED file on constant year-2000 borders
+. * (341 units). This do-file NEVER saves. If a check fails, rebuild it with
+. *     python build_dapoer_2000borders.py
+. quietly count if missing(unit)
+
+. if r(N) > 0 | _N == 0 {
+.     display as error "STOP: no `unit' column. Rebuild dapoer_wide.dta."
+.     exit 459
+. }
+
+. quietly summarize unit, meanonly
+
+. if r(N) == 0 {
+.     display as error "STOP: dapoer_wide.dta looks wrong. Rebuild from the build script."
+.     exit 459
+. }
+
+. capture confirm variable ln_population
+
+. if !_rc {
+.     display as error "STOP: ln_* scratch variables are baked into the file. Rebuild."
+.     exit 459
+. }
+
+. quietly summarize dak_education, meanonly
+
+. if r(max) > 1e15 & !missing(r(max)) {
+.     display as error "STOP: dak_education looks rescaled twice. Rebuild."
+.     exit 459
+. }
+
+. * dak_education is ALREADY in IDR - the build script rescales it now. A second
+. * rescale would push it to about 7e18, so this catches a double-applied fix.
+. quietly summarize dak_education, meanonly
+
+. if r(max) > 1e15 & !missing(r(max)) {
+.     display as error "STOP: dak_education looks rescaled twice. Rebuild from dapoer_wide.csv."
+.     exit 459
+. }
+
+. capture confirm variable ln_population
+
+. if !_rc {
+.     display as error "STOP: ln_* scratch variables are baked into the file. Rebuild from CSV."
+.     exit 459
+. }
+
+. 
+. xtset unit year
+
+Panel variable: unit (unbalanced)
+ Time variable: year, 1983 to 2020, but with gaps
+         Delta: 1 unit
+
+. 
+. * Build the screening list. GLOBAL, not local, on purpose: locals die between
+. * separate `do` calls, so a local would come back empty if you run this file
+. * chunk-by-chunk from the editor (highlight + Ctrl+D). Every loop below uses $V.
+. * The two `local' lines must stay in this same block -- `: list' reads locals only,
+. * so a global on the right-hand side would silently subtract nothing.
+. unab ALL : _all
+
+. local IDS unit unit_name n_children year
+
+. local PROVONLY credit_manufacturing export_manufactured export_manufactured_misc ///
+>                 import_manufactured import_manufactured_misc
+
+. local V : list ALL - IDS
+
+. local V : list V - PROVONLY
+
+. global V `V'
+
+. display "screening " `: word count $V' " variables"    // expect 94
+screening 94 variables
+
+. 
+. 
+. *--- STEP 0. keys and shape ------------------------------------------------
+. isid unit year                  // must pass; if it fails, stop
+
+. xtdescribe
+
+    unit:  1101, 1102, ..., 9371                             n =        341
+    year:  1983, 1984, ..., 2020                             T =         38
+           Delta(year) = 1 unit
+           Span(year)  = 38 periods
+           (unit*year uniquely identifies each observation)
+
+Distribution of T_i:   min      5%     25%       50%       75%     95%     max
+                        22      22      38        38        38      38      38
+
+     Freq.  Percent    Cum. |  Pattern
+ ---------------------------+----------------------------------------
+      278     81.52   81.52 |  11111111111111111111111111111111111111
+       25      7.33   88.86 |  ................1111111111111111111111
+       19      5.57   94.43 |  .............1..1111111111111111111111
+        8      2.35   96.77 |  .............1111111111111111111111111
+        3      0.88   97.65 |  ..............111111111111111111111111
+        3      0.88   98.53 |  ..........1111111111111111111111111111
+        2      0.59   99.12 |  .........11111111111111111111111111111
+        1      0.29   99.41 |  .............1.11111111111111111111111
+        1      0.29   99.71 |  ............11111111111111111111111111
+        1      0.29  100.00 | (other patterns)
+ ---------------------------+----------------------------------------
+      341    100.00         |  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+. 
+. 
+. *--- STEP 1. missingness, and WHEN it is missing ----------------------------
+. misstable summarize $V
+                                                               Obs<.
+                                                +------------------------------
+               |                                | Unique
+      Variable |     Obs=.     Obs>.     Obs<.  | values        Min         Max
+  -------------+--------------------------------+------------------------------
+  open_smk_t~l |       111              11,934  |     35          0          41
+  open_SMK_n~i |       111              11,934  |     13          0          20
+  open_SMK_s~a |       111              11,934  |     33          0          41
+  gdp_con~2010 |     7,382               4,663  |   >500   107106.1    1.25e+08
+  gdp_consta~s |     7,382               4,663  |   >500   107106.1    1.25e+08
+  gdp_cur~2010 |     7,383               4,662  |   >500   109358.8    3.36e+08
+  gdp_curren~s |     7,383               4,662  |   >500   109358.8    3.36e+08
+  gdp_const~08 |     8,333               3,712  |   >500      49380    7.75e+08
+  gdp_curre~08 |     8,333               3,712  |   >500   10220.31    7.06e+08
+  gd~g_pre2010 |     7,374               4,671  |   >500     229.21    5.11e+07
+  gdp_~g_sna08 |     8,343               3,702  |   >500       1610    3.72e+08
+  gd~r_pre2010 |     7,375               4,670  |   >500     239.47    1.03e+08
+  gdp_~r_sna08 |     8,343               3,702  |   >500       1610    2.55e+08
+   revenue_dak |     3,716               8,329  |   >500          0    1.87e+12
+  dak_educat~n |    10,023               2,022  |   >500   1.00e+09    1.06e+11
+    dak_health |    10,049               1,996  |   >500   1.00e+09    1.54e+11
+  dak_health~c |    11,750                 295  |    286   5.01e+09    1.52e+11
+  dak_health~d |    11,894                 151  |    140   6.55e+08    1.00e+10
+  dak_infras~e |     9,971               2,074  |   >500   1.00e+09    1.42e+11
+  dak_infra_~d |    10,031               2,014  |   >500   1.00e+09    9.89e+10
+  dak_infra_~r |    10,591               1,454  |   >500   3.90e+08    2.61e+10
+  dak_infra_~n |    10,520               1,525  |   >500   2.05e+08    2.77e+10
+  dak_agricu~e |    10,724               1,321  |   >500   5.00e+08    2.75e+10
+  dak_enviro~t |    10,892               1,153  |    460   1.18e+08    1.04e+10
+  dak_forestry |    11,941                 104  |     98   5.94e+08    4.22e+09
+   dak_fishery |    10,471               1,574  |   >500   2.00e+08    2.27e+10
+  dak_govern~t |    11,896                 149  |    120   7.50e+08    2.71e+10
+  dak_demogr~c |    11,581                 464  |    387   4.33e+08    4.70e+09
+     dak_trade |    11,896                 149  |    136   3.52e+08    4.48e+09
+   dak_village |    11,995                  50  |     50   1.39e+09    7.61e+09
+  expenditur~l |     5,824               6,221  |   >500   3.67e+09    4.42e+12
+  expenditur~s |     5,838               6,207  |   >500          0    4.24e+12
+  expenditur~r |     5,873               6,172  |   >500          0    3.79e+12
+  expend~ation |     6,187               5,858  |   >500          0    1.22e+13
+  expenditur~h |     6,190               5,855  |   >500          0    4.55e+12
+  expend~cture |     8,508               3,537  |   >500   3.91e+08    3.15e+12
+  expenditu~in |     8,450               3,595  |   >500   4.76e+09    3.58e+12
+  expend~lture |     8,519               3,526  |   >500          0    1.06e+12
+  expenditur~y |     8,515               3,530  |   >500   1.59e+08    6.97e+11
+  expenditur~t |     6,440               5,605  |   >500          0    1.52e+12
+  expenditur~g |     9,339               2,706  |   >500          0    2.87e+11
+  expend~ction |     8,904               3,141  |   >500          0    1.28e+11
+  expendi~gion |    11,365                 680  |   >500   2.01e+07    4.22e+10
+  expenditur~m |     6,656               5,389  |   >500          0    3.60e+11
+  revenue_to~l |     3,612               8,433  |   >500          0    1.13e+13
+   revenue_dau |     4,316               7,729  |   >500          0    6.09e+12
+  revenue_ow~e |     3,635               8,410  |   >500          0    5.38e+12
+  revenue_ot~r |     3,661               8,384  |   >500          0    5.27e+12
+  revenue_sh~g |     3,634               8,411  |   >500          0    5.10e+12
+  reve~a_total |     6,743               5,302  |   >500          0    4.11e+12
+  reve~x_total |     6,645               5,400  |   >500          0    2.73e+12
+  revenue_d~il |     8,025               4,020  |   >500          0    3.62e+12
+  revenue_db~s |     8,411               3,634  |   >500          0    2.79e+12
+  revenue_db~g |     7,733               4,312  |   >500          0    1.78e+12
+  revenue_~mal |     9,026               3,019  |   >500          0    2.99e+11
+  revenue_~try |     7,451               4,594  |   >500          0    1.45e+11
+  revenue_~ery |     7,402               4,643  |    120   6.99e+07    6.30e+09
+  revenue_db~e |     9,047               2,998  |   >500   1.15e+09    3.94e+11
+  revenue_d~bb |     9,047               2,998  |   >500   3.01e+09    1.55e+12
+  revenue_d~tb |    11,722                 323  |      6   4.81e+08    3.85e+09
+  schools_pr~y |     9,469               2,576  |   >500          2        2818
+  schools_ju~y |     9,474               2,571  |    377          3         959
+  schools_se~y |     9,521               2,524  |    270          1         653
+     emp_total |     8,258               3,787  |   >500      11258     2665025
+  emp_agricu~e |     8,268               3,777  |   >500        106      587546
+  emp_industry |     8,354               3,691  |   >500          0      803022
+    emp_mining |     8,834               3,211  |   >500          0      242311
+  emp_constr~n |     8,326               3,719  |   >500          0      521012
+  emp_utilit~s |     9,495               2,550  |   >500          0      128467
+     emp_trade |     8,302               3,743  |   >500        173      884433
+  emp_transp~t |     8,328               3,717  |   >500         83      214546
+   emp_finance |     8,585               3,460  |   >500          0      341105
+  emp_social~s |     8,299               3,746  |   >500          0      445052
+    unemployed |     8,258               3,787  |   >500        159      348687
+  underemplo~d |     8,257               3,788  |   >500       2549      736546
+    population |       170              11,875  |   >500      14055     6398000
+  poverty_rate |     5,420               6,625  |   >500        .99       91.12
+  literacy_1~p |     4,243               7,802  |   >500      16.04         100
+  morbidity_~e |     4,087               7,958  |   >500   2.861383    67.75127
+  skilled_bi~e |     4,088               7,957  |   >500   7.376059         100
+   urban_share |    10,822               1,223  |   >500        .76         100
+   rural_share |    10,910               1,135  |   >500        .52         100
+  urban_shar~s |     4,078               7,967  |   >500          0         100
+  enrollm~mary |     4,259               7,786  |   >500   30.60673         100
+  e~junior_s~y |     4,113               7,932  |   >500   2.990454    99.93423
+  e~senior_s~y |     4,098               7,947  |   >500        .54    91.78555
+  access_ele~y |     4,413               7,632  |   >500        .55         100
+  access_water |     4,088               7,957  |   >500        .15         100
+  access_san~n |     4,074               7,971  |   >500       6.34    98.37591
+  access_phone |    10,196               1,849  |   >500        .01       69.16
+  hh_expendi~c |     4,427               7,618  |   >500      27606     2717017
+  hh_expendi~u |     4,427               7,618  |   >500        349    216184.5
+  hh_expendi~h |     4,427               7,618  |   >500        142    121932.8
+  hh_expend~20 |     4,427               7,618  |   >500       9411    975925.2
+  -----------------------------------------------------------------------------
+
+. 
+. * first year, last year and N for every variable - the truncation trap
+. display _newline "{txt}variable{col 34}first{col 42}last{col 50}N"
+
+variable                         first   last    N
+
+. foreach v of global V {
+  2.     quietly summarize year if !missing(`v')
+  3.     if r(N) > 0 {
+  4.         display as text %-32s "`v'" as result %6.0f r(min) %8.0f r(max) %10.0f r(N)
+  5.     }
+  6.     else display as error %-32s "`v'" "   EMPTY"
+  7. }
+open_smk_total                    1983    2020     11934
+open_SMK_negeri                   1983    2020     11934
+open_SMK_swasta                   1983    2020     11934
+gdp_constant_pre2010              2000    2013      4663
+gdp_constant_exoilgas             2000    2013      4663
+gdp_current_pre2010               2000    2013      4662
+gdp_current_exoilgas              2000    2013      4662
+gdp_constant_sna08                2010    2020      3712
+gdp_current_sna08                 2010    2020      3712
+gdp_manufacturing_pre2010         2000    2013      4671
+gdp_manufacturing_sna08           2010    2020      3702
+gdp_manufacturing_cur_pre2010     2000    2013      4670
+gdp_manufacturing_cur_sna08       2010    2020      3702
+revenue_dak                       1994    2020      8329
+dak_education                     2003    2009      2022
+dak_health                        2003    2009      1996
+dak_health_basic                  2009    2009       295
+dak_health_recommended            2009    2009       151
+dak_infrastructure                2003    2009      2074
+dak_infra_road                    2003    2009      2014
+dak_infra_water                   2005    2009      1454
+dak_infra_irrigation              2003    2009      1525
+dak_agriculture                   2005    2009      1321
+dak_environment                   2006    2009      1153
+dak_forestry                      2008    2009       104
+dak_fishery                       2004    2009      1574
+dak_government                    2004    2009       149
+dak_demographic                   2008    2009       464
+dak_trade                         2009    2009       149
+dak_village                       2009    2009        50
+expenditure_personnel             2001    2020      6221
+expenditure_goods_services        2001    2020      6207
+expenditure_other                 2001    2020      6172
+expenditure_education             2001    2020      5858
+expenditure_health                2001    2020      5855
+expenditure_infrastructure        2001    2012      3537
+expenditure_admin                 2001    2012      3595
+expenditure_agriculture           2001    2012      3526
+expenditure_economy               2001    2012      3530
+expenditure_environment           2001    2020      5605
+expenditure_housing               2001    2012      2706
+expenditure_social_protection     2001    2012      3141
+expenditure_religion              2001    2004       680
+expenditure_tourism               2001    2020      5389
+revenue_total                     1994    2020      8433
+revenue_dau                       1994    2020      7729
+revenue_own_source                1994    2020      8410
+revenue_other                     1994    2020      8384
+revenue_sharing                   1994    2020      8411
+revenue_dbh_sda_total             1994    2011      5302
+revenue_dbh_tax_total             1994    2011      5400
+revenue_dbh_oil                   2005    2020      4020
+revenue_dbh_gas                   2005    2020      3634
+revenue_dbh_mining                2005    2020      4312
+revenue_dbh_geothermal            2009    2020      3019
+revenue_dbh_forestry              2005    2020      4594
+revenue_dbh_fishery               2005    2020      4643
+revenue_dbh_tax_income            2012    2020      2998
+revenue_dbh_tax_pbb               2012    2020      2998
+revenue_dbh_tax_bphtb             2012    2012       323
+schools_primary                   1996    2018      2576
+schools_junior_secondary          1996    2018      2571
+schools_senior_secondary          1996    2018      2524
+emp_total                         2007    2020      3787
+emp_agriculture                   2007    2020      3777
+emp_industry                      2007    2020      3691
+emp_mining                        2007    2020      3211
+emp_construction                  2007    2020      3719
+emp_utilities                     2007    2020      2550
+emp_trade                         2007    2020      3743
+emp_transport                     2007    2020      3717
+emp_finance                       2007    2020      3460
+emp_social_services               2007    2020      3746
+unemployed                        2007    2020      3787
+underemployed                     2007    2020      3788
+population                        1983    2020     11875
+poverty_rate                      1999    2020      6625
+literacy_15up                     1996    2020      7802
+morbidity_rate                    1996    2020      7958
+skilled_birth_attendance          1996    2020      7957
+urban_share                       2000    2011      1223
+rural_share                       2000    2011      1135
+urban_share_susenas               1996    2020      7967
+enrollment_primary                1996    2020      7786
+enrollment_junior_secondary       1996    2020      7932
+enrollment_senior_secondary       1996    2020      7947
+access_electricity                1996    2020      7632
+access_water                      1996    2020      7957
+access_sanitation                 1996    2020      7971
+access_phone                      1996    2011      1849
+hh_expenditure_pc                 1996    2020      7618
+hh_expenditure_pc_edu             1996    2020      7618
+hh_expenditure_pc_health          1996    2020      7618
+hh_expenditure_poorest20          1996    2020      7618
+
+. 
+. 
+. *--- STEP 2. range and impossible values -----------------------------------
+. * shares and rates must sit in [0,100]
+. foreach v in enrollment_primary enrollment_junior_secondary ///
+>              enrollment_senior_secondary literacy_15up poverty_rate ///
+>              urban_share rural_share urban_share_susenas morbidity_rate ///
+>              skilled_birth_attendance access_electricity access_water ///
+>              access_sanitation access_phone {
+  2.     quietly count if (`v' < 0 | `v' > 100) & !missing(`v')
+  3.     if r(N) > 0 display as error "`v': " r(N) " values outside [0,100]"
+  4. }
+
+. 
+. * counts and money must be non-negative
+. foreach v of global V {
+  2.     quietly count if `v' < 0
+  3.     if r(N) > 0 display as error "`v': " r(N) " negative values"
+  4. }
+
+. 
+. * urban + rural should be ~100
+. quietly generate double _urs = urban_share + rural_share
+
+. summarize _urs, detail
+
+                            _urs
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     99.99999       99.99999
+ 5%          100       99.99999
+10%          100       99.99999       Obs               1,098
+25%          100       99.99999       Sum of wgt.       1,098
+
+50%          100                      Mean                100
+                        Largest       Std. dev.      1.82e-06
+75%          100            100
+90%          100            100       Variance       3.31e-12
+95%          100            100       Skewness       .1853683
+99%          100            100       Kurtosis       23.10075
+
+. drop _urs
+
+. 
+. 
+. *--- STEP 3. zeros that are probably missing --------------------------------
+. foreach v of global V {
+  2.     quietly count if `v' == 0
+  3.     local z = r(N)
+  4.     quietly count if !missing(`v')
+  5.     if r(N) > 0 & `z'/r(N) > 0.10 ///
+>         display as error %-32s "`v'" "  zeros = " %5.1f 100*`z'/r(N) "% of nonmissing"
+  6. }
+open_smk_total                    zeros =  59.5% of nonmissing
+open_SMK_negeri                   zeros =  83.9% of nonmissing
+open_SMK_swasta                   zeros =  68.8% of nonmissing
+expenditure_housing               zeros =  22.2% of nonmissing
+revenue_dbh_oil                   zeros =  24.9% of nonmissing
+revenue_dbh_gas                   zeros =  29.5% of nonmissing
+revenue_dbh_geothermal            zeros =  47.6% of nonmissing
+
+. 
+. 
+. *--- STEP 4. distribution, outliers, skew -----------------------------------
+. foreach v of global V {
+  2.     display _newline as text "==== `v' ===="
+  3.     summarize `v', detail
+  4. }
+
+==== open_smk_total ====
+
+             New schools opened this year (from
+                    analysis_panel_full)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%            0              0
+10%            0              0       Obs              11,934
+25%            0              0       Sum of wgt.      11,934
+
+50%            0                      Mean           .9805597
+                        Largest       Std. dev.      2.170235
+75%            1             33
+90%            3             35       Variance       4.709921
+95%            4             36       Skewness       5.998916
+99%           10             41       Kurtosis       62.21327
+
+==== open_SMK_negeri ====
+
+             New schools opened this year (from
+                    analysis_panel_full)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%            0              0
+10%            0              0       Obs              11,934
+25%            0              0       Sum of wgt.      11,934
+
+50%            0                      Mean           .2423328
+                        Largest       Std. dev.       .705248
+75%            0              9
+90%            1             10       Variance       .4973748
+95%            1             11       Skewness       5.942598
+99%            3             20       Kurtosis       81.80788
+
+==== open_SMK_swasta ====
+
+             New schools opened this year (from
+                    analysis_panel_full)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%            0              0
+10%            0              0       Obs              11,934
+25%            0              0       Sum of wgt.      11,934
+
+50%            0                      Mean           .7382269
+                        Largest       Std. dev.       1.97411
+75%            1             33
+90%            2             34       Variance       3.897111
+95%            4             35       Skewness       7.038829
+99%            9             41       Kurtosis       81.79473
+
+==== gdp_constant_pre2010 ====
+
+     NA.GDP.INC.OG.KR | Total GDP including Oil and Gas
+                (in IDR Million), Constant Pr
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%       243710       107106.1
+ 5%     468077.9       109290.3
+10%       657600       109358.8       Obs               4,663
+25%      1196051       112261.1       Sum of wgt.       4,663
+
+50%      2349410                      Mean            5276181
+                        Largest       Std. dev.      1.03e+07
+75%      4793734       1.09e+08
+90%     1.11e+07       1.10e+08       Variance       1.06e+14
+95%     1.97e+07       1.17e+08       Skewness       5.602285
+99%     6.02e+07       1.25e+08       Kurtosis       42.75334
+
+==== gdp_constant_exoilgas ====
+
+     NA.GDP.EXC.OG.KR | Total GDP excluding Oil and Gas
+                (in IDR Million), Constant Pr
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%       243710       107106.1
+ 5%       466850       109290.3
+10%     647546.7       109358.8       Obs               4,663
+25%      1169340       112261.1       Sum of wgt.       4,663
+
+50%      2303400                      Mean            5016351
+                        Largest       Std. dev.      1.01e+07
+75%      4549463       1.09e+08
+90%      9440708       1.10e+08       Variance       1.03e+14
+95%     1.79e+07       1.17e+08       Skewness       5.871228
+99%     6.01e+07       1.25e+08       Kurtosis       45.77577
+
+==== gdp_current_pre2010 ====
+
+     NA.GDP.INC.OG.CR | Total GDP including Oil and Gas
+                (in IDR Million), Current Pri
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     346818.5       109358.8
+ 5%     640713.5       120436.9
+10%       941610       124813.1       Obs               4,662
+25%      1846747       136320.6       Sum of wgt.       4,662
+
+50%      4010456                      Mean           1.02e+07
+                        Largest       Std. dev.      2.23e+07
+75%      9005067       2.75e+08
+90%     2.14e+07       2.93e+08       Variance       4.96e+14
+95%     3.92e+07       3.06e+08       Skewness       6.626474
+99%     1.11e+08       3.36e+08       Kurtosis       62.58639
+
+==== gdp_current_exoilgas ====
+
+     NA.GDP.EXC.OG.CR | Total GDP excluding Oil and Gas
+                (in IDR Million), Current Pri
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     346818.5       109358.8
+ 5%     636363.7       120436.9
+10%     922598.8       124813.1       Obs               4,662
+25%      1792161       136320.6       Sum of wgt.       4,662
+
+50%      3887586                      Mean            9874339
+                        Largest       Std. dev.      2.24e+07
+75%      8479282       2.75e+08
+90%     1.93e+07       2.93e+08       Variance       5.03e+14
+95%     3.73e+07       3.06e+08       Skewness       6.700922
+99%     1.18e+08       3.36e+08       Kurtosis       62.57667
+
+==== gdp_constant_sna08 ====
+
+      NA.GDP.INC.OG.SNA08.KR | Total GDP including Oil
+               and Gas (in IDR Million), SNA 2
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%      1405840          49380
+ 5%      2770900          52170
+10%      3781770         745860       Obs               3,712
+25%      7057795         755080       Sum of wgt.       3,712
+
+50%     1.29e+07                      Mean           2.79e+07
+                        Largest       Std. dev.      5.36e+07
+75%     2.53e+07       7.28e+08
+90%     5.76e+07       7.51e+08       Variance       2.87e+15
+95%     9.95e+07       7.68e+08       Skewness       6.171579
+99%     3.00e+08       7.75e+08       Kurtosis       57.25757
+
+==== gdp_current_sna08 ====
+
+      NA.GDP.INC.OG.SNA08.CR | Total GDP including Oil
+               and Gas (in IDR Million), SNA 2
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%      1690850       10220.31
+ 5%      3313640         745860
+10%      4717440         755080       Obs               3,712
+25%      8567120         803250       Sum of wgt.       3,712
+
+50%     1.64e+07                      Mean           3.46e+07
+                        Largest       Std. dev.      6.33e+07
+75%     3.24e+07       6.45e+08
+90%     7.23e+07       6.48e+08       Variance       4.01e+15
+95%     1.28e+08       7.02e+08       Skewness       5.326783
+99%     3.60e+08       7.06e+08       Kurtosis       39.09073
+
+==== gdp_manufacturing_pre2010 ====
+
+       NA.GDP.MNF.KR | GDP on Manufacturing Sector (in
+                IDR Million), Constant Price
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%       1002.6         229.21
+ 5%         7910         263.03
+10%     19654.27         272.05       Obs               4,671
+25%        62140         280.74       Sum of wgt.       4,671
+
+50%       207200                      Mean            1316540
+                        Largest       Std. dev.       3878440
+75%     689361.4       4.29e+07
+90%      2541970       4.54e+07       Variance       1.50e+13
+95%      6420580       4.82e+07       Skewness       5.700601
+99%     2.10e+07       5.11e+07       Kurtosis       44.06388
+
+==== gdp_manufacturing_sna08 ====
+
+         NA.GDP.MNF.SNA08.KR | GDP on Manufacturing
+            Industry Sector (in IDR Million), SNA
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%        17560           1610
+ 5%        50450           1730
+10%       130400           1810       Obs               3,702
+25%       396880           1890       Sum of wgt.       3,702
+
+50%      1218226                      Mean            6812836
+                        Largest       Std. dev.      1.99e+07
+75%      4283260       3.53e+08
+90%     1.60e+07       3.61e+08       Variance       3.95e+14
+95%     3.61e+07       3.64e+08       Skewness       8.933139
+99%     7.93e+07       3.72e+08       Kurtosis       128.4086
+
+==== gdp_manufacturing_cur_pre2010 ====
+
+       NA.GDP.MNF.CR | GDP on Manufacturing Sector (in
+                 IDR Million), Current Price
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%         1620         239.47
+ 5%     13196.19         281.34
+10%     27544.75         300.48       Obs               4,670
+25%     92878.96         305.93       Sum of wgt.       4,670
+
+50%     333541.2                      Mean            2631176
+                        Largest       Std. dev.       8039256
+75%      1259479       8.80e+07
+90%      5319543       9.14e+07       Variance       6.46e+13
+95%     1.38e+07       9.87e+07       Skewness       5.809757
+99%     4.58e+07       1.03e+08       Kurtosis       44.74211
+
+==== gdp_manufacturing_cur_sna08 ====
+
+         NA.GDP.MNF.SNA08.CR | GDP on Manufacturing
+            Industry Sector (in IDR Million), SNA
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%        19700           1610
+ 5%        69850           1820
+10%       163040           2030       Obs               3,702
+25%       484520           2250       Sum of wgt.       3,702
+
+50%      1548315                      Mean            8093974
+                        Largest       Std. dev.      2.06e+07
+75%      5299770       2.21e+08
+90%     1.93e+07       2.39e+08       Variance       4.24e+14
+95%     4.33e+07       2.45e+08       Skewness       5.311969
+99%     1.07e+08       2.55e+08       Kurtosis       40.30085
+
+==== revenue_dak ====
+
+       REV.DAK.CR | Total Special Allocation Grant/DAK
+                          (in IDR)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%     1.95e+08              0
+10%     4.31e+09              0       Obs               8,329
+25%     1.14e+10              0       Sum of wgt.       8,329
+
+50%     3.61e+10                      Mean           9.87e+10
+                        Largest       Std. dev.      1.51e+11
+75%     1.14e+11       1.43e+12
+90%     3.02e+11       1.76e+12       Variance       2.29e+22
+95%     4.16e+11       1.79e+12       Skewness        2.99954
+99%     6.72e+11       1.87e+12       Kurtosis        17.2285
+
+==== dak_education ====
+
+      DAK.EDU.CR | Total Specific Allocation Grant for
+                 Education (in IDR Billion)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     1.30e+09       1.00e+09
+ 5%     1.60e+09       1.00e+09
+10%     2.00e+09       1.00e+09       Obs               2,022
+25%     2.87e+09       1.00e+09       Sum of wgt.       2,022
+
+50%     7.97e+09                      Mean           1.27e+10
+                        Largest       Std. dev.      1.33e+10
+75%     1.74e+10       8.34e+10
+90%     3.03e+10       9.01e+10       Variance       1.78e+20
+95%     4.05e+10       9.18e+10       Skewness       2.017844
+99%     6.03e+10       1.06e+11       Kurtosis       8.507689
+
+==== dak_health ====
+
+       DAK.HE.CR | Total Specific Allocation Grant for
+                   Health (in IDR Billion)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     1.00e+09       1.00e+09
+ 5%     1.20e+09       1.00e+09
+10%     1.30e+09       1.00e+09       Obs               1,996
+25%     1.78e+09       1.00e+09       Sum of wgt.       1,996
+
+50%     5.44e+09                      Mean           7.00e+09
+                        Largest       Std. dev.      7.94e+09
+75%     9.25e+09       6.52e+10
+90%     1.46e+10       6.55e+10       Variance       6.30e+19
+95%     2.02e+10       6.73e+10       Skewness       5.367651
+99%     3.68e+10       1.54e+11       Kurtosis       71.04113
+
+==== dak_health_basic ====
+
+      DAK.HE.BSRV.CR | Total Specific Allocation Grant
+               for Health Sector (Subsect: Bas
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     5.45e+09       5.01e+09
+ 5%     5.88e+09       5.43e+09
+10%     6.29e+09       5.45e+09       Obs                 295
+25%     6.86e+09       5.53e+09       Sum of wgt.         295
+
+50%     7.66e+09                      Mean           1.09e+10
+                        Largest       Std. dev.      1.08e+10
+75%     1.23e+10       4.11e+10
+90%     1.78e+10       5.65e+10       Variance       1.17e+20
+95%     2.41e+10       6.52e+10       Skewness        8.46403
+99%     5.65e+10       1.52e+11       Kurtosis       101.5598
+
+==== dak_health_recommended ====
+
+      DAK.HE.RSRV.CR | Total Specific Allocation Grant
+               for Health Sector (Subsect: Rec
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     9.77e+08       6.55e+08
+ 5%     1.11e+09       9.77e+08
+10%     1.20e+09       9.78e+08       Obs                 151
+25%     1.39e+09       1.04e+09       Sum of wgt.         151
+
+50%     1.75e+09                      Mean           2.31e+09
+                        Largest       Std. dev.      1.58e+09
+75%     2.49e+09       7.00e+09
+90%     4.00e+09       8.64e+09       Variance       2.50e+18
+95%     5.82e+09       8.78e+09       Skewness       2.404539
+99%     8.78e+09       1.00e+10       Kurtosis       9.405453
+
+==== dak_infrastructure ====
+
+      DAK.INFR.CR | Total Specific Allocation Grant for
+               Infrastructure (in IDR Billion
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     1.00e+09       1.00e+09
+ 5%     1.80e+09       1.00e+09
+10%     2.36e+09       1.00e+09       Obs               2,074
+25%     4.00e+09       1.00e+09       Sum of wgt.       2,074
+
+50%     8.35e+09                      Mean           1.13e+10
+                        Largest       Std. dev.      1.10e+10
+75%     1.48e+10       8.00e+10
+90%     2.32e+10       8.43e+10       Variance       1.21e+20
+95%     3.26e+10       1.02e+11       Skewness       3.089287
+99%     5.14e+10       1.42e+11       Kurtosis       20.95822
+
+==== dak_infra_road ====
+
+      DAK.INFR.ROD.CR | Total Specific Allocation Grant
+               for Infrastructure Sector (Sub
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     1.17e+09       1.00e+09
+ 5%     1.56e+09       1.00e+09
+10%     1.80e+09       1.00e+09       Obs               2,014
+25%     2.53e+09       1.00e+09       Sum of wgt.       2,014
+
+50%     5.66e+09                      Mean           7.44e+09
+                        Largest       Std. dev.      7.21e+09
+75%     9.31e+09       5.25e+10
+90%     1.49e+10       5.34e+10       Variance       5.19e+19
+95%     2.11e+10       6.02e+10       Skewness       3.308895
+99%     3.34e+10       9.89e+10       Kurtosis       23.90174
+
+==== dak_infra_water ====
+
+      DAK.INFR.H2O.CR | Total Specific Allocation Grant
+               for Infrastructure Sector (Sub
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     4.60e+08       3.90e+08
+ 5%     5.60e+08       4.00e+08
+10%     6.20e+08       4.00e+08       Obs               1,454
+25%     1.20e+09       4.00e+08       Sum of wgt.       1,454
+
+50%     2.41e+09                      Mean           2.72e+09
+                        Largest       Std. dev.      2.31e+09
+75%     3.10e+09       1.58e+10
+90%     5.26e+09       2.41e+10       Variance       5.35e+18
+95%     6.97e+09       2.42e+10       Skewness       3.256963
+99%     1.08e+10       2.61e+10       Kurtosis        23.2833
+
+==== dak_infra_irrigation ====
+
+     DAK.INFR.IRIG.CR | Total Specific Allocation Grant
+                for Infrastructure Sector (Su
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     4.39e+08       2.05e+08
+ 5%     8.00e+08       3.66e+08
+10%     1.00e+09       3.78e+08       Obs               1,525
+25%     1.40e+09       3.78e+08       Sum of wgt.       1,525
+
+50%     2.01e+09                      Mean           2.65e+09
+                        Largest       Std. dev.      2.02e+09
+75%     3.20e+09       1.24e+10
+90%     5.09e+09       1.34e+10       Variance       4.10e+18
+95%     6.58e+09       1.53e+10       Skewness       2.998909
+99%     1.00e+10       2.77e+10       Kurtosis       22.44307
+
+==== dak_agriculture ====
+
+      DAK.AGR.CR | Total Specific Allocation Grant for
+                Agriculture (in IDR Billion)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     6.58e+08       5.00e+08
+ 5%     7.85e+08       5.30e+08
+10%     1.12e+09       5.60e+08       Obs               1,321
+25%     2.27e+09       5.60e+08       Sum of wgt.       1,321
+
+50%     3.27e+09                      Mean           3.94e+09
+                        Largest       Std. dev.      2.86e+09
+75%     4.73e+09       1.98e+10
+90%     7.43e+09       2.26e+10       Variance       8.16e+18
+95%     9.39e+09       2.30e+10       Skewness       2.285945
+99%     1.40e+10       2.75e+10       Kurtosis       12.14947
+
+==== dak_environment ====
+
+      DAK.ENVR.CR | Total Specific Allocation Grant for
+                Environment (in IDR Billion)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     1.26e+08       1.18e+08
+ 5%     1.55e+08       1.18e+08
+10%     3.00e+08       1.19e+08       Obs               1,153
+25%     4.85e+08       1.19e+08       Sum of wgt.       1,153
+
+50%     7.79e+08                      Mean           9.46e+08
+                        Largest       Std. dev.      8.59e+08
+75%     9.84e+08       6.57e+09
+90%     1.69e+09       6.81e+09       Variance       7.38e+17
+95%     2.48e+09       6.81e+09       Skewness       3.694555
+99%     4.72e+09       1.04e+10       Kurtosis        25.9131
+
+==== dak_forestry ====
+
+      DAK.FRST.CR | Total Specific Allocation Grant for
+                  Forestry (in IDR Billion)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     6.01e+08       5.94e+08
+ 5%     6.90e+08       6.01e+08
+10%     7.26e+08       6.27e+08       Obs                 104
+25%     9.09e+08       6.82e+08       Sum of wgt.         104
+
+50%     9.72e+08                      Mean           1.18e+09
+                        Largest       Std. dev.      6.22e+08
+75%     1.16e+09       2.98e+09
+90%     1.98e+09       3.08e+09       Variance       3.87e+17
+95%     2.83e+09       3.23e+09       Skewness       2.543548
+99%     3.23e+09       4.22e+09       Kurtosis       9.872406
+
+==== dak_fishery ====
+
+      DAK.FSH.CR | Total Specific Allocation Grant for
+                  Fishery (in IDR Billion)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     4.00e+08       2.00e+08
+ 5%     5.77e+08       2.20e+08
+10%     8.30e+08       2.40e+08       Obs               1,574
+25%     1.07e+09       2.90e+08       Sum of wgt.       1,574
+
+50%     2.04e+09                      Mean           2.69e+09
+                        Largest       Std. dev.      2.51e+09
+75%     3.09e+09       2.04e+10
+90%     5.26e+09       2.11e+10       Variance       6.28e+18
+95%     7.49e+09       2.11e+10       Skewness       3.120961
+99%     1.27e+10       2.27e+10       Kurtosis       17.15321
+
+==== dak_government ====
+
+      DAK.GOVT.CR | Total Specific Allocation Grant for
+               Government Sector (in IDR Bill
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     1.00e+09       7.50e+08
+ 5%     2.11e+09       1.00e+09
+10%     2.51e+09       1.61e+09       Obs                 149
+25%     3.37e+09       1.64e+09       Sum of wgt.         149
+
+50%     5.35e+09                      Mean           5.99e+09
+                        Largest       Std. dev.      3.51e+09
+75%     7.86e+09       1.53e+10
+90%     1.03e+10       1.60e+10       Variance       1.24e+19
+95%     1.20e+10       1.60e+10       Skewness        1.97024
+99%     1.60e+10       2.71e+10       Kurtosis       10.89067
+
+==== dak_demographic ====
+
+      DAK.POP.CR | Total Specific Allocation Grant for
+                Demographic (in IDR Billion)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     5.24e+08       4.33e+08
+ 5%     6.19e+08       4.88e+08
+10%     6.91e+08       4.91e+08       Obs                 464
+25%     8.14e+08       4.96e+08       Sum of wgt.         464
+
+50%     1.02e+09                      Mean           1.17e+09
+                        Largest       Std. dev.      5.58e+08
+75%     1.36e+09       3.49e+09
+90%     1.85e+09       3.69e+09       Variance       3.11e+17
+95%     2.22e+09       4.54e+09       Skewness       2.315507
+99%     3.20e+09       4.70e+09       Kurtosis          11.09
+
+==== dak_trade ====
+
+      DAK.TRAD.CR | Total Specific Allocation Grant for
+                   Trade (in IDR Billion)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     3.73e+08       3.52e+08
+ 5%     4.26e+08       3.73e+08
+10%     4.53e+08       3.91e+08       Obs                 149
+25%     4.88e+08       3.96e+08       Sum of wgt.         149
+
+50%     5.74e+08                      Mean           7.25e+08
+                        Largest       Std. dev.      5.01e+08
+75%     7.68e+08       2.10e+09
+90%     1.07e+09       2.84e+09       Variance       2.51e+17
+95%     1.41e+09       3.22e+09       Skewness       4.496501
+99%     3.22e+09       4.48e+09       Kurtosis        28.4822
+
+==== dak_village ====
+
+      DAK.VILG.CR | Total Specific Allocation Grant for
+                  Village (in IDR Billion)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     1.39e+09       1.39e+09
+ 5%     1.45e+09       1.44e+09
+10%     1.48e+09       1.45e+09       Obs                  50
+25%     1.54e+09       1.46e+09       Sum of wgt.          50
+
+50%     1.65e+09                      Mean           2.08e+09
+                        Largest       Std. dev.      1.27e+09
+75%     1.73e+09       3.28e+09
+90%     3.14e+09       5.10e+09       Variance       1.60e+18
+95%     5.10e+09       6.93e+09       Skewness       3.160521
+99%     7.61e+09       7.61e+09       Kurtosis       12.77463
+
+==== expenditure_personnel ====
+
+       EC.XPD.STAF.CR | Personnel expenditure (in IDR)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     4.35e+10       3.67e+09
+ 5%     7.71e+10       1.21e+10
+10%     1.10e+11       1.28e+10       Obs               6,221
+25%     2.17e+11       1.43e+10       Sum of wgt.       6,221
+
+50%     4.47e+11                      Mean           5.49e+11
+                        Largest       Std. dev.      4.35e+11
+75%     7.76e+11       3.81e+12
+90%     1.11e+12       3.83e+12       Variance       1.89e+23
+95%     1.33e+12       4.10e+12       Skewness       1.722245
+99%     1.97e+12       4.42e+12       Kurtosis       8.867218
+
+==== expenditure_goods_services ====
+
+     EC.XPD.GSR.CR | Goods and services expenditure (in
+                            IDR)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     1.77e+10              0
+ 5%     3.05e+10              0
+10%     4.19e+10              0       Obs               6,207
+25%     7.59e+10       2.17e+09       Sum of wgt.       6,207
+
+50%     1.73e+11                      Mean           2.80e+11
+                        Largest       Std. dev.      3.33e+11
+75%     3.66e+11       3.41e+12
+90%     6.25e+11       3.79e+12       Variance       1.11e+23
+95%     8.50e+11       4.03e+12       Skewness       3.530703
+99%     1.66e+12       4.24e+12       Kurtosis       23.59156
+
+==== expenditure_other ====
+
+        EC.XPD.OTHR.CR | Others expenditure (in IDR)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     4.06e+09              0
+ 5%     8.50e+09              0
+10%     1.29e+10       2.04e+07       Obs               6,172
+25%     2.73e+10       4.00e+07       Sum of wgt.       6,172
+
+50%     7.11e+10                      Mean           1.66e+11
+                        Largest       Std. dev.      2.39e+11
+75%     2.09e+11       3.21e+12
+90%     4.62e+11       3.46e+12       Variance       5.71e+22
+95%     6.29e+11       3.52e+12       Skewness       3.937496
+99%     1.04e+12       3.79e+12       Kurtosis       35.33187
+
+==== expenditure_education ====
+
+     FC.XPD.EDU.CR | Education function expenditure (in
+                            IDR)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     9.32e+09              0
+ 5%     3.24e+10              0
+10%     4.89e+10              0       Obs               5,858
+25%     1.08e+11              0       Sum of wgt.       5,858
+
+50%     2.35e+11                      Mean           3.41e+11
+                        Largest       Std. dev.      3.69e+11
+75%     4.75e+11       3.37e+12
+90%     7.56e+11       3.43e+12       Variance       1.36e+23
+95%     9.53e+11       4.30e+12       Skewness       7.552919
+99%     1.54e+12       1.22e+13       Kurtosis       192.9796
+
+==== expenditure_health ====
+
+       FC.XPD.HE.CR | Health function expenditure (in
+                            IDR)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     4.30e+09              0
+ 5%     9.87e+09              0
+10%     1.43e+10              0       Obs               5,855
+25%     3.10e+10              0       Sum of wgt.       5,855
+
+50%     7.68e+10                      Mean           1.48e+11
+                        Largest       Std. dev.      1.93e+11
+75%     1.97e+11       1.93e+12
+90%     3.79e+11       1.97e+12       Variance       3.73e+22
+95%     4.90e+11       2.01e+12       Skewness       4.670187
+99%     8.16e+11       4.55e+12       Kurtosis       61.82194
+
+==== expenditure_infrastructure ====
+
+          FC.XPD.INFR.CR | Infrastructure function
+                    expenditure (in IDR)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     1.84e+09       3.91e+08
+ 5%     9.24e+09       4.63e+08
+10%     1.55e+10       6.80e+08       Obs               3,537
+25%     3.09e+10       7.15e+08       Sum of wgt.       3,537
+
+50%     6.24e+10                      Mean           1.01e+11
+                        Largest       Std. dev.      1.34e+11
+75%     1.22e+11       1.21e+12
+90%     2.21e+11       1.51e+12       Variance       1.81e+22
+95%     3.41e+11       1.76e+12       Skewness       6.333619
+99%     6.16e+11       3.15e+12       Kurtosis       94.98477
+
+==== expenditure_admin ====
+
+      FC.XPD.ADMN.CR | General administration function
+                    expenditure (in IDR)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     2.43e+10       4.76e+09
+ 5%     3.89e+10       4.78e+09
+10%     5.05e+10       5.04e+09       Obs               3,595
+25%     8.56e+10       5.93e+09       Sum of wgt.       3,595
+
+50%     1.51e+11                      Mean           2.01e+11
+                        Largest       Std. dev.      1.96e+11
+75%     2.51e+11       2.52e+12
+90%     3.96e+11       2.69e+12       Variance       3.83e+22
+95%     5.27e+11       2.96e+12       Skewness       5.044172
+99%     9.22e+11       3.58e+12       Kurtosis       57.32596
+
+==== expenditure_agriculture ====
+
+      FC.XPD.AGR.CR | Agriculture function expenditure
+                          (in IDR)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     1.11e+09              0
+ 5%     2.48e+09              0
+10%     4.11e+09              0       Obs               3,526
+25%     8.42e+09              0       Sum of wgt.       3,526
+
+50%     1.75e+10                      Mean           2.56e+10
+                        Largest       Std. dev.      3.16e+10
+75%     3.30e+10       2.44e+11
+90%     5.53e+10       2.54e+11       Variance       9.97e+20
+95%     7.28e+10       2.81e+11       Skewness       11.70779
+99%     1.34e+11       1.06e+12       Kurtosis       336.4389
+
+==== expenditure_economy ====
+
+      FC.XPD.ECON.CR | Economy function expenditure (in
+                            IDR)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     1.23e+09       1.59e+08
+ 5%     2.41e+09       4.54e+08
+10%     3.24e+09       5.21e+08       Obs               3,530
+25%     5.36e+09       6.13e+08       Sum of wgt.       3,530
+
+50%     9.53e+09                      Mean           1.49e+10
+                        Largest       Std. dev.      2.04e+10
+75%     1.74e+10       1.77e+11
+90%     3.04e+10       1.79e+11       Variance       4.18e+20
+95%     4.15e+10       2.21e+11       Skewness       12.81198
+99%     8.92e+10       6.97e+11       Kurtosis       365.0489
+
+==== expenditure_environment ====
+
+      FC.XPD.ENVR.CR | Environment function expenditure
+                          (in IDR)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     5.44e+07              0
+ 5%     6.47e+08              0
+10%     1.26e+09              0       Obs               5,605
+25%     3.87e+09              0       Sum of wgt.       5,605
+
+50%     1.17e+10                      Mean           2.37e+10
+                        Largest       Std. dev.      5.67e+10
+75%     2.47e+10       1.16e+12
+90%     4.75e+10       1.20e+12       Variance       3.21e+21
+95%     7.83e+10       1.20e+12       Skewness       12.41879
+99%     2.03e+11       1.52e+12       Kurtosis       234.7944
+
+==== expenditure_housing ====
+
+       FC.XPD.HOUS.CR | Housing and public facilities
+                function expenditure (in IDR)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%            0              0
+10%            0              0       Obs               2,706
+25%     1.57e+08              0       Sum of wgt.       2,706
+
+50%     3.71e+09                      Mean           1.11e+10
+                        Largest       Std. dev.      2.19e+10
+75%     1.17e+10       2.32e+11
+90%     2.93e+10       2.54e+11       Variance       4.78e+20
+95%     4.70e+10       2.70e+11       Skewness       5.049532
+99%     1.03e+11       2.87e+11       Kurtosis       41.55942
+
+==== expenditure_social_protection ====
+
+         FC.XPD.PROT.CR | Social protection function
+                    expenditure (in IDR)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%     1.64e+08              0
+10%     4.74e+08              0       Obs               3,141
+25%     1.18e+09              0       Sum of wgt.       3,141
+
+50%     3.03e+09                      Mean           5.45e+09
+                        Largest       Std. dev.      7.82e+09
+75%     6.99e+09       8.90e+10
+90%     1.27e+10       1.07e+11       Variance       6.11e+19
+95%     1.74e+10       1.20e+11       Skewness       5.805381
+99%     3.29e+10       1.28e+11       Kurtosis        63.2419
+
+==== expenditure_religion ====
+
+       FC.XPD.RELG.CR | Religious function expenditure
+                          (in IDR)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     2.93e+07       2.01e+07
+ 5%     7.83e+07       2.15e+07
+10%     1.25e+08       2.50e+07       Obs                 680
+25%     3.11e+08       2.66e+07       Sum of wgt.         680
+
+50%     8.47e+08                      Mean           1.63e+09
+                        Largest       Std. dev.      3.27e+09
+75%     1.80e+09       2.86e+10
+90%     3.38e+09       3.15e+10       Variance       1.07e+19
+95%     5.20e+09       3.98e+10       Skewness       7.816691
+99%     1.12e+10       4.22e+10       Kurtosis         82.224
+
+==== expenditure_tourism ====
+
+        FC.XPD.TOUR.CR | Tourism and culture function
+                    expenditure (in IDR)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%            0              0
+10%     4.30e+08              0       Obs               5,389
+25%     1.55e+09              0       Sum of wgt.       5,389
+
+50%     4.20e+09                      Mean           7.64e+09
+                        Largest       Std. dev.      1.26e+10
+75%     9.42e+09       2.04e+11
+90%     1.79e+10       2.24e+11       Variance       1.58e+20
+95%     2.62e+10       2.58e+11       Skewness       9.798195
+99%     5.15e+10       3.60e+11       Kurtosis       193.4032
+
+==== revenue_total ====
+
+            REV.TOTL.CR | Total Revenue (in IDR)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     1.46e+10              0
+ 5%     2.73e+10              0
+10%     4.01e+10              0       Obs               8,433
+25%     1.52e+11              0       Sum of wgt.       8,433
+
+50%     6.18e+11                      Mean           9.94e+11
+                        Largest       Std. dev.      1.16e+12
+75%     1.43e+12       1.09e+13
+90%     2.41e+12       1.09e+13       Variance       1.34e+24
+95%     3.17e+12       1.09e+13       Skewness        2.41853
+99%     5.16e+12       1.13e+13       Kurtosis       12.77739
+
+==== revenue_dau ====
+
+       REV.DAU.CR | Total General Allocation Grant/DAU
+                          (in IDR)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     3.24e+09              0
+ 5%     7.57e+09              0
+10%     1.51e+10              0       Obs               7,729
+25%     9.59e+10              0       Sum of wgt.       7,729
+
+50%     3.60e+11                      Mean           4.96e+11
+                        Largest       Std. dev.      5.24e+11
+75%     7.21e+11       5.58e+12
+90%     1.15e+12       5.60e+12       Variance       2.74e+23
+95%     1.43e+12       5.74e+12       Skewness       2.391655
+99%     2.20e+12       6.09e+12       Kurtosis       15.25405
+
+==== revenue_own_source ====
+
+       REV.OSRV.CR | Total Own Source Revenue/PAD (in
+                            IDR)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     7.19e+08              0
+ 5%     1.48e+09              0
+10%     2.52e+09              0       Obs               8,410
+25%     8.73e+09              0       Sum of wgt.       8,410
+
+50%     3.78e+10                      Mean           1.22e+11
+                        Largest       Std. dev.      3.00e+11
+75%     1.25e+11       4.84e+12
+90%     2.88e+11       4.97e+12       Variance       9.01e+22
+95%     4.40e+11       5.16e+12       Skewness        8.35982
+99%     1.38e+12       5.38e+12       Kurtosis       101.1678
+
+==== revenue_other ====
+
+         REV.OTHR.CR | Total Other Revenue (in IDR)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%            0              0
+10%      4220000              0       Obs               8,384
+25%     2.16e+09              0       Sum of wgt.       8,384
+
+50%     5.53e+10                      Mean           1.70e+11
+                        Largest       Std. dev.      2.72e+11
+75%     2.38e+11       2.96e+12
+90%     4.84e+11       3.33e+12       Variance       7.38e+22
+95%     6.74e+11       3.76e+12       Skewness       3.885641
+99%     1.19e+12       5.27e+12       Kurtosis       35.23214
+
+==== revenue_sharing ====
+
+            REV.RV.SHR.CR | Total Revenue Sharing
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     1.85e+09              0
+ 5%     3.16e+09              0
+10%     4.57e+09              0       Obs               8,411
+25%     1.30e+10              0       Sum of wgt.       8,411
+
+50%     3.31e+10                      Mean           1.13e+11
+                        Largest       Std. dev.      2.89e+11
+75%     8.87e+10       4.63e+12
+90%     2.47e+11       4.74e+12       Variance       8.34e+22
+95%     4.82e+11       5.07e+12       Skewness       7.433785
+99%     1.48e+12       5.10e+12       Kurtosis       82.35822
+
+==== revenue_dbh_sda_total ====
+
+      REV.NRRV.SHR.CR | Total Natural Resource Revenue
+                  Sharing/DBH SDA (in IDR)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%     2.48e+07              0
+10%     6.38e+07              0       Obs               5,302
+25%     2.93e+08              0       Sum of wgt.       5,302
+
+50%     1.08e+09                      Mean           3.79e+10
+                        Largest       Std. dev.      1.73e+11
+75%     8.65e+09       3.14e+12
+90%     5.00e+10       3.24e+12       Variance       3.00e+22
+95%     1.93e+11       3.47e+12       Skewness       10.72807
+99%     7.54e+11       4.11e+12       Kurtosis       169.2101
+
+==== revenue_dbh_tax_total ====
+
+       REV.TXRV.SHR.CR | Total Tax Revenue Sharing/DBH
+                       Pajak (in IDR)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     1.50e+09              0
+ 5%     2.39e+09              0
+10%     3.22e+09              0       Obs               5,400
+25%     6.28e+09              0       Sum of wgt.       5,400
+
+50%     1.74e+10                      Mean           3.78e+10
+                        Largest       Std. dev.      7.62e+10
+75%     3.95e+10       8.97e+11
+90%     8.51e+10       9.01e+11       Variance       5.81e+21
+95%     1.38e+11       1.10e+12       Skewness       12.04286
+99%     3.27e+11       2.73e+12       Kurtosis       320.1355
+
+==== revenue_dbh_oil ====
+
+     NRRV.SHR.PETR.CR | Total Natural Resources Revenue
+                Sharing from Oil (in IDR, rea
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%            0              0
+10%            0              0       Obs               4,020
+25%        74650              0       Sum of wgt.       4,020
+
+50%     5.29e+08                      Mean           3.83e+10
+                        Largest       Std. dev.      1.63e+11
+75%     1.48e+10       2.23e+12
+90%     6.26e+10       2.27e+12       Variance       2.67e+22
+95%     1.54e+11       3.14e+12       Skewness       9.954442
+99%     7.93e+11       3.62e+12       Kurtosis       143.5185
+
+==== revenue_dbh_gas ====
+
+      NRRV.SHR.GAS.CR | Total Natural Resources Revenue
+               Sharing from Gas (in IDR, real
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%            0              0
+10%            0              0       Obs               3,634
+25%            0              0       Sum of wgt.       3,634
+
+50%     3.72e+08                      Mean           3.21e+10
+                        Largest       Std. dev.      1.41e+11
+75%     5.38e+09       2.23e+12
+90%     4.39e+10       2.42e+12       Variance       1.99e+22
+95%     2.21e+11       2.53e+12       Skewness       10.04271
+99%     5.32e+11       2.79e+12       Kurtosis       141.8148
+
+==== revenue_dbh_mining ====
+
+      NRRV.SHR.MIN.CR | Total Natural Resources Revenue
+               Sharing from Mining (in IDR, r
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%       372000              0
+10%      2642858              0       Obs               4,312
+25%     6.62e+07              0       Sum of wgt.       4,312
+
+50%     9.13e+08                      Mean           3.35e+10
+                        Largest       Std. dev.      1.25e+11
+75%     7.40e+09       1.44e+12
+90%     7.50e+10       1.60e+12       Variance       1.56e+22
+95%     1.76e+11       1.60e+12       Skewness       7.046973
+99%     6.42e+11       1.78e+12       Kurtosis       64.81126
+
+==== revenue_dbh_geothermal ====
+
+     NRRV.SHR.GEOT.CR | Total Natural Resources Revenue
+                Sharing from Geothermal  Ener
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%            0              0
+10%            0              0       Obs               3,019
+25%            0              0       Sum of wgt.       3,019
+
+50%      5309385                      Mean           2.24e+09
+                        Largest       Std. dev.      1.32e+10
+75%     5.82e+07       1.96e+11
+90%     8.46e+08       2.00e+11       Variance       1.75e+20
+95%     1.00e+10       2.49e+11       Skewness       11.87863
+99%     5.44e+10       2.99e+11       Kurtosis       188.9751
+
+==== revenue_dbh_forestry ====
+
+     NRRV.SHR.FRST.CR | Total Natural Resources Revenue
+                Sharing from Forestry (in IDR
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%      2533970              0
+10%      7736424              0       Obs               4,594
+25%     5.70e+07              0       Sum of wgt.       4,594
+
+50%     2.70e+08                      Mean           2.87e+09
+                        Largest       Std. dev.      9.27e+09
+75%     1.08e+09       1.11e+11
+90%     5.72e+09       1.12e+11       Variance       8.60e+19
+95%     1.59e+10       1.29e+11       Skewness       6.376728
+99%     5.03e+10       1.45e+11       Kurtosis       57.81771
+
+==== revenue_dbh_fishery ====
+
+      NRRV.SHR.FSH.CR | Total Natural Resources Revenue
+               Sharing from Fishery (in IDR, 
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     1.40e+08       6.99e+07
+ 5%     1.40e+08       1.27e+08
+10%     1.43e+08       1.27e+08       Obs               4,643
+25%     3.01e+08       1.27e+08       Sum of wgt.       4,643
+
+50%     4.90e+08                      Mean           6.47e+08
+                        Largest       Std. dev.      5.87e+08
+75%     7.50e+08       5.61e+09
+90%     1.40e+09       5.63e+09       Variance       3.45e+17
+95%     1.80e+09       6.00e+09       Skewness       2.829343
+99%     3.00e+09       6.30e+09       Kurtosis       15.71148
+
+==== revenue_dbh_tax_income ====
+
+      TXRV.SHR.INCM.CR | Total Tax Revenue Sharing from
+               income tax (PPh) (in IDR, real
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     2.01e+09       1.15e+09
+ 5%     3.22e+09       1.17e+09
+10%     4.36e+09       1.22e+09       Obs               2,998
+25%     7.03e+09       1.36e+09       Sum of wgt.       2,998
+
+50%     1.19e+10                      Mean           2.34e+10
+                        Largest       Std. dev.      3.78e+10
+75%     2.29e+10       3.59e+11
+90%     4.94e+10       3.80e+11       Variance       1.43e+21
+95%     8.13e+10       3.82e+11       Skewness        4.94051
+99%     2.03e+11       3.94e+11       Kurtosis       34.65464
+
+==== revenue_dbh_tax_pbb ====
+
+      TXRV.SHR.LAND.CR | Total Tax Revenue Sharing from
+               land and building tax (PBB) (i
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     3.58e+09       3.01e+09
+ 5%     4.73e+09       3.08e+09
+10%     5.79e+09       3.13e+09       Obs               2,998
+25%     9.68e+09       3.16e+09       Sum of wgt.       2,998
+
+50%     1.92e+10                      Mean           4.62e+10
+                        Largest       Std. dev.      1.06e+11
+75%     4.26e+10       1.24e+12
+90%     9.53e+10       1.44e+12       Variance       1.11e+22
+95%     1.46e+11       1.53e+12       Skewness       7.807594
+99%     5.19e+11       1.55e+12       Kurtosis       80.49623
+
+==== revenue_dbh_tax_bphtb ====
+
+      TXRV.SHR.ACQ.CR | Total Tax Revenue Sharing from
+               duty on the acquisition of land
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     4.81e+08       4.81e+08
+ 5%     4.81e+08       4.81e+08
+10%     4.81e+08       4.81e+08       Obs                 323
+25%     4.81e+08       4.81e+08       Sum of wgt.         323
+
+50%     4.81e+08                      Mean           6.93e+08
+                        Largest       Std. dev.      4.22e+08
+75%     9.63e+08       2.41e+09
+90%     1.44e+09       2.41e+09       Variance       1.78e+17
+95%     1.44e+09       2.41e+09       Skewness        2.89755
+99%     2.41e+09       3.85e+09       Kurtosis       15.10561
+
+==== schools_primary ====
+
+      SE.SCHL.PRM | Number of schools at Primary Level
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%           39              2
+ 5%           75              5
+10%          109              8       Obs               2,576
+25%          223             10       Sum of wgt.       2,576
+
+50%          397                      Mean           494.9189
+                        Largest       Std. dev.      376.3398
+75%          689           2682
+90%          975           2696       Variance       141631.7
+95%         1176           2812       Skewness       1.630375
+99%         1681           2818       Kurtosis       7.479694
+
+==== schools_junior_secondary ====
+
+         SE.SCHL.JRSEC | Number of schools at Junior
+                       Secondary Level
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            8              3
+ 5%           20              3
+10%           27              4       Obs               2,571
+25%           47              4       Sum of wgt.       2,571
+
+50%           87                      Mean            114.154
+                        Largest       Std. dev.      99.43164
+75%          148            780
+90%          232            866       Variance        9886.65
+95%          303            886       Skewness       2.437652
+99%          488            959       Kurtosis       12.93456
+
+==== schools_senior_secondary ====
+
+         SE.SCHL.SRSEC | Number of schools at Senior
+                       Secondary level
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            4              1
+ 5%           10              1
+10%           14              1       Obs               2,524
+25%           25              1       Sum of wgt.       2,524
+
+50%           45                      Mean           64.44374
+                        Largest       Std. dev.      65.05904
+75%           80            565
+90%          138            567       Variance       4232.678
+95%          190            645       Skewness       3.015643
+99%          323            653       Kurtosis       17.25606
+
+==== emp_total ====
+
+           SL.EMP.TOTL | Number of people employed
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%        25625          11258
+ 5%        53458          11451
+10%        69854          12127       Obs               3,787
+25%       115636          12891       Sum of wgt.       3,787
+
+50%       232729                      Mean           328227.9
+                        Largest       Std. dev.      303073.9
+75%       454770        2528255
+90%       663247        2533493       Variance       9.19e+10
+95%       886815        2538637       Skewness       2.419839
+99%      1392910        2665025       Kurtosis        12.8343
+
+==== emp_agriculture ====
+
+     SL.EMP.AGR.FRST.FSH | Number of people employed in
+                agriculture, forestry and fis
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%         1262            106
+ 5%         3631            317
+10%         6638            378       Obs               3,777
+25%        29354            389       Sum of wgt.       3,777
+
+50%        91705                      Mean           119089.4
+                        Largest       Std. dev.      107525.9
+75%       177458         579547
+90%       264597         584166       Variance       1.16e+10
+95%       322710         585501       Skewness       1.195759
+99%       464460         587546       Kurtosis       4.445392
+
+==== emp_industry ====
+
+          SL.EMP.IND | Number of people employed in
+                      industrial sector
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%          484              0
+ 5%         1487             22
+10%         2547             86       Obs               3,691
+25%         6375            112       Sum of wgt.       3,691
+
+50%        15647                      Mean           44245.16
+                        Largest       Std. dev.      74308.74
+75%        49221         689032
+90%       127187         696948       Variance       5.52e+09
+95%       177488         712427       Skewness       4.066439
+99%       366587         803022       Kurtosis       26.82306
+
+==== emp_mining ====
+
+      SL.EMP.MINQ | Number of people employed in mining
+                    and quarrying sector
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%          149              0
+10%          288              0       Obs               3,211
+25%          899              0       Sum of wgt.       3,211
+
+50%         2474                      Mean           4895.603
+                        Largest       Std. dev.      9623.511
+75%         5534         108692
+90%        10954         139802       Variance       9.26e+07
+95%        16123         167128       Skewness       10.09917
+99%        35119         242311       Kurtosis       175.0624
+
+==== emp_construction ====
+
+         SL.EMP.CNST | Number of people employed in
+                     construction sector
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%          932              0
+ 5%         1887             74
+10%         2760            158       Obs               3,719
+25%         5325            165       Sum of wgt.       3,719
+
+50%        11239                      Mean           21347.14
+                        Largest       Std. dev.      27924.43
+75%        29313         260883
+90%        51259         300923       Variance       7.80e+08
+95%        66342         337339       Skewness        4.77008
+99%       126252         521012       Kurtosis       49.42682
+
+==== emp_utilities ====
+
+          SL.EMP.ELC | Number of people employed in
+              electricity and utilities sector
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%           37              0
+ 5%          111              0
+10%          174              0       Obs               2,550
+25%          372              0       Sum of wgt.       2,550
+
+50%          809                      Mean           2045.554
+                        Largest       Std. dev.      5538.813
+75%         1848          65175
+90%         4150          68282       Variance       3.07e+07
+95%         6877         112503       Skewness       11.69869
+99%        23405         128467       Kurtosis       202.0369
+
+==== emp_trade ====
+
+      SL.EMP.TRAD | Number of people employed in trade,
+                 hotel and restaurant sector
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%         2384            173
+ 5%         6128            307
+10%         9253            442       Obs               3,743
+25%        19407            550       Sum of wgt.       3,743
+
+50%        39947                      Mean           71235.55
+                        Largest       Std. dev.      86002.23
+75%        92547         751748
+90%       168136         758404       Variance       7.40e+09
+95%       238678         816746       Skewness       3.059653
+99%       422981         884433       Kurtosis       17.20014
+
+==== emp_transport ====
+
+         SL.EMP.TRAN | Number of people employed in
+            transportation and telecommunication 
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%          683             83
+ 5%         1775             88
+10%         2590            120       Obs               3,717
+25%         4675            151       Sum of wgt.       3,717
+
+50%         9288                      Mean           15677.13
+                        Largest       Std. dev.      20712.71
+75%        17290         160929
+90%        33747         180528       Variance       4.29e+08
+95%        55071         188773       Skewness       3.679827
+99%       120007         214546       Kurtosis       20.74009
+
+==== emp_finance ====
+
+         SL.EMP.FINS | Number of people employed in
+                  financial services sector
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%          128              0
+ 5%          371              0
+10%        609.5             11       Obs               3,460
+25%       1352.5             15       Sum of wgt.       3,460
+
+50%       3250.5                      Mean           7918.751
+                        Largest       Std. dev.      16541.24
+75%         7418         151428
+90%      16702.5         205819       Variance       2.74e+08
+95%        30386         244261       Skewness        7.00531
+99%        90962         341105       Kurtosis       84.77198
+
+==== emp_social_services ====
+
+      SL.EMP.SOCL | Number of people employed in social
+                       services sector
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%         7119              0
+10%        10594              0       Obs               3,746
+25%        17118              0       Sum of wgt.       3,746
+
+50%      31649.5                      Mean           46471.11
+                        Largest       Std. dev.      49774.63
+75%        56675         393679
+90%        91947         396546       Variance       2.48e+09
+95%       135589         427791       Skewness       3.153363
+99%       275514         445052       Kurtosis       16.34661
+
+==== unemployed ====
+
+          SL.UEM.TOTL | Number of people unemployed
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%         1180            159
+ 5%         2337            180
+10%         3304            182       Obs               3,787
+25%         5932            201       Sum of wgt.       3,787
+
+50%        12435                      Mean           22197.65
+                        Largest       Std. dev.      30060.43
+75%        25667         269785
+90%        48781         302958       Variance       9.04e+08
+95%        80420         337731       Skewness       3.906237
+99%       148017         348687       Kurtosis       25.49896
+
+==== underemployed ====
+
+        SL.EMP.UNDR | Number of people underemployed
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%         5806           2549
+ 5%        12045           2876
+10%        16844           2996       Obs               3,788
+25%      37674.5           3375       Sum of wgt.       3,788
+
+50%      80968.5                      Mean           105127.1
+                        Largest       Std. dev.      87826.22
+75%       148953         530226
+90%       226420         543550       Variance       7.71e+09
+95%       276367         714810       Skewness        1.48613
+99%       400472         736546       Kurtosis       6.193379
+
+==== population ====
+
+        SP.POP.TOTL | Total Population (in number of
+                           people)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%        53600          14055
+ 5%       112412          14224
+10%       149801          14394       Obs              11,875
+25%       245700          14567       Sum of wgt.      11,875
+
+50%       466400                      Mean           665803.3
+                        Largest       Std. dev.      636341.9
+75%       870682        6088233
+90%      1384100        6089479       Variance       4.05e+11
+95%      1891981        6166880       Skewness       2.800476
+99%      2884300        6398000       Kurtosis       16.05193
+
+==== poverty_rate ====
+
+     SI.POV.NAPR.ZS | Poverty Rate (in % of population)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%         2.69            .99
+ 5%         4.35           1.41
+10%         5.23           1.52       Obs               6,625
+25%            8           1.78       Sum of wgt.       6,625
+
+50%        12.49                      Mean           14.61371
+                        Largest       Std. dev.      9.077936
+75%        19.03           69.8
+90%        27.08          78.22       Variance       82.40892
+95%        31.87          87.07       Skewness       1.492043
+99%     44.20765          91.12       Kurtosis       6.805502
+
+==== literacy_15up ====
+
+     SE.LITR.15UP.ZS | Literacy Rate for Population age
+                15 and over (in % of total po
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%        60.76          16.04
+ 5%     76.57863       18.86343
+10%        81.48          21.48       Obs               7,802
+25%     88.45735       25.59758       Sum of wgt.       7,802
+
+50%     94.08399                      Mean           91.63264
+                        Largest       Std. dev.      8.532239
+75%     97.58382       99.96813
+90%     98.92208            100       Variance        72.7991
+95%     99.36458            100       Skewness      -2.620957
+99%     99.78507            100       Kurtosis       14.63017
+
+==== morbidity_rate ====
+
+             SH.MORB.ZS | Morbidity Rate (in %)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     11.15025       2.861383
+ 5%     15.64092       3.698462
+10%     18.12664       3.923492       Obs               7,958
+25%     22.91875       4.424049       Sum of wgt.       7,958
+
+50%      27.9674                      Mean           28.39137
+                        Largest       Std. dev.      8.157816
+75%     33.43274       61.98449
+90%     38.97457       62.81193       Variance       66.54996
+95%     42.37633       64.88834       Skewness       .3086599
+99%     49.28323       67.75127       Kurtosis       3.388674
+
+==== skilled_birth_attendance ====
+
+      SH.STA.BRTC.ZS | Birth attended by Skilled Health
+                worker (in % of total birth)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     19.29916       7.376059
+ 5%     33.22435       8.273894
+10%     42.52949       8.722161       Obs               7,957
+25%     60.55167       9.431701       Sum of wgt.       7,957
+
+50%      83.3222                      Mean           76.53377
+                        Largest       Std. dev.      22.25557
+75%     96.26144            100
+90%     99.53027            100       Variance       495.3103
+95%          100            100       Skewness      -.8169526
+99%          100            100       Kurtosis       2.623914
+
+==== urban_share ====
+
+     SP.URB.TOTL.ZS | Percentage of Population in Urban
+                Areas (in % of Total Populati
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     3.951258            .76
+ 5%      8.28242           1.22
+10%     10.73903           1.33       Obs               1,223
+25%        18.16         1.7889       Sum of wgt.       1,223
+
+50%        29.21                      Mean           42.71489
+                        Largest       Std. dev.      31.99535
+75%     66.95509            100
+90%           99            100       Variance       1023.702
+95%          100            100       Skewness       .7858573
+99%          100            100       Kurtosis       2.104811
+
+==== rural_share ====
+
+     SP.RUR.TOTL.ZS | Percentage of Population in Rural
+                Areas (in % of Total Populati
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%         1.63            .52
+ 5%     3.743516            .54
+10%     9.261565       .5433422       Obs               1,135
+25%        55.41            .92       Sum of wgt.       1,135
+
+50%      74.5366                      Mean            64.4229
+                        Largest       Std. dev.      27.26491
+75%        83.38            100
+90%        90.62            100       Variance       743.3754
+95%     93.50143            100       Skewness      -1.132238
+99%        98.78            100       Kurtosis       3.136116
+
+==== urban_share_susenas ====
+
+      SP.URB.TOTL.ZS.SUS | Percentage of Population in
+               Urban Areas (in % of Total Popu
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%     6.756315              0
+10%     10.00459              0       Obs               7,967
+25%     17.54279              0       Sum of wgt.       7,967
+
+50%     28.62023                      Mean           41.78141
+                        Largest       Std. dev.      31.92363
+75%     64.59507            100
+90%     98.66112            100       Variance       1019.118
+95%          100            100       Skewness       .7958274
+99%          100            100       Kurtosis       2.166472
+
+==== enrollment_primary ====
+
+     SE.PRM.NENR.ZS | Net Enrollment Ratio: Primary (in
+                             %)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%        77.01       30.60673
+ 5%        87.63       33.09004
+10%        89.43          36.45       Obs               7,786
+25%        91.83       37.14327       Sum of wgt.       7,786
+
+50%        94.22                      Mean           93.77286
+                        Largest       Std. dev.      4.624239
+75%        96.63            100
+90%     98.53013            100       Variance       21.38359
+95%     99.24292            100       Skewness      -3.617503
+99%          100            100       Kurtosis       32.83608
+
+==== enrollment_junior_secondary ====
+
+       SE.JRSEC.NENR.ZS | Net Enrollment Ratio: Junior
+                      Secondary (in %)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%        29.81       2.990454
+ 5%        42.04            8.4
+10%        48.98          10.48       Obs               7,932
+25%     60.36318          12.05       Sum of wgt.       7,932
+
+50%        70.08                      Mean           67.73231
+                        Largest       Std. dev.      13.43901
+75%     77.12581       98.02367
+90%     82.65603       98.57641       Variance       180.6069
+95%      85.7944       98.95038       Skewness      -.8438869
+99%        91.47       99.93423       Kurtosis       3.787797
+
+==== enrollment_senior_secondary ====
+
+       SE.SRSEC.NENR.ZS | Net Enrollment Ratio: Senior
+                      Secondary (in %)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%         3.51            .54
+ 5%        15.99             .6
+10%        23.07            .64       Obs               7,947
+25%        35.41            .68       Sum of wgt.       7,947
+
+50%        50.92                      Mean           48.07377
+                        Largest       Std. dev.      17.80804
+75%        61.54          88.17
+90%     69.39605       88.68285       Variance       317.1263
+95%     73.09178       90.74354       Skewness      -.4539166
+99%     80.58682       91.78555       Kurtosis       2.575185
+
+==== access_electricity ====
+
+     HOU.ELC.ACSN.ZS | Household Access to Electricity:
+                Total (in % of total househol
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%        20.95            .55
+ 5%        45.25             .7
+10%        58.68            .78       Obs               7,632
+25%     82.53941            .89       Sum of wgt.       7,632
+
+50%        96.65                      Mean           87.42461
+                        Largest       Std. dev.      18.61851
+75%     99.50907            100
+90%     99.95895            100       Variance       346.6488
+95%          100            100       Skewness      -1.906498
+99%          100            100       Kurtosis       6.262845
+
+==== access_water ====
+
+      HOU.H2O.ACSN.ZS | Household Access to Safe Water
+                  (in % of total household)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%         7.75            .15
+ 5%        19.84            .29
+10%     26.84952            .39       Obs               7,957
+25%        38.67            .46       Sum of wgt.       7,957
+
+50%     55.03206                      Mean           55.42071
+                        Largest       Std. dev.      22.19943
+75%      72.6111            100
+90%        86.17            100       Variance       492.8149
+95%     92.46599            100       Skewness      -.0047611
+99%     98.54378            100       Kurtosis        2.25394
+
+==== access_sanitation ====
+
+         HOU.STA.ACSN.ZS | Household Access to safe
+            Sanitation (in % of total Household)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     19.86905           6.34
+ 5%        30.83           7.54
+10%        37.92           7.59       Obs               7,971
+25%        51.64       7.754114       Sum of wgt.       7,971
+
+50%     66.65292                      Mean           64.43735
+                        Largest       Std. dev.      18.49254
+75%     79.20368       97.85006
+90%        87.24       97.89836       Variance       341.9742
+95%     90.71549       98.00655       Skewness      -.4627487
+99%     94.80159       98.37591       Kurtosis       2.496765
+
+==== access_phone ====
+
+      HOU.MLT.MAIN.ZS | Household Access to Fixed Line
+               Phone Connection (in % of total
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%          .29            .01
+ 5%          .74            .01
+10%          1.1            .01       Obs               1,849
+25%         1.93            .03       Sum of wgt.       1,849
+
+50%     3.761808                      Mean           8.481488
+                        Largest       Std. dev.      11.23626
+75%         9.42          65.73
+90%        24.96          67.09       Variance       126.2536
+95%        33.98          67.44       Skewness       2.327898
+99%        52.85          69.16       Kurtosis       8.629191
+
+==== hh_expenditure_pc ====
+
+      HOU.XPD.PC.CR | Household per capita expenditure
+                          (in IDR)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%        41004          27606
+ 5%        55001          28478
+10%        81944          29500       Obs               7,618
+25%       157217          30228       Sum of wgt.       7,618
+
+50%     393196.2                      Mean           508858.2
+                        Largest       Std. dev.      422404.3
+75%     775524.1        2388632
+90%      1079533        2464893       Variance       1.78e+11
+95%      1322921        2625293       Skewness       1.122177
+99%      1819249        2717017       Kurtosis       4.074678
+
+==== hh_expenditure_pc_edu ====
+
+      HOU.XPD.EDU.PC.CR | Monthly Per Capita Household
+               Education Expenditure (in IDR)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%          767            349
+ 5%         1455            365
+10%         2161            399       Obs               7,618
+25%         5133            417       Sum of wgt.       7,618
+
+50%     15679.26                      Mean           22115.82
+                        Largest       Std. dev.      24054.85
+75%     29435.04       187225.7
+90%      48554.6       195456.2       Variance       5.79e+08
+95%     71150.07         214585       Skewness       2.408501
+99%     119469.5       216184.5       Kurtosis       11.17653
+
+==== hh_expenditure_pc_health ====
+
+       HOU.XPD.HE.PC.CR | Monthly Per Capita Household
+                 Health Expenditure (in IDR)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%          550            142
+ 5%          926            154
+10%         1359            167       Obs               7,618
+25%     2936.976            184       Sum of wgt.       7,618
+
+50%     8326.233                      Mean            13370.5
+                        Largest       Std. dev.      13793.16
+75%     19871.89       91704.99
+90%     32702.26       96835.01       Variance       1.90e+08
+95%     41140.59       117999.4       Skewness       1.690779
+99%     61084.64       121932.8       Kurtosis       6.727179
+
+==== hh_expenditure_poorest20 ====
+
+      HOU.XPD.TOTL.20POOR.CR | Monthly Per Capita TOTAL
+               Household Expenditure for The 
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%        21165           9411
+ 5%        28880          13405
+10%        40993          13888       Obs               7,618
+25%        82548          14135       Sum of wgt.       7,618
+
+50%     186290.9                      Mean           219348.3
+                        Largest       Std. dev.        163839
+75%     321373.9       910286.3
+90%     446416.1       915351.8       Variance       2.68e+10
+95%     527993.3       930413.8       Skewness       .9932209
+99%     711079.5       975925.2       Kurtosis       3.759313
+
+. 
+. * compact outlier screen: p99/p50 > 100 means a units problem, not a fat tail
+. display _newline "{txt}variable{col 34}p99/p50"
+
+variable                         p99/p50
+
+. foreach v of global V {
+  2.     quietly summarize `v', detail
+  3.     if r(N) > 0 & r(p50) > 0 ///
+>         display as text %-32s "`v'" as result %12.1f r(p99)/r(p50)
+  4. }
+gdp_constant_pre2010                    25.6
+gdp_constant_exoilgas                   26.1
+gdp_current_pre2010                     27.7
+gdp_current_exoilgas                    30.3
+gdp_constant_sna08                      23.2
+gdp_current_sna08                       21.9
+gdp_manufacturing_pre2010              101.6
+gdp_manufacturing_sna08                 65.1
+gdp_manufacturing_cur_pre2010          137.4
+gdp_manufacturing_cur_sna08             69.4
+revenue_dak                             18.6
+dak_education                            7.6
+dak_health                               6.8
+dak_health_basic                         7.4
+dak_health_recommended                   5.0
+dak_infrastructure                       6.2
+dak_infra_road                           5.9
+dak_infra_water                          4.5
+dak_infra_irrigation                     5.0
+dak_agriculture                          4.3
+dak_environment                          6.1
+dak_forestry                             3.3
+dak_fishery                              6.2
+dak_government                           3.0
+dak_demographic                          3.1
+dak_trade                                5.6
+dak_village                              4.6
+expenditure_personnel                    4.4
+expenditure_goods_services               9.6
+expenditure_other                       14.6
+expenditure_education                    6.5
+expenditure_health                      10.6
+expenditure_infrastructure               9.9
+expenditure_admin                        6.1
+expenditure_agriculture                  7.6
+expenditure_economy                      9.4
+expenditure_environment                 17.4
+expenditure_housing                     27.6
+expenditure_social_protection           10.9
+expenditure_religion                    13.2
+expenditure_tourism                     12.3
+revenue_total                            8.4
+revenue_dau                              6.1
+revenue_own_source                      36.6
+revenue_other                           21.6
+revenue_sharing                         44.6
+revenue_dbh_sda_total                  695.2
+revenue_dbh_tax_total                   18.8
+revenue_dbh_oil                       1497.1
+revenue_dbh_gas                       1431.9
+revenue_dbh_mining                     703.6
+revenue_dbh_geothermal               10252.3
+revenue_dbh_forestry                   186.3
+revenue_dbh_fishery                      6.1
+revenue_dbh_tax_income                  17.0
+revenue_dbh_tax_pbb                     27.0
+revenue_dbh_tax_bphtb                    5.0
+schools_primary                          4.2
+schools_junior_secondary                 5.6
+schools_senior_secondary                 7.2
+emp_total                                6.0
+emp_agriculture                          5.1
+emp_industry                            23.4
+emp_mining                              14.2
+emp_construction                        11.2
+emp_utilities                           28.9
+emp_trade                               10.6
+emp_transport                           12.9
+emp_finance                             28.0
+emp_social_services                      8.7
+unemployed                              11.9
+underemployed                            4.9
+population                               6.2
+poverty_rate                             3.5
+literacy_15up                            1.1
+morbidity_rate                           1.8
+skilled_birth_attendance                 1.2
+urban_share                              3.4
+rural_share                              1.3
+urban_share_susenas                      3.5
+enrollment_primary                       1.1
+enrollment_junior_secondary              1.3
+enrollment_senior_secondary              1.6
+access_electricity                       1.0
+access_water                             1.8
+access_sanitation                        1.4
+access_phone                            14.0
+hh_expenditure_pc                        4.6
+hh_expenditure_pc_edu                    7.6
+hh_expenditure_pc_health                 7.3
+hh_expenditure_poorest20                 3.8
+
+. 
+. 
+. *--- STEP 5. breaks over time ----------------------------------------------
+. * a real series drifts; a broken one jumps. Watch the count column too.
+. foreach v in gdp_constant_pre2010 gdp_constant_sna08 ///
+>              gdp_manufacturing_pre2010 gdp_manufacturing_sna08 ///
+>              revenue_total revenue_dak expenditure_education population emp_total {
+  2.     display _newline as text "==== median of `v' by year ===="
+  3.     preserve
+  4.         collapse (p50) m=`v' (count) n=`v', by(year)
+  5.         list year m n, noobs
+  6.     restore
+  7. }
+
+==== median of gdp_constant_pre2010 by year ====
+
+  +------------------------+
+  | year           m     n |
+  |------------------------|
+  | 1983           .     0 |
+  | 1984           .     0 |
+  | 1985           .     0 |
+  | 1986           .     0 |
+  | 1987           .     0 |
+  |------------------------|
+  | 1988           .     0 |
+  | 1989           .     0 |
+  | 1990           .     0 |
+  | 1991           .     0 |
+  | 1992           .     0 |
+  |------------------------|
+  | 1993           .     0 |
+  | 1994           .     0 |
+  | 1995           .     0 |
+  | 1996           .     0 |
+  | 1997           .     0 |
+  |------------------------|
+  | 1998           .     0 |
+  | 1999           .     0 |
+  | 2000   1802209.7   292 |
+  | 2001   1666607.1   336 |
+  | 2002   1786534.7   336 |
+  |------------------------|
+  | 2003   1915793.4   341 |
+  | 2004   2021632.9   341 |
+  | 2005   2101077.3   341 |
+  | 2006   2212871.5   341 |
+  | 2007   2329838.1   341 |
+  |------------------------|
+  | 2008   2548994.5   341 |
+  | 2009     2753940   341 |
+  | 2010     2919490   328 |
+  | 2011     3028170   328 |
+  | 2012     3230985   328 |
+  |------------------------|
+  | 2013     3405470   328 |
+  | 2014           .     0 |
+  | 2015           .     0 |
+  | 2016           .     0 |
+  | 2017           .     0 |
+  |------------------------|
+  | 2018           .     0 |
+  | 2019           .     0 |
+  | 2020           .     0 |
+  +------------------------+
+
+==== median of gdp_constant_sna08 by year ====
+
+  +-----------------------+
+  | year          m     n |
+  |-----------------------|
+  | 1983          .     0 |
+  | 1984          .     0 |
+  | 1985          .     0 |
+  | 1986          .     0 |
+  | 1987          .     0 |
+  |-----------------------|
+  | 1988          .     0 |
+  | 1989          .     0 |
+  | 1990          .     0 |
+  | 1991          .     0 |
+  | 1992          .     0 |
+  |-----------------------|
+  | 1993          .     0 |
+  | 1994          .     0 |
+  | 1995          .     0 |
+  | 1996          .     0 |
+  | 1997          .     0 |
+  |-----------------------|
+  | 1998          .     0 |
+  | 1999          .     0 |
+  | 2000          .     0 |
+  | 2001          .     0 |
+  | 2002          .     0 |
+  |-----------------------|
+  | 2003          .     0 |
+  | 2004          .     0 |
+  | 2005          .     0 |
+  | 2006          .     0 |
+  | 2007          .     0 |
+  |-----------------------|
+  | 2008          .     0 |
+  | 2009          .     0 |
+  | 2010    9380690   327 |
+  | 2011   10025040   327 |
+  | 2012   10494460   330 |
+  |-----------------------|
+  | 2013   11580950   341 |
+  | 2014   12159120   341 |
+  | 2015   12953370   341 |
+  | 2016   13826040   341 |
+  | 2017   14143210   341 |
+  |-----------------------|
+  | 2018   14951720   341 |
+  | 2019   15866410   341 |
+  | 2020   15703774   341 |
+  +-----------------------+
+
+==== median of gdp_manufacturing_pre2010 by year ====
+
+  +------------------------+
+  | year           m     n |
+  |------------------------|
+  | 1983           .     0 |
+  | 1984           .     0 |
+  | 1985           .     0 |
+  | 1986           .     0 |
+  | 1987           .     0 |
+  |------------------------|
+  | 1988           .     0 |
+  | 1989           .     0 |
+  | 1990           .     0 |
+  | 1991           .     0 |
+  | 1992           .     0 |
+  |------------------------|
+  | 1993           .     0 |
+  | 1994           .     0 |
+  | 1995           .     0 |
+  | 1996           .     0 |
+  | 1997           .     0 |
+  |------------------------|
+  | 1998           .     0 |
+  | 1999           .     0 |
+  | 2000   169447.91   292 |
+  | 2001   158273.03   336 |
+  | 2002   165751.01   336 |
+  |------------------------|
+  | 2003   177441.88   341 |
+  | 2004   192496.64   340 |
+  | 2005   204206.17   340 |
+  | 2006   207603.92   340 |
+  | 2007   217510.29   340 |
+  |------------------------|
+  | 2008   231626.84   340 |
+  | 2009      246090   341 |
+  | 2010      258205   328 |
+  | 2011      272990   328 |
+  | 2012      286965   328 |
+  |------------------------|
+  | 2013      307860   341 |
+  | 2014           .     0 |
+  | 2015           .     0 |
+  | 2016           .     0 |
+  | 2017           .     0 |
+  |------------------------|
+  | 2018           .     0 |
+  | 2019           .     0 |
+  | 2020           .     0 |
+  +------------------------+
+
+==== median of gdp_manufacturing_sna08 by year ====
+
+  +----------------------+
+  | year         m     n |
+  |----------------------|
+  | 1983         .     0 |
+  | 1984         .     0 |
+  | 1985         .     0 |
+  | 1986         .     0 |
+  | 1987         .     0 |
+  |----------------------|
+  | 1988         .     0 |
+  | 1989         .     0 |
+  | 1990         .     0 |
+  | 1991         .     0 |
+  | 1992         .     0 |
+  |----------------------|
+  | 1993         .     0 |
+  | 1994         .     0 |
+  | 1995         .     0 |
+  | 1996         .     0 |
+  | 1997         .     0 |
+  |----------------------|
+  | 1998         .     0 |
+  | 1999         .     0 |
+  | 2000         .     0 |
+  | 2001         .     0 |
+  | 2002         .     0 |
+  |----------------------|
+  | 2003         .     0 |
+  | 2004         .     0 |
+  | 2005         .     0 |
+  | 2006         .     0 |
+  | 2007         .     0 |
+  |----------------------|
+  | 2008         .     0 |
+  | 2009         .     0 |
+  | 2010    913060   326 |
+  | 2011    963690   326 |
+  | 2012   1017510   329 |
+  |----------------------|
+  | 2013   1115600   340 |
+  | 2014   1179665   340 |
+  | 2015   1283865   340 |
+  | 2016   1333680   340 |
+  | 2017   1405175   340 |
+  |----------------------|
+  | 2018   1432710   340 |
+  | 2019   1549855   340 |
+  | 2020   1541610   341 |
+  +----------------------+
+
+==== median of revenue_total by year ====
+
+  +------------------------+
+  | year           m     n |
+  |------------------------|
+  | 1983           .     0 |
+  | 1984           .     0 |
+  | 1985           .     0 |
+  | 1986           .     0 |
+  | 1987           .     0 |
+  |------------------------|
+  | 1988           .     0 |
+  | 1989           .     0 |
+  | 1990           .     0 |
+  | 1991           .     0 |
+  | 1992           .     0 |
+  |------------------------|
+  | 1993           .     0 |
+  | 1994   2.719e+10   284 |
+  | 1995   3.105e+10   285 |
+  | 1996   3.622e+10   284 |
+  | 1997   4.448e+10   284 |
+  |------------------------|
+  | 1998   6.209e+10   284 |
+  | 1999   8.374e+10   284 |
+  | 2000   8.288e+10   283 |
+  | 2001   2.123e+11   330 |
+  | 2002   2.463e+11   317 |
+  |------------------------|
+  | 2003   2.957e+11   303 |
+  | 2004   3.188e+11   267 |
+  | 2005   3.622e+11   273 |
+  | 2006   5.445e+11   322 |
+  | 2007   6.226e+11   322 |
+  |------------------------|
+  | 2008   7.304e+11   331 |
+  | 2009   7.791e+11   336 |
+  | 2010   8.718e+11   323 |
+  | 2011   1.082e+12   323 |
+  | 2012   1.198e+12   323 |
+  |------------------------|
+  | 2013   1.373e+12   323 |
+  | 2014   1.549e+12   336 |
+  | 2015   1.764e+12   336 |
+  | 2016   1.911e+12   336 |
+  | 2017   2.016e+12   336 |
+  |------------------------|
+  | 2018   2.052e+12   336 |
+  | 2019   2.185e+12   336 |
+  | 2020   2.048e+12   336 |
+  +------------------------+
+
+==== median of revenue_dak by year ====
+
+  +------------------------+
+  | year           m     n |
+  |------------------------|
+  | 1983           .     0 |
+  | 1984           .     0 |
+  | 1985           .     0 |
+  | 1986           .     0 |
+  | 1987           .     0 |
+  |------------------------|
+  | 1988           .     0 |
+  | 1989           .     0 |
+  | 1990           .     0 |
+  | 1991           .     0 |
+  | 1992           .     0 |
+  |------------------------|
+  | 1993           .     0 |
+  | 1994   1.026e+10   284 |
+  | 1995   1.095e+10   285 |
+  | 1996   1.235e+10   284 |
+  | 1997   1.479e+10   284 |
+  |------------------------|
+  | 1998   1.477e+10   284 |
+  | 1999   1.977e+10   284 |
+  | 2000   1.885e+10   283 |
+  | 2001   2.254e+08   330 |
+  | 2002           0   317 |
+  |------------------------|
+  | 2003   7.054e+09   291 |
+  | 2004   8.950e+09   231 |
+  | 2005   1.206e+10   239 |
+  | 2006   2.836e+10   322 |
+  | 2007   4.382e+10   300 |
+  |------------------------|
+  | 2008   5.343e+10   331 |
+  | 2009   5.635e+10   336 |
+  | 2010   5.215e+10   323 |
+  | 2011   5.722e+10   323 |
+  | 2012   6.036e+10   323 |
+  |------------------------|
+  | 2013   6.497e+10   323 |
+  | 2014   6.680e+10   336 |
+  | 2015   1.121e+11   336 |
+  | 2016   2.792e+11   336 |
+  | 2017   2.810e+11   336 |
+  |------------------------|
+  | 2018   2.816e+11   336 |
+  | 2019   3.107e+11   336 |
+  | 2020   2.738e+11   336 |
+  +------------------------+
+
+==== median of expenditure_education by year ====
+
+  +------------------------+
+  | year           m     n |
+  |------------------------|
+  | 1983           .     0 |
+  | 1984           .     0 |
+  | 1985           .     0 |
+  | 1986           .     0 |
+  | 1987           .     0 |
+  |------------------------|
+  | 1988           .     0 |
+  | 1989           .     0 |
+  | 1990           .     0 |
+  | 1991           .     0 |
+  | 1992           .     0 |
+  |------------------------|
+  | 1993           .     0 |
+  | 1994           .     0 |
+  | 1995           .     0 |
+  | 1996           .     0 |
+  | 1997           .     0 |
+  |------------------------|
+  | 1998           .     0 |
+  | 1999           .     0 |
+  | 2000           .     0 |
+  | 2001   6.092e+10   328 |
+  | 2002   8.100e+10   314 |
+  |------------------------|
+  | 2003   9.464e+10   297 |
+  | 2004   1.123e+11   260 |
+  | 2005   1.170e+11   262 |
+  | 2006   1.469e+11   264 |
+  | 2007   1.840e+11   321 |
+  |------------------------|
+  | 2008   2.203e+11   336 |
+  | 2009   2.809e+11   336 |
+  | 2010   3.121e+11   249 |
+  | 2011   3.930e+11   254 |
+  | 2012   4.411e+11   323 |
+  |------------------------|
+  | 2013   4.495e+11   164 |
+  | 2014   5.194e+11   179 |
+  | 2015   4.733e+10   323 |
+  | 2016   4.223e+11   304 |
+  | 2017   5.514e+11   336 |
+  |------------------------|
+  | 2018   5.574e+11   336 |
+  | 2019   5.891e+11   336 |
+  | 2020   5.736e+11   336 |
+  +------------------------+
+
+==== median of population by year ====
+
+  +-----------------------+
+  | year          m     n |
+  |-----------------------|
+  | 1983     376341   278 |
+  | 1984   383436.5   278 |
+  | 1985   391716.5   278 |
+  | 1986   400997.5   278 |
+  | 1987     407120   278 |
+  |-----------------------|
+  | 1988   412921.5   278 |
+  | 1989   423888.5   278 |
+  | 1990     437350   278 |
+  | 1991     442700   279 |
+  | 1992     454300   281 |
+  |-----------------------|
+  | 1993     460200   284 |
+  | 1994     468200   284 |
+  | 1995     469310   285 |
+  | 1996     479950   284 |
+  | 1997     490150   284 |
+  |-----------------------|
+  | 1998     502000   284 |
+  | 1999     508700   284 |
+  | 2000   498395.5   292 |
+  | 2001   405600.5   336 |
+  | 2002     408929   336 |
+  |-----------------------|
+  | 2003     432603   341 |
+  | 2004     431875   341 |
+  | 2005     434266   341 |
+  | 2006     449827   341 |
+  | 2007     456286   341 |
+  |-----------------------|
+  | 2008     462719   341 |
+  | 2009     469339   341 |
+  | 2010     481892   341 |
+  | 2011     500698   341 |
+  | 2012     505401   341 |
+  |-----------------------|
+  | 2013     512326   341 |
+  | 2014     517996   341 |
+  | 2015     523115   341 |
+  | 2016     526367   341 |
+  | 2017     533212   341 |
+  |-----------------------|
+  | 2018     539516   341 |
+  | 2019     546641   341 |
+  | 2020     555307   341 |
+  +-----------------------+
+
+==== median of emp_total by year ====
+
+  +-----------------------+
+  | year          m     n |
+  |-----------------------|
+  | 1983          .     0 |
+  | 1984          .     0 |
+  | 1985          .     0 |
+  | 1986          .     0 |
+  | 1987          .     0 |
+  |-----------------------|
+  | 1988          .     0 |
+  | 1989          .     0 |
+  | 1990          .     0 |
+  | 1991          .     0 |
+  | 1992          .     0 |
+  |-----------------------|
+  | 1993          .     0 |
+  | 1994          .     0 |
+  | 1995          .     0 |
+  | 1996          .     0 |
+  | 1997          .     0 |
+  |-----------------------|
+  | 1998          .     0 |
+  | 1999          .     0 |
+  | 2000          .     0 |
+  | 2001          .     0 |
+  | 2002          .     0 |
+  |-----------------------|
+  | 2003          .     0 |
+  | 2004          .     0 |
+  | 2005          .     0 |
+  | 2006          .     0 |
+  | 2007   192089.5   286 |
+  |-----------------------|
+  | 2008   205095.5   298 |
+  | 2009     213302   291 |
+  | 2010   221506.5   286 |
+  | 2011     231764   281 |
+  | 2012     222619   285 |
+  |-----------------------|
+  | 2013   223989.5   286 |
+  | 2014   244994.5   280 |
+  | 2015     238207   299 |
+  | 2016          .     0 |
+  | 2017     247108   299 |
+  |-----------------------|
+  | 2018   258012.5   298 |
+  | 2019     259273   299 |
+  | 2020     269933   299 |
+  +-----------------------+
+
+. 
+. * the known GDP splice: is the pre2010/sna08 ratio stable across districts?
+. preserve
+
+.     keep if inrange(year,2010,2013) & !missing(gdp_constant_pre2010, gdp_constant_sna08)
+(10,736 observations deleted)
+
+.     generate double _ratio = gdp_constant_sna08 / gdp_constant_pre2010
+
+.     summarize _ratio, detail
+
+                           _ratio
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     2.061135       1.396466
+ 5%     2.276017       1.888236
+10%      2.50293       1.902236       Obs               1,309
+25%     2.785738       1.918658       Sum of wgt.       1,309
+
+50%     3.333702                      Mean            4.39111
+                        Largest       Std. dev.      16.54298
+75%     4.036007       29.99383
+90%     5.272655       30.27292       Variance       273.6701
+95%      6.45802       367.8059       Skewness       25.56114
+99%     11.05352       473.5269       Kurtosis       673.0419
+
+. restore
+
+. 
+. 
+. *--- STEP 6. within vs between (decides whether FE is viable) ---------------
+. xtsum $V
+
+Variable         |      Mean   Std. dev.       Min        Max |    Observations
+-----------------+--------------------------------------------+----------------
+open_s~l overall |  .9805597   2.170235          0         41 |     N =   11934
+         between |               1.0688   .0434783   8.842105 |     n =     341
+         within  |             1.885013  -7.861546   38.45424 | T-bar = 34.9971
+                 |                                            |
+open_S~i overall |  .2423328    .705248          0         20 |     N =   11934
+         between |             .1980826          0   1.945946 |     n =     341
+         within  |             .6773611  -1.703613   18.29639 | T-bar = 34.9971
+                 |                                            |
+open_S~a overall |  .7382269    1.97411          0         41 |     N =   11934
+         between |             1.031015          0   8.552632 |     n =     341
+         within  |             1.679712  -7.814405    38.6856 | T-bar = 34.9971
+                 |                                            |
+gdp_co~0 overall |   5276181   1.03e+07   107106.1   1.25e+08 |     N =    4663
+         between |             1.06e+07   136277.7   9.31e+07 |     n =     341
+         within  |              2555056  -2.03e+07   4.29e+07 |     T = 13.6745
+                 |                                            |
+gdp_co~s overall |   5016351   1.01e+07   107106.1   1.25e+08 |     N =    4663
+         between |             1.04e+07   136277.7   9.31e+07 |     n =     341
+         within  |              2673033  -2.06e+07   4.27e+07 |     T = 13.6745
+                 |                                            |
+gdp_cu~0 overall |  1.02e+07   2.23e+07   109358.8   3.36e+08 |     N =    4662
+         between |             2.10e+07   308185.2   1.88e+08 |     n =     341
+         within  |             1.04e+07  -8.97e+07   1.73e+08 |     T = 13.6716
+                 |                                            |
+gdp_cu~s overall |   9874339   2.24e+07   109358.8   3.36e+08 |     N =    4662
+         between |             2.07e+07   308185.2   1.88e+08 |     n =     341
+         within  |             1.12e+07  -9.00e+07   1.73e+08 |     T = 13.6716
+                 |                                            |
+gdp_co~8 overall |  2.79e+07   5.36e+07      49380   7.75e+08 |     N =    3712
+         between |             4.77e+07     933256   3.58e+08 |     n =     341
+         within  |             2.41e+07  -2.44e+08   5.21e+08 | T-bar = 10.8856
+                 |                                            |
+gdp_cu~8 overall |  3.46e+07   6.33e+07   10220.31   7.06e+08 |     N =    3712
+         between |             5.98e+07    1116809   4.87e+08 |     n =     341
+         within  |             2.01e+07  -1.93e+08   2.54e+08 | T-bar = 10.8856
+                 |                                            |
+gdp_ma.. overall |   1316540    3878440     229.21   5.11e+07 |     N =    4671
+         between |              3887229   452.4946   3.68e+07 |     n =     341
+         within  |             739722.9   -9494683   1.56e+07 |     T = 13.6979
+                 |                                            |
+~g_sna08 overall |   6812836   1.99e+07       1610   3.72e+08 |     N =    3702
+         between |             1.72e+07   2068.436   1.62e+08 |     n =     341
+         within  |              9778448  -1.24e+08   2.45e+08 | T-bar = 10.8563
+                 |                                            |
+gdp_ma.. overall |   2631176    8039256     239.47   1.03e+08 |     N =    4670
+         between |              7453056   913.4508   5.75e+07 |     n =     341
+         within  |              3392632  -2.89e+07   4.79e+07 |     T =  13.695
+                 |                                            |
+~r_sna08 overall |   8093974   2.06e+07       1610   2.55e+08 |     N =    3702
+         between |             1.98e+07   2819.491   1.91e+08 |     n =     341
+         within  |              5449726  -6.08e+07   7.22e+07 | T-bar = 10.8563
+                 |                                            |
+revenu~k overall |  9.87e+10   1.51e+11          0   1.87e+12 |     N =    8329
+         between |             6.09e+10   2.04e+10   5.82e+11 |     n =     336
+         within  |             1.39e+11  -4.78e+11   1.38e+12 | T-bar = 24.7887
+                 |                                            |
+dak_ed~n overall |  1.27e+10   1.33e+10   1.00e+09   1.06e+11 |     N =    2022
+         between |             8.91e+09   2.07e+09   5.25e+10 |     n =     336
+         within  |             1.06e+10  -3.81e+10   6.58e+10 |     T = 6.01786
+                 |                                            |
+dak_he~h overall |  7.00e+09   7.94e+09   1.00e+09   1.54e+11 |     N =    1996
+         between |             5.54e+09   1.67e+09   5.15e+10 |     n =     336
+         within  |             5.90e+09  -4.23e+10   1.10e+11 |     T = 5.94048
+                 |                                            |
+dak_he~c overall |  1.09e+10   1.08e+10   5.01e+09   1.52e+11 |     N =     295
+         between |             1.08e+10   5.01e+09   1.52e+11 |     n =     295
+         within  |                    0   1.09e+10   1.09e+10 |     T =       1
+                 |                                            |
+dak_he~d overall |  2.31e+09   1.58e+09   6.55e+08   1.00e+10 |     N =     151
+         between |             1.58e+09   6.55e+08   1.00e+10 |     n =     151
+         within  |                    0   2.31e+09   2.31e+09 |     T =       1
+                 |                                            |
+dak_in~e overall |  1.13e+10   1.10e+10   1.00e+09   1.42e+11 |     N =    2074
+         between |             8.13e+09   1.98e+09   6.38e+10 |     n =     336
+         within  |             7.87e+09  -5.15e+10   8.93e+10 |     T = 6.17262
+                 |                                            |
+dak_in~d overall |  7.44e+09   7.21e+09   1.00e+09   9.89e+10 |     N =    2014
+         between |             5.34e+09   1.43e+09   4.11e+10 |     n =     336
+         within  |             5.11e+09  -3.27e+10   6.53e+10 |     T = 5.99405
+                 |                                            |
+dak_in~r overall |  2.72e+09   2.31e+09   3.90e+08   2.61e+10 |     N =    1454
+         between |             2.00e+09   4.95e+08   1.90e+10 |     n =     335
+         within  |             1.25e+09  -1.12e+10   9.76e+09 |     T =  4.3403
+                 |                                            |
+dak_in~n overall |  2.65e+09   2.02e+09   2.05e+08   2.77e+10 |     N =    1525
+         between |             1.85e+09   2.05e+08   1.53e+10 |     n =     302
+         within  |             1.33e+09  -9.70e+09   1.50e+10 |     T = 5.04967
+                 |                                            |
+dak_ag~e overall |  3.94e+09   2.86e+09   5.00e+08   2.75e+10 |     N =    1321
+         between |             2.87e+09   6.21e+08   2.26e+10 |     n =     334
+         within  |             1.34e+09  -3.28e+09   1.27e+10 |     T = 3.95509
+                 |                                            |
+dak_en~t overall |  9.46e+08   8.59e+08   1.18e+08   1.04e+10 |     N =    1153
+         between |             8.57e+08   1.18e+08   6.67e+09 |     n =     334
+         within  |             3.97e+08  -1.60e+09   4.71e+09 |     T =  3.4521
+                 |                                            |
+dak_fo~y overall |  1.18e+09   6.22e+08   5.94e+08   4.22e+09 |     N =     104
+         between |             6.67e+08   5.94e+08   4.22e+09 |     n =      81
+         within  |             9.02e+07   9.58e+08   1.41e+09 |     T = 1.28395
+                 |                                            |
+dak_fi~y overall |  2.69e+09   2.51e+09   2.00e+08   2.27e+10 |     N =    1574
+         between |             2.46e+09   4.18e+08   1.65e+10 |     n =     335
+         within  |             1.25e+09  -9.64e+09   1.31e+10 |     T = 4.69851
+                 |                                            |
+dak_go~t overall |  5.99e+09   3.51e+09   7.50e+08   2.71e+10 |     N =     149
+         between |             3.19e+09   7.50e+08   2.12e+10 |     n =      91
+         within  |             1.51e+09   1.15e+08   1.19e+10 |     T = 1.63736
+                 |                                            |
+dak_de~c overall |  1.17e+09   5.58e+08   4.33e+08   4.70e+09 |     N =     464
+         between |             5.41e+08   5.21e+08   4.62e+09 |     n =     275
+         within  |             1.39e+08   6.46e+08   1.70e+09 |     T = 1.68727
+                 |                                            |
+dak_tr~e overall |  7.25e+08   5.01e+08   3.52e+08   4.48e+09 |     N =     149
+         between |             5.01e+08   3.52e+08   4.48e+09 |     n =     149
+         within  |                    0   7.25e+08   7.25e+08 |     T =       1
+                 |                                            |
+dak_vi~e overall |  2.08e+09   1.27e+09   1.39e+09   7.61e+09 |     N =      50
+         between |             1.27e+09   1.39e+09   7.61e+09 |     n =      50
+         within  |                    0   2.08e+09   2.08e+09 |     T =       1
+                 |                                            |
+expend~l overall |  5.49e+11   4.35e+11   3.67e+09   4.42e+12 |     N =    6221
+         between |             2.83e+11   1.54e+11   2.45e+12 |     n =     336
+         within  |             3.32e+11  -1.35e+12   2.52e+12 | T-bar = 18.5149
+                 |                                            |
+expend~s overall |  2.80e+11   3.33e+11          0   4.24e+12 |     N =    6207
+         between |             2.11e+11   7.91e+10   1.52e+12 |     n =     336
+         within  |             2.63e+11  -1.21e+12   3.01e+12 | T-bar = 18.4732
+                 |                                            |
+expend~r overall |  1.66e+11   2.39e+11          0   3.79e+12 |     N =    6172
+         between |             1.40e+11   9.99e+09   1.46e+12 |     n =     336
+         within  |             1.99e+11  -1.28e+12   2.49e+12 | T-bar =  18.369
+                 |                                            |
+ex~ation overall |  3.41e+11   3.69e+11          0   1.22e+13 |     N =    5858
+         between |             2.00e+11   7.46e+10   1.72e+12 |     n =     336
+         within  |             3.11e+11  -1.25e+12   1.14e+13 | T-bar = 17.4345
+                 |                                            |
+expend~h overall |  1.48e+11   1.93e+11          0   4.55e+12 |     N =    5855
+         between |             8.77e+10   2.89e+10   5.92e+11 |     n =     336
+         within  |             1.74e+11  -4.15e+11   4.27e+12 | T-bar = 17.4256
+                 |                                            |
+ex~cture overall |  1.01e+11   1.34e+11   3.91e+08   3.15e+12 |     N =    3537
+         between |             9.43e+10   2.04e+10   8.04e+11 |     n =     336
+         within  |             1.02e+11  -6.58e+11   2.92e+12 |     T = 10.5268
+                 |                                            |
+expen~in overall |  2.01e+11   1.96e+11   4.76e+09   3.58e+12 |     N =    3595
+         between |             1.45e+11   6.53e+10   1.52e+12 |     n =     336
+         within  |             1.41e+11  -6.78e+11   2.82e+12 |     T = 10.6994
+                 |                                            |
+ex~lture overall |  2.56e+10   3.16e+10          0   1.06e+12 |     N =    3526
+         between |             1.97e+10   2.86e+09   1.47e+11 |     n =     336
+         within  |             2.58e+10  -1.00e+11   9.78e+11 |     T =  10.494
+                 |                                            |
+expend~y overall |  1.49e+10   2.04e+10   1.59e+08   6.97e+11 |     N =    3530
+         between |             1.25e+10   2.48e+09   9.26e+10 |     n =     336
+         within  |             1.67e+10  -5.94e+10   6.38e+11 |     T =  10.506
+                 |                                            |
+expend~t overall |  2.37e+10   5.67e+10          0   1.52e+12 |     N =    5605
+         between |             3.63e+10   2.34e+09   5.32e+11 |     n =     336
+         within  |             4.28e+10  -4.92e+11   1.01e+12 | T-bar = 16.6815
+                 |                                            |
+expend~g overall |  1.11e+10   2.19e+10          0   2.87e+11 |     N =    2706
+         between |             1.30e+10   1.33e+08   1.01e+11 |     n =     336
+         within  |             1.73e+10  -7.18e+10   2.41e+11 |     T = 8.05357
+                 |                                            |
+ex~ction overall |  5.45e+09   7.82e+09          0   1.28e+11 |     N =    3141
+         between |             5.50e+09   2.09e+08   4.49e+10 |     n =     336
+         within  |             6.19e+09  -3.78e+10   1.09e+11 |     T = 9.34821
+                 |                                            |
+exp~gion overall |  1.63e+09   3.27e+09   2.01e+07   4.22e+10 |     N =     680
+         between |             2.47e+09   2.75e+07   3.10e+10 |     n =     313
+         within  |             1.51e+09  -1.89e+10   1.54e+10 |     T = 2.17252
+                 |                                            |
+expend~m overall |  7.64e+09   1.26e+10          0   3.60e+11 |     N =    5389
+         between |             6.66e+09   1.78e+08   6.23e+10 |     n =     336
+         within  |             1.07e+10  -5.09e+10   3.44e+11 | T-bar = 16.0387
+                 |                                            |
+~e_total overall |  9.94e+11   1.16e+12          0   1.13e+13 |     N =    8433
+         between |             5.60e+11   2.51e+11   4.11e+12 |     n =     336
+         within  |             1.01e+12  -3.07e+12   8.22e+12 | T-bar = 25.0982
+                 |                                            |
+revenu~u overall |  4.96e+11   5.24e+11          0   6.09e+12 |     N =    7729
+         between |             2.61e+11   1.16e+11   2.32e+12 |     n =     309
+         within  |             4.55e+11  -1.80e+12   5.84e+12 | T-bar = 25.0129
+                 |                                            |
+reven~ce overall |  1.22e+11   3.00e+11          0   5.38e+12 |     N =    8410
+         between |             1.73e+11   1.80e+10   1.65e+12 |     n =     336
+         within  |             2.43e+11  -1.44e+12   3.86e+12 | T-bar = 25.0298
+                 |                                            |
+revenu~r overall |  1.70e+11   2.72e+11          0   5.27e+12 |     N =    8384
+         between |             1.21e+11   1.81e+10   9.63e+11 |     n =     336
+         within  |             2.43e+11  -7.92e+11   4.69e+12 | T-bar = 24.9524
+                 |                                            |
+rev~ring overall |  1.13e+11   2.89e+11          0   5.10e+12 |     N =    8411
+         between |             2.32e+11   9.99e+09   2.47e+12 |     n =     336
+         within  |             1.82e+11  -2.27e+12   2.74e+12 | T-bar = 25.0327
+                 |                                            |
+r~sda_~l overall |  3.79e+10   1.73e+11          0   4.11e+12 |     N =    5302
+         between |             1.38e+11   1.84e+08   1.43e+12 |     n =     336
+         within  |             1.18e+11  -1.39e+12   2.72e+12 |     T = 15.7798
+                 |                                            |
+~x_total overall |  3.78e+10   7.62e+10          0   2.73e+12 |     N =    5400
+         between |             4.49e+10   7.75e+09   3.85e+11 |     n =     336
+         within  |             6.28e+10  -2.97e+11   2.38e+12 |     T = 16.0714
+                 |                                            |
+reven~il overall |  3.83e+10   1.63e+11          0   3.62e+12 |     N =    4020
+         between |             1.33e+11          0   1.68e+12 |     n =     336
+         within  |             7.99e+10  -8.51e+11   1.98e+12 | T-bar = 11.9643
+                 |                                            |
+revenu~s overall |  3.21e+10   1.41e+11          0   2.79e+12 |     N =    3634
+         between |             1.08e+11          0   1.41e+12 |     n =     336
+         within  |             7.32e+10  -1.31e+12   1.41e+12 | T-bar = 10.8155
+                 |                                            |
+rev~ning overall |  3.35e+10   1.25e+11          0   1.78e+12 |     N =    4312
+         between |             1.01e+11          0   9.48e+11 |     n =     336
+         within  |             6.88e+10  -7.61e+11   8.75e+11 | T-bar = 12.8333
+                 |                                            |
+reve~mal overall |  2.24e+09   1.32e+10          0   2.99e+11 |     N =    3019
+         between |             1.14e+10          0   1.70e+11 |     n =     336
+         within  |             5.53e+09  -8.02e+10   1.31e+11 | T-bar = 8.98512
+                 |                                            |
+reve~try overall |  2.87e+09   9.27e+09          0   1.45e+11 |     N =    4594
+         between |             7.60e+09          0   7.72e+10 |     n =     336
+         within  |             5.31e+09  -5.57e+10   9.16e+10 | T-bar = 13.6726
+                 |                                            |
+reve~ery overall |  6.47e+08   5.87e+08   6.99e+07   6.30e+09 |     N =    4643
+         between |             4.05e+08   4.28e+08   3.28e+09 |     n =     336
+         within  |             4.34e+08  -2.08e+09   3.67e+09 | T-bar = 13.8185
+                 |                                            |
+reven~me overall |  2.34e+10   3.78e+10   1.15e+09   3.94e+11 |     N =    2998
+         between |             3.58e+10   2.06e+09   2.86e+11 |     n =     336
+         within  |             1.18e+10  -1.03e+11   1.53e+11 | T-bar = 8.92262
+                 |                                            |
+reven~bb overall |  4.62e+10   1.06e+11   3.01e+09   1.55e+12 |     N =    2998
+         between |             9.65e+10   5.81e+09   1.02e+12 |     n =     336
+         within  |             4.68e+10  -7.09e+11   9.27e+11 | T-bar = 8.92262
+                 |                                            |
+reven~tb overall |  6.93e+08   4.22e+08   4.81e+08   3.85e+09 |     N =     323
+         between |             4.22e+08   4.81e+08   3.85e+09 |     n =     323
+         within  |                    0   6.93e+08   6.93e+08 |     T =       1
+                 |                                            |
+sch~mary overall |  494.9189   376.3398          2       2818 |     N =    2576
+         between |             360.0522     32.375       2591 |     n =     341
+         within  |             98.52534  -146.0811   1784.776 |     T = 7.55425
+                 |                                            |
+s~juni~y overall |   114.154   99.43164          3        959 |     N =    2571
+         between |             85.96347          8    588.125 |     n =     341
+         within  |             48.90066   -120.971    485.029 |     T = 7.53959
+                 |                                            |
+s~seni~y overall |  64.44374   65.05904          1        653 |     N =    2524
+         between |             52.04429   4.571429      334.5 |     n =     341
+         within  |             38.83742  -137.5563   387.5687 |     T = 7.40176
+                 |                                            |
+emp_to~l overall |  328227.9   303073.9      11258    2665025 |     N =    3787
+         between |               299519   13983.77    2270943 |     n =     299
+         within  |             45618.53  -278875.5   866851.5 | T-bar = 12.6656
+                 |                                            |
+emp_ag~e overall |  119089.4   107525.9        106     587546 |     N =    3777
+         between |             105356.1   809.4615   531605.3 |     n =     299
+         within  |             21665.73  -85745.55   267097.9 | T-bar = 12.6321
+                 |                                            |
+emp_in~y overall |  44245.16   74308.74          0     803022 |     N =    3691
+         between |             71958.38      571.5   654813.6 |     n =     299
+         within  |             16437.93  -170323.4   192453.6 | T-bar = 12.3445
+                 |                                            |
+emp_mi~g overall |  4895.603   9623.511          0     242311 |     N =    3211
+         between |             6659.462         88   78982.08 |     n =     299
+         within  |             6495.511  -22525.47   223909.8 | T-bar = 10.7391
+                 |                                            |
+emp_co~n overall |  21347.14   27924.43          0     521012 |     N =    3719
+         between |             24243.36      641.4   194735.7 |     n =     299
+         within  |             13696.25  -83875.63   425749.9 | T-bar = 12.4381
+                 |                                            |
+emp_ut~s overall |  2045.554   5538.813          0     128467 |     N =    2550
+         between |             2598.784    100.125   19690.22 |     n =     299
+         within  |             4905.154  -16970.67   110822.3 | T-bar = 8.52843
+                 |                                            |
+emp_tr~e overall |  71235.55   86002.23        173     884433 |     N =    3743
+         between |             82138.26   1532.444     588148 |     n =     299
+         within  |             24307.37    -277589   367520.5 | T-bar = 12.5184
+                 |                                            |
+emp_tr~t overall |  15677.13   20712.71         83     214546 |     N =    3717
+         between |              19758.7   424.0769   147348.3 |     n =     299
+         within  |              5604.98   -23254.1   82874.82 | T-bar = 12.4314
+                 |                                            |
+emp_fi~e overall |  7918.751   16541.24          0     341105 |     N =    3460
+         between |             12630.54       68.5   100807.6 |     n =     299
+         within  |             9973.411  -57145.17   248216.1 | T-bar = 11.5719
+                 |                                            |
+emp_so~s overall |  46471.11   49774.63          0     445052 |     N =    3746
+         between |              46972.5   4711.846   324824.9 |     n =     299
+         within  |             15401.73    -238478   166698.2 | T-bar = 12.5284
+                 |                                            |
+unempl~d overall |  22197.65   30060.43        159     348687 |     N =    3787
+         between |             28983.29       1113   230272.3 |     n =     299
+         within  |             7833.028   -59593.6   140612.4 | T-bar = 12.6656
+                 |                                            |
+undere~d overall |  105127.1   87826.22       2549     736546 |     N =    3788
+         between |             84674.29       4494   477866.5 |     n =     299
+         within  |             22980.34  -25281.28   382668.1 | T-bar = 12.6689
+                 |                                            |
+popula~n overall |  665803.3   636341.9      14055    6398000 |     N =   11875
+         between |             616658.6   27689.39    4358994 |     n =     341
+         within  |             168467.4    -889028    6239790 | T-bar =  34.824
+                 |                                            |
+povert~e overall |  14.61371   9.077936        .99      91.12 |     N =    6625
+         between |             7.734878     2.2715   45.06768 |     n =     341
+         within  |             4.896348  -8.140157   75.78471 | T-bar = 19.4282
+                 |                                            |
+litera~p overall |  91.63264   8.532239      16.04        100 |     N =    7802
+         between |             7.791131    39.4693   99.62328 |     n =     341
+         within  |             3.864681   66.37498   113.8728 | T-bar = 22.8798
+                 |                                            |
+morbid~e overall |  28.39137   8.157816   2.861383   67.75127 |     N =    7958
+         between |             5.533213   14.26133   50.09259 |     n =     341
+         within  |             5.987187   8.627172   69.16486 | T-bar = 23.3372
+                 |                                            |
+skille~e overall |  76.53377   22.25557   7.376059        100 |     N =    7957
+         between |             14.83217   31.04941   98.93866 |     n =     341
+         within  |             16.71806    .417819   139.4769 | T-bar = 23.3343
+                 |                                            |
+urban_~e overall |  42.71489   31.99535        .76        100 |     N =    1223
+         between |             31.73882   2.974561        100 |     n =     339
+         within  |             4.267894   22.28617    66.7597 |     T = 3.60767
+                 |                                            |
+rural_~e overall |   64.4229   27.26491        .52        100 |     N =    1135
+         between |             27.84159        .52        100 |     n =     315
+         within  |             4.419887   40.37808   84.85161 |     T = 3.60317
+                 |                                            |
+urban_~s overall |  41.78141   31.92363          0        100 |     N =    7967
+         between |             31.33527          0        100 |     n =     341
+         within  |             6.786798  -30.24834   101.0612 | T-bar = 23.3636
+                 |                                            |
+enr~mary overall |  93.77286   4.624239   30.60673        100 |     N =    7786
+         between |             3.485306   53.56788    97.4325 |     n =     341
+         within  |             3.294928    67.6366   117.3459 | T-bar = 22.8328
+                 |                                            |
+e~juni~y overall |  67.73231   13.43901   2.990454   99.93423 |     N =    7932
+         between |             8.992099    28.0108   82.84522 |     n =     341
+         within  |             10.10017  -.8407796   96.49218 | T-bar =  23.261
+                 |                                            |
+e~seni~y overall |  48.07377   17.80804        .54   91.78555 |     N =    7947
+         between |             11.23867   13.43068    76.8537 |     n =     341
+         within  |             13.88507  -13.21394   86.50656 | T-bar =  23.305
+                 |                                            |
+access~y overall |  87.42461   18.61851        .55        100 |     N =    7632
+         between |             14.52068    14.2307   99.84218 |     n =     341
+         within  |             12.25107   28.16806   133.7702 | T-bar = 22.3812
+                 |                                            |
+access~r overall |  55.42071   22.19943        .15        100 |     N =    7957
+         between |             17.18926   7.735691   99.05354 |     n =     341
+         within  |             14.34315  -1.872143   96.48349 | T-bar = 23.3343
+                 |                                            |
+access~n overall |  64.43735   18.49254       6.34   98.37591 |     N =    7971
+         between |             14.82081    19.6391   93.50438 |     n =     341
+         within  |             11.31478    16.3877   107.2738 | T-bar = 23.3754
+                 |                                            |
+access~e overall |  8.481488   11.23626        .01      69.16 |     N =    1849
+         between |             10.71644        .01   59.02009 |     n =     341
+         within  |             4.517894  -19.15453   39.66069 |     T = 5.42229
+                 |                                            |
+hh_exp~c overall |  508858.2   422404.3      27606    2717017 |     N =    7618
+         between |             192299.1     250625    1609606 |     n =     341
+         within  |               380808  -646845.1    1866553 | T-bar = 22.3402
+                 |                                            |
+hh_exp~u overall |  22115.82   24054.85        349   216184.5 |     N =    7618
+         between |             15617.67   6203.288   95294.25 |     n =     341
+         within  |             18656.78  -58795.42   143006.1 | T-bar = 22.3402
+                 |                                            |
+hh_exp~h overall |   13370.5   13793.16        142   121932.8 |     N =    7618
+         between |             6686.851   2750.892   44478.26 |     n =     341
+         within  |             12178.18  -26445.76   90825.06 | T-bar = 22.3402
+                 |                                            |
+hh_ex~20 overall |  219348.3     163839       9411   975925.2 |     N =    7618
+         between |             70518.35   122543.9   510578.5 |     n =     341
+         within  |             149332.7  -194202.3   841903.3 | T-bar = 22.3402
+
+. 
+. 
+. *--- STEP 7. components vs totals ------------------------------------------
+. quietly generate double _empsum = emp_agriculture + emp_industry + emp_mining + ///
+>     emp_construction + emp_utilities + emp_trade + emp_transport + ///
+>     emp_finance + emp_social_services
+
+. quietly generate double _empgap = 100*(_empsum - emp_total)/emp_total
+
+. summarize _empgap, detail
+
+                           _empgap
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0      -22.90039
+ 5%            0      -22.59268
+10%            0      -19.70891       Obs               2,296
+25%            0      -19.48532       Sum of wgt.       2,296
+
+50%            0                      Mean          -.0188254
+                        Largest       Std. dev.      1.581433
+75%            0       15.37223
+90%            0       17.39628       Variance        2.50093
+95%            0       20.41469       Skewness      -2.588862
+99%     .0785771       20.71777       Kurtosis       122.4918
+
+. 
+. * Revenue, WITHOUT the two central transfers. Expect roughly -72%: that gap is
+. * what DAU and DAK account for, and it is the reason these three must never be
+. * presented as a decomposition of total revenue on their own.
+. quietly generate double _revsum3 = revenue_own_source + revenue_sharing + revenue_other
+
+. quietly generate double _revgap3 = 100*(_revsum3 - revenue_total)/revenue_total
+
+. summarize _revgap3, detail
+
+                          _revgap3
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    -90.99657      -97.30372
+ 5%    -87.81131      -95.36708
+10%    -85.33678      -94.91588       Obs               8,373
+25%    -79.75717      -94.64054       Sum of wgt.       8,373
+
+50%    -71.26081                      Mean          -67.66363
+                        Largest       Std. dev.      16.79809
+75%    -59.98759              0
+90%    -45.01498              0       Variance        282.176
+95%    -32.50964              0       Skewness       1.264175
+99%    -12.78708       1.92e-14       Kurtosis       4.725273
+
+. 
+. * Revenue, WITH DAU and DAK. Expect roughly 0 - this is the real check.
+. quietly generate double _revsum = revenue_own_source + revenue_sharing + ///
+>     revenue_other + revenue_dau + revenue_dak
+
+. quietly generate double _revgap = 100*(_revsum - revenue_total)/revenue_total
+
+. summarize _revgap, detail
+
+                           _revgap
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    -5.43e-07      -40.61895
+ 5%            0      -5.877797
+10%            0      -.9064638       Obs               7,604
+25%            0      -.6794709       Sum of wgt.       7,604
+
+50%            0                      Mean          -.0044907
+                        Largest       Std. dev.      .4965442
+75%            0       .1112485
+90%            0       .2846547       Variance       .2465562
+95%            0       .4352123       Skewness      -69.41278
+99%     3.93e-07       13.73376       Kurtosis       5967.595
+
+. 
+. * how much of district revenue is a central transfer?
+. quietly generate double _dau_share = 100*revenue_dau/revenue_total
+
+. summarize _dau_share, detail
+
+                         _dau_share
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%      8.55055              0
+ 5%     20.53172              0
+10%     27.36968              0       Obs               7,724
+25%     44.19637              0       Sum of wgt.       7,724
+
+50%     56.35324                      Mean           54.54867
+                        Largest       Std. dev.      18.06581
+75%     68.01676       96.75335
+90%     76.08968       97.52296       Variance       326.3734
+95%     80.40968       98.79913       Skewness      -.5210119
+99%     88.15935       99.24181       Kurtosis       2.903894
+
+. 
+. quietly generate double _daksum = dak_education + dak_health + dak_infrastructure + ///
+>     dak_agriculture + dak_environment + dak_forestry + dak_fishery + ///
+>     dak_government + dak_demographic + dak_trade + dak_village
+
+. quietly generate double _dakgap = 100*(_daksum - revenue_dak)/revenue_dak
+
+. summarize _dakgap, detail
+
+                           _dakgap
+-------------------------------------------------------------
+no observations
+
+. drop _empsum _empgap _revsum3 _revgap3 _revsum _revgap _dau_share _daksum _dakgap
+
+. 
+. 
+. *--- STEP 8. collinearity among candidate predictors ------------------------
+. foreach v in population emp_total emp_industry revenue_total ///
+>              expenditure_education gdp_constant_sna08 gdp_manufacturing_sna08 {
+  2.     quietly generate double ln_`v' = ln(`v')
+  3. }
+
+. pwcorr ln_population ln_emp_total ln_emp_industry ln_revenue_total ///
+>        ln_expenditure_education ln_gdp_constant_sna08 ln_gdp_manufacturing_sna08 ///
+>        urban_share poverty_rate, obs
+
+             | ln_pop~n ln_emp~l ln_emp~y ln_rev~l ln_exp~n l~cons~8 l~manu~8
+-------------+---------------------------------------------------------------
+ln_populat~n |   1.0000 
+             |    11875
+             |
+ln_emp_total |   0.9904   1.0000 
+             |     3787     3787
+             |
+ln_emp_ind~y |   0.8380   0.8457   1.0000 
+             |     3690     3690     3690
+             |
+ln_revenue~l |   0.2837   0.5870   0.4490   1.0000 
+             |     8428     3782     3687     8428
+             |
+ln_expendi~n |   0.5209   0.5415   0.4628   0.7213   1.0000 
+             |     5853     3374     3299     5845     5853
+             |
+ln_gdp_co~08 |   0.7491   0.7320   0.6448   0.6773   0.4288   1.0000 
+             |     3712     2909     2861     3641     3133     3712
+             |
+ln_gdp_ma~08 |   0.6595   0.6381   0.6707   0.4631   0.3461   0.8537   1.0000 
+             |     3702     2904     2859     3633     3129     3702     3702
+             |
+ urban_share |  -0.0190  -0.0720   0.1951   0.0439  -0.0198   0.3058   0.3591 
+             |     1223      550      547     1149      726      634      634
+             |
+poverty_rate |  -0.0759  -0.0440  -0.1298  -0.2933  -0.2137  -0.3415  -0.4453 
+             |     6625     3782     3688     6362     5507     3682     3675
+             |
+
+             | urban_~e povert~e
+-------------+------------------
+ urban_share |   1.0000 
+             |     1223
+             |
+poverty_rate |  -0.4753   1.0000 
+             |      932     6625
+             |
+
+. 
+. 
+. *--- STEP 9. the outcome: SMK openings --------------------------------------
+. * present for the 321 districts that match the panel's year-2000 borders
+. codebook open_smk_total open_SMK_negeri open_SMK_swasta, compact
+
+Variable        Obs Unique      Mean  Min  Max  Label
+-----------------------------------------------------------------------------------------------------
+open_smk_t~l  11934     35  .9805597    0   41  New schools opened this year (from analysis_panel_...
+open_SMK_n~i  11934     13  .2423328    0   20  New schools opened this year (from analysis_panel_...
+open_SMK_s~a  11934     33  .7382269    0   41  New schools opened this year (from analysis_panel_...
+-----------------------------------------------------------------------------------------------------
+
+. summarize open_smk_total open_SMK_negeri open_SMK_swasta, detail
+
+             New schools opened this year (from
+                    analysis_panel_full)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%            0              0
+10%            0              0       Obs              11,934
+25%            0              0       Sum of wgt.      11,934
+
+50%            0                      Mean           .9805597
+                        Largest       Std. dev.      2.170235
+75%            1             33
+90%            3             35       Variance       4.709921
+95%            4             36       Skewness       5.998916
+99%           10             41       Kurtosis       62.21327
+
+             New schools opened this year (from
+                    analysis_panel_full)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%            0              0
+10%            0              0       Obs              11,934
+25%            0              0       Sum of wgt.      11,934
+
+50%            0                      Mean           .2423328
+                        Largest       Std. dev.       .705248
+75%            0              9
+90%            1             10       Variance       .4973748
+95%            1             11       Skewness       5.942598
+99%            3             20       Kurtosis       81.80788
+
+             New schools opened this year (from
+                    analysis_panel_full)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%            0              0
+10%            0              0       Obs              11,934
+25%            0              0       Sum of wgt.      11,934
+
+50%            0                      Mean           .7382269
+                        Largest       Std. dev.       1.97411
+75%            1             33
+90%            2             34       Variance       3.897111
+95%            4             35       Skewness       7.038829
+99%            9             41       Kurtosis       81.79473
+
+. xtsum  open_smk_total open_SMK_negeri open_SMK_swasta
+
+Variable         |      Mean   Std. dev.       Min        Max |    Observations
+-----------------+--------------------------------------------+----------------
+open_s~l overall |  .9805597   2.170235          0         41 |     N =   11934
+         between |               1.0688   .0434783   8.842105 |     n =     341
+         within  |             1.885013  -7.861546   38.45424 | T-bar = 34.9971
+                 |                                            |
+open_S~i overall |  .2423328    .705248          0         20 |     N =   11934
+         between |             .1980826          0   1.945946 |     n =     341
+         within  |             .6773611  -1.703613   18.29639 | T-bar = 34.9971
+                 |                                            |
+open_S~a overall |  .7382269    1.97411          0         41 |     N =   11934
+         between |             1.031015          0   8.552632 |     n =     341
+         within  |             1.679712  -7.814405    38.6856 | T-bar = 34.9971
+
+. 
+. * how many district-years are actually usable
+. count if !missing(open_smk_total)
+  11,934
+
+. quietly levelsof unit if !missing(open_smk_total), local(HAVE)
+
+. display "districts with opening data: " `: word count `HAVE''
+districts with opening data: 341
+
+. 
+. * openings by year - shows the policy expansion
+. preserve
+
+.     collapse (sum) open_smk_total open_SMK_negeri open_SMK_swasta, by(year)
+
+.     list, noobs
+
+  +---------------------------------------+
+  | year   open_s~l   open_S~i   open_S~a |
+  |---------------------------------------|
+  | 1983         40          6         34 |
+  | 1984         66         13         53 |
+  | 1985         84         11         73 |
+  | 1986        117          8        109 |
+  | 1987        101          7         94 |
+  |---------------------------------------|
+  | 1988        120         11        109 |
+  | 1989        146         17        129 |
+  | 1990        110         12         98 |
+  | 1991         77          7         70 |
+  | 1992         64          9         55 |
+  |---------------------------------------|
+  | 1993         86         12         74 |
+  | 1994         86         13         73 |
+  | 1995         73          7         66 |
+  | 1996        112          6        106 |
+  | 1997        178         41        137 |
+  |---------------------------------------|
+  | 1998        176         10        166 |
+  | 1999        156         24        132 |
+  | 2000        204         28        176 |
+  | 2001        173         15        158 |
+  | 2002        195         36        159 |
+  |---------------------------------------|
+  | 2003        279        146        133 |
+  | 2004        431        251        180 |
+  | 2005        291        146        145 |
+  | 2006        292        101        191 |
+  | 2007        561        206        355 |
+  |---------------------------------------|
+  | 2008        662        198        464 |
+  | 2009        669        202        467 |
+  | 2010        669        188        481 |
+  | 2011        738        154        584 |
+  | 2012        831        200        631 |
+  |---------------------------------------|
+  | 2013        836        204        632 |
+  | 2014        775        175        600 |
+  | 2015        730        144        586 |
+  | 2016        695        127        568 |
+  | 2017        275         49        226 |
+  |---------------------------------------|
+  | 2018        219         27        192 |
+  | 2019        191         48        143 |
+  | 2020        194         33        161 |
+  +---------------------------------------+
+
+. restore
+
+. 
+. log close
+      name:  <unnamed>
+       log:  C:\Users\HP\Documents\UIII\Research Project\Pak Siro - MORA\data\DAPOER\descriptive_chec
+> k.log
+  log type:  text
+ closed on:   5 Aug 2026, 16:39:42
+-----------------------------------------------------------------------------------------------------

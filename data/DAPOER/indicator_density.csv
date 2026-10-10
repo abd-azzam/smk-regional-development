@@ -1,0 +1,275 @@
+﻿code,name,districts,provinces,obs,year_min,year_max,yrs_per_district,verdict
+SP.POP.TOTL,"Population, total",514,34,15748,1983,2020,30.6,PANEL
+REV.DAU.CR,Total General Allocation Grant/DAU (in IDR),508,34,11888,1994,2020,23.4,PANEL
+REV.OSRV.CR,Total Own Source Revenue/PAD (in IDR),508,34,11864,1994,2020,23.4,PANEL
+REV.RV.SHR.CR,Total Revenue Sharing,508,34,11866,1994,2020,23.4,PANEL
+REV.TOTL.CR,Total Revenue (in IDR),508,34,11894,1994,2020,23.4,PANEL
+REV.OTHR.CR,Total Other Revenue (in IDR),508,34,11810,1994,2020,23.2,PANEL
+REV.DAK.CR,Total Special Allocation Grant/DAK (in IDR),508,34,11694,1994,2020,23.0,PANEL
+HOU.STA.ACSN.ZS,Household Access to safe Sanitation (in % of total Household),514,34,11387,1996,2020,22.2,PANEL
+HOU.H2O.ACSN.ZS,Household Access to Safe Water (in % of total household),514,34,11370,1996,2020,22.1,PANEL
+SE.JRSEC.NENR.ZS,Net Enrollment Ratio: Junior Secondary (in %),514,34,11364,1996,2020,22.1,PANEL
+SE.LITR.15UP.ZS,Literacy Rate for Population age 15 and over (in % of total population),514,34,11364,1996,2020,22.1,PANEL
+SE.PRM.NENR.ZS,Net Enrollment Ratio: Primary (in %),514,34,11365,1996,2020,22.1,PANEL
+SE.SRSEC.NENR.ZS,Net Enrollment Ratio: Senior Secondary (in %),514,34,11355,1996,2020,22.1,PANEL
+SH.MORB.ZS,Morbidity Rate (in %),514,34,11366,1996,2020,22.1,PANEL
+SH.STA.BRTC.ZS,Births attended by skilled health staff (% of total),514,34,11365,1996,2020,22.1,PANEL
+HOU.ELC.ACSN.ZS,Household Access to Electricity: Total (in % of total household),514,34,10921,1996,2020,21.2,PANEL
+HOU.XPD.EDU.PC.CR,Monthly Per Capita Household Education Expenditure (in IDR),514,34,10875,1996,2020,21.2,PANEL
+HOU.XPD.HE.PC.CR,Monthly Per Capita Household Health Expenditure (in IDR),514,34,10875,1996,2020,21.2,PANEL
+HOU.XPD.PC.CR,Household per capita expenditure (in IDR),514,34,10880,1993,2020,21.2,PANEL
+HOU.XPD.TOTL.20POOR.CR,Monthly Per Capita TOTAL Household Expenditure for The Poorest 20 percent (in IDR),514,34,10875,1996,2020,21.2,PANEL
+SP.URB.TOTL.ZS.SUS,"Percentage of Population in Urban Areas (in % of Total Population), SUSENAS",514,0,10586,1996,2020,20.6,PANEL
+SI.POV.BPL,Number of people live below the poverty line (in number of people),514,34,9856,1999,2020,19.2,PANEL
+SI.POV.NGAP,Poverty Gap (index),514,34,9862,1999,2020,19.2,PANEL
+SI.POV.NAPR.ZS,Poverty Rate (in % of population),514,34,9830,1999,2020,19.1,PANEL
+EC.XPD.GSR.CR,Goods and services expenditure (in IDR),508,34,9351,2001,2020,18.4,PANEL
+EC.XPD.STAF.CR,Personnel expenditure (in IDR),508,34,9368,2001,2020,18.4,PANEL
+EC.XPD.OTHR.CR,Others expenditure (in IDR),508,34,9308,2001,2020,18.3,PANEL
+EC.XPD.TOTL.CR,Total Expenditure (in IDR),508,34,9306,2001,2020,18.3,PANEL
+EC.XPD.CAP.CR,Capital expenditure (in IDR),508,34,9121,2001,2020,18.0,PANEL
+FC.XPD.EDU.CR,Education function expenditure (in IDR),508,34,8851,2001,2020,17.4,PANEL
+FC.XPD.HE.CR,Health function expenditure (in IDR),508,34,8847,2001,2020,17.4,PANEL
+FC.XPD.ENVR.CR,Environment function expenditure (in IDR),508,34,8509,2001,2020,16.8,PANEL
+SH.IMM.CHLD.ZS,Immunization Coverage for Children under 5 years old (in % of children population under 5 years old),514,34,8357,1996,2017,16.3,PANEL
+SI.POV.NAPL,Poverty Line (in IDR),514,34,8307,2004,2020,16.2,PANEL
+FC.XPD.TOUR.CR,Tourism and culture function expenditure (in IDR),508,34,8222,2001,2020,16.2,PANEL
+SI.POV.GINI,Gini index,514,0,8051,2003,2020,15.7,PANEL
+NA.GDP.INC.OG.KR,"Total GDP including Oil and Gas (in IDR Million), Constant Price",497,33,7657,1976,2013,15.4,PANEL
+NA.GDP.EXC.OG.KR,"Total GDP excluding Oil and Gas (in IDR Million), Constant Price",497,33,7498,1976,2013,15.1,PANEL
+NA.GDP.AGR.KR,"GDP on Agriculture Sector (in IDR Million), Constant Price",511,33,7672,1976,2013,15.0,PANEL
+NA.GDP.CNST.KR,"GDP on Construction Sector (in IDR Million), Constant Price",511,33,7672,1976,2013,15.0,PANEL
+NA.GDP.FINS.KR,"GDP on Financial Service Sector (in IDR Million), Constant Price",511,33,7672,1976,2013,15.0,PANEL
+NA.GDP.MNF.KR,"GDP on Manufacturing Sector (in IDR Million), Constant Price",511,33,7653,1976,2013,15.0,PANEL
+NA.GDP.SRV.OTHR.KR,"GDP on Other Service Sector (in IDR Million), Constant Price",511,33,7672,1976,2013,15.0,PANEL
+NA.GDP.TRAN.COMM.KR,"GDP on Transportation and Telecommunication Sector (in IDR Million), Constant Price",511,33,7672,1976,2013,15.0,PANEL
+NA.GDP.TRD.HTL.KR,"GDP on Trade, Hotel and Restaurant Sector (in IDR Million), Constant Price",511,33,7672,1976,2013,15.0,PANEL
+BPK.AUD.SUBN,BPK Audit Report on Sub-National Budget,508,34,7644,2005,2019,15.0,PANEL
+NA.GDP.UTL.KR,"GDP on Utilities Sector (in IDR Million), Constant Price",511,33,7627,1976,2013,14.9,PANEL
+FC.XPD.PUBL.CR,"Public, law and order function expenditure (in IDR)",508,34,7496,2001,2020,14.8,PANEL
+NA.GDP.MINQ.KR,"GDP on Mining and Quarrying Sector (in IDR Million), Constant Price",511,33,7440,1976,2013,14.6,PANEL
+REV.TXRV.SHR.CR,Total Tax Revenue Sharing/DBH Pajak (in IDR),491,33,7013,1994,2011,14.3,PANEL
+NRRV.SHR.FRST.CR,"Total Natural Resources Revenue Sharing from Forestry (in IDR, realization value)",508,34,7157,2005,2020,14.1,PANEL
+NA.GDP.EXC.OG.CR,"Total GDP excluding Oil and Gas (in IDR Million), Current Price",497,33,6999,2000,2013,14.1,PANEL
+NA.GDP.INC.OG.CR,"Total GDP including Oil and Gas (in IDR Million), Current Price",497,33,7032,2000,2013,14.1,PANEL
+REV.NRRV.SHR.CR,Total Natural Resource Revenue Sharing/DBH SDA (in IDR),491,33,6874,1994,2011,14.0,PANEL
+NRRV.SHR.FSH.CR,"Total Natural Resources Revenue Sharing from Fishery (in IDR, realization value)",508,34,7067,2005,2020,13.9,PANEL
+NA.GDP.AGR.CR,"GDP on Agriculture Sector (in IDR Million), Current Price",511,33,7047,2000,2013,13.8,PANEL
+NA.GDP.CNST.CR,"GDP on Construction Sector (in IDR Million), Current Price",511,33,7047,2000,2013,13.8,PANEL
+NA.GDP.FINS.CR,"GDP on Financial Service Sector (in IDR Million), Current Price",511,33,7047,2000,2013,13.8,PANEL
+NA.GDP.MNF.CR,"GDP on Manufacturing Sector (in IDR Million), Current Price",511,33,7028,2000,2013,13.8,PANEL
+NA.GDP.SRV.OTHR.CR,"GDP on Other Service Sector (in IDR Million), Current Price",511,33,7047,2000,2013,13.8,PANEL
+NA.GDP.TRAN.COMM.CR,"GDP on Transportation and Telecommunication Sector (in IDR Million), Current Price",511,33,7047,2000,2013,13.8,PANEL
+NA.GDP.TRD.HTL.CR,"GDP on Trade, Hotel and Restaurant Sector (in IDR Million), Current Price",511,33,7047,2000,2013,13.8,PANEL
+NA.GDP.UTL.CR,"GDP on Utilities Sector (in IDR Million), Current Price",511,33,7002,2000,2013,13.7,PANEL
+SL.EMP.AGR.FRST.FSH,"Number of people employed in agriculture, forestry and fishery",514,34,6978,2001,2020,13.6,PANEL
+SL.EMP.TOTL,Number of people employed,514,34,7003,2001,2020,13.6,PANEL
+SL.EMP.UNDR,Number of people underemployed,514,34,7004,2001,2020,13.6,PANEL
+SL.TLF,Number of people in labor force,514,34,7004,2001,2020,13.6,PANEL
+SL.UEM.TOTL,Number of people unemployed,514,34,6999,2001,2020,13.6,PANEL
+SL.EMP.SOCL,Number of people employed in social services sector,514,34,6918,2001,2020,13.5,PANEL
+SL.EMP.CNST,Number of people employed in construction sector,514,34,6864,2001,2020,13.4,PANEL
+SL.EMP.TRAD,"Number of people employed in trade, hotel and restaurant sector",514,34,6906,2001,2020,13.4,PANEL
+SL.EMP.TRAN,Number of people employed in transportation and telecommunication sector,514,34,6867,2001,2020,13.4,PANEL
+NA.GDP.MINQ.CR,"GDP on Mining and Quarrying Sector (in IDR Million), Current Price",511,33,6839,2000,2013,13.4,PANEL
+NRRV.SHR.MIN.CR,"Total Natural Resources Revenue Sharing from Mining (in IDR, realization value)",508,34,6805,2005,2020,13.4,PANEL
+SL.EMP.IND,Number of people employed in industrial sector,514,34,6813,2001,2020,13.3,PANEL
+SL.EMP.FINS,Number of people employed in financial services sector,514,34,6472,2001,2020,12.6,PANEL
+NRRV.SHR.PETR.CR,"Total Natural Resources Revenue Sharing from Oil (in IDR, realization value)",508,34,6189,2005,2020,12.2,PANEL
+SL.EMP.MINQ,Number of people employed in mining and quarrying sector,514,34,6149,2001,2020,12.0,PANEL
+NA.GDP.AGR.SNA08.CR,"GDP on Agriculture, Forestry & Fisheries Sector (in IDR Million), SNA 2008, Current Price",514,34,5941,2010,2020,11.6,PANEL
+NA.GDP.AGR.SNA08.KR,"GDP on Agriculture, Forestry & Fisheries Sector (in IDR Million), SNA 2008, Constant Price",514,34,5941,2010,2020,11.6,PANEL
+NA.GDP.CNST.SNA08.CR,"GDP on Construction Sector (in IDR Million), SNA 2008, Current Price",514,34,5941,2010,2020,11.6,PANEL
+NA.GDP.CNST.SNA08.KR,"GDP on Construction Sector (in IDR Million), SNA 2008, Constant Price",514,34,5941,2010,2020,11.6,PANEL
+NA.GDP.EDUS.SNA08.CR,"GDP on Education Services Sector (in IDR Million), SNA 2008, Current Price",514,34,5941,2010,2020,11.6,PANEL
+NA.GDP.EDUS.SNA08.KR,"GDP on Education Services Sector (in IDR Million), SNA 2008, Constant Price",514,34,5941,2010,2020,11.6,PANEL
+NA.GDP.HLTH.SOCW.SNA08.CR,"GDP on Human Health & Social Work Activity Sector (in IDR Million), SNA 2008, Current Price",514,34,5941,2010,2020,11.6,PANEL
+NA.GDP.HLTH.SOCW.SNA08.KR,"GDP on Human Health & Social Work Activity Sector (in IDR Million), SNA 2008, Constant Price",514,34,5941,2010,2020,11.6,PANEL
+NA.GDP.INC.OG.SNA08.CR,"Total GDP including Oil and Gas (in IDR Million), SNA 2008, Current Price",514,34,5941,2010,2020,11.6,PANEL
+NA.GDP.INC.OG.SNA08.KR,"Total GDP including Oil and Gas (in IDR Million), SNA 2008, Constant Price",514,34,5941,2010,2020,11.6,PANEL
+NA.GDP.PADM.DEF.SNA08.CR,"GDP on Public Administration, Defense & Compulsory Social Security Sector (in IDR Million), SNA 2008, Current ",514,34,5941,2010,2020,11.6,PANEL
+NA.GDP.PADM.DEF.SNA08.KR,"GDP on Public Administration, Defense & Compulsory Social Security Sector (in IDR Million), SNA 2008, Constant",514,34,5939,2010,2020,11.6,PANEL
+NA.GDP.REST.SNA08.CR,"GDP on Real Estate Sector (in IDR Million), SNA 2008, Current Price",514,34,5941,2010,2020,11.6,PANEL
+NA.GDP.REST.SNA08.KR,"GDP on Real Estate Sector (in IDR Million), SNA 2008, Constant Price",514,34,5941,2010,2020,11.6,PANEL
+NA.GDP.SRV.OTHR.SNA08.CR,"GDP on Other Services Sector (in IDR Million), SNA 2008, Current Price",514,34,5941,2010,2020,11.6,PANEL
+NA.GDP.SRV.OTHR.SNA08.KR,"GDP on Other Services Sector (in IDR Million), SNA 2008, Constant Price",514,34,5941,2010,2020,11.6,PANEL
+NA.GDP.TRAN.STOR.SNA08.CR,"GDP on Transportation & Storage Sector (in IDR Million), SNA 2008, Current Price",514,34,5939,2010,2020,11.6,PANEL
+NA.GDP.TRAN.STOR.SNA08.KR,"GDP on Transportation & Storage Sector (in IDR Million), SNA 2008, Constant Price",514,34,5939,2010,2020,11.6,PANEL
+NA.GDP.TRD.SNA08.CR,"GDP on Wholesales & Retail Trade, Repair of Motor Vehicles & Motorcycles Sector (in IDR Million), SNA 2008, Cu",514,34,5941,2010,2020,11.6,PANEL
+NA.GDP.TRD.SNA08.KR,"GDP on Wholesales & Retail Trade, Repair of Motor Vehicles & Motorcycles Sector (in IDR Million), SNA 2008, Co",514,34,5941,2010,2020,11.6,PANEL
+NA.GDP.WTR.WST.SNA08.CR,"GDP on Water Supply, Sewerage, Waste & Recycling Management Sector (in IDR Million), SNA 2008, Current Price",498,34,5757,2010,2020,11.6,PANEL
+NA.GDP.WTR.WST.SNA08.KR,"GDP on Water Supply, Sewerage, Waste & Recycling Management Sector (in IDR Million), SNA 2008, Constant Price",498,34,5757,2010,2020,11.6,PANEL
+NA.GDP.MINQ.SNA08.CR,"GDP on Mining & Quarrying Sector (in IDR Million), SNA 2008, Current Price",490,34,5671,2010,2020,11.6,PANEL
+NA.GDP.MINQ.SNA08.KR,"GDP on Mining & Quarrying Sector (in IDR Million), SNA 2008, Constant Price",490,34,5671,2010,2020,11.6,PANEL
+NA.GDP.ACC.FB.SNA08.CR,"GDP on Accommodation & Food Beverages Activity Sector (in IDR Million), SNA 2008, Current Price",514,34,5930,2010,2020,11.5,PANEL
+NA.GDP.ACC.FB.SNA08.KR,"GDP on Accommodation & Food Beverages Activity Sector (in IDR Million), SNA 2008, Constant Price",514,34,5930,2010,2020,11.5,PANEL
+NA.GDP.MNF.SNA08.CR,"GDP on Manufacturing Industry Sector (in IDR Million), SNA 2008, Current Price",514,34,5931,2010,2020,11.5,PANEL
+NA.GDP.MNF.SNA08.KR,"GDP on Manufacturing Industry Sector (in IDR Million), SNA 2008, Constant Price",514,34,5931,2010,2020,11.5,PANEL
+NA.GDP.INF.COMM.SNA08.CR,"GDP on Information & Communication Sector (in IDR Million), SNA 2008, Current Price",513,34,5916,2010,2020,11.5,PANEL
+NA.GDP.INF.COMM.SNA08.KR,"GDP on Information & Communication Sector (in IDR Million), SNA 2008, Constant Price",513,34,5916,2010,2020,11.5,PANEL
+NA.GDP.BUSS.SNA08.CR,"GDP on Business Services Sector (in IDR Million), SNA 2008, Current Price",512,34,5907,2010,2020,11.5,PANEL
+NA.GDP.BUSS.SNA08.KR,"GDP on Business Services Sector (in IDR Million), SNA 2008, Constant Price",512,34,5903,2010,2020,11.5,PANEL
+NA.GDP.FINS.SNA08.CR,"GDP on Financial & Insurance Activity Sector (in IDR Million), SNA 2008, Current Price",510,34,5881,2010,2020,11.5,PANEL
+NA.GDP.FINS.SNA08.KR,"GDP on Financial & Insurance Activity Sector (in IDR Million), SNA 2008, Constant Price",510,34,5881,2010,2020,11.5,PANEL
+NA.GDP.ELEC.GAS.SNA08.CR,"GDP on Electricity & Gas Supply Sector (in IDR Million), SNA 2008, Current Price",508,34,5863,2010,2020,11.5,PANEL
+NA.GDP.ELEC.GAS.SNA08.KR,"GDP on Electricity & Gas Supply Sector (in IDR Million), SNA 2008, Constant Price",508,34,5863,2010,2020,11.5,PANEL
+IDX.HDI,Human Development Index,511,33,5802,1996,2013,11.4,PANEL
+NRRV.SHR.GAS.CR,"Total Natural Resources Revenue Sharing from Gas (in IDR, realization value)",508,34,5710,2005,2020,11.2,PANEL
+IDX.HDI.REV,"Human Development Index, revised method",514,34,5410,2010,2019,10.5,PANEL
+FC.XPD.ADMN.CR,General administration function expenditure (in IDR),491,33,5110,2001,2012,10.4,PANEL
+FC.XPD.AGR.CR,Agriculture function expenditure (in IDR),491,33,5010,2001,2012,10.2,PANEL
+FC.XPD.ECON.CR,Economy function expenditure (in IDR),491,33,5014,2001,2012,10.2,PANEL
+FC.XPD.INFR.CR,Infrastructure function expenditure (in IDR),491,33,5025,2001,2012,10.2,PANEL
+SL.EMP.ELC,Number of people employed in electricity and utilities sector,514,34,5060,2001,2020,9.8,THIN
+NRRV.SHR.GEOT.CR,"Total Natural Resources Revenue Sharing from Geothermal  Energy (in IDR, realization value)",508,34,4864,2009,2020,9.6,THIN
+TXRV.SHR.INCM.CR,"Total Tax Revenue Sharing from income tax (PPh) (in IDR, realization value)",508,34,4839,2012,2020,9.5,THIN
+TXRV.SHR.LAND.CR,"Total Tax Revenue Sharing from land and building tax (PBB) (in IDR, realization value)",508,34,4839,2012,2020,9.5,THIN
+FC.XPD.PROT.CR,Social protection function expenditure (in IDR),491,33,4554,2001,2012,9.3,THIN
+LND.TOTL.K2,Total Area (in Km²),477,33,4288,2000,2009,9.0,THIN
+FC.XPD.HOUS.CR,Housing and public facilities function expenditure (in IDR),491,33,3908,2001,2012,8.0,THIN
+ROD.VILG.ASPH.ZS,Villages with road: Asphalt (in % of total villages),514,34,3628,1996,2018,7.1,THIN
+SE.SCHL.JRSEC,Number of schools at Junior Secondary Level,514,34,3669,1996,2018,7.1,THIN
+SE.SCHL.PRM,Number of schools at Primary Level,514,34,3674,1996,2018,7.1,THIN
+SE.SCHL.SRSEC,Number of schools at Senior Secondary level,514,34,3618,1996,2018,7.0,THIN
+SH.POLINDES.TOTL,Number of Polindes (Poliklinik Desa/Village Polyclinic),514,34,3501,1996,2018,6.8,THIN
+ROD.VILG.GRAVL.ZS,Villages with road: Gravel (in % of total villages),514,34,3338,1996,2018,6.5,THIN
+SH.DR.TOTL,Number of Doctors,514,34,3327,1996,2018,6.5,THIN
+SH.MED.MWIV.TOTL,Number of Midwives,514,34,3327,1996,2018,6.5,THIN
+SI.POV.NSEV,Poverty Severity (index),514,34,3213,2015,2020,6.3,THIN
+SH.PUSKESMAS.TOTL,Number of Puskesmas and its line services,514,34,3176,1996,2018,6.2,THIN
+ROD.VILG.DIRT.ZS,Villages with road: Dirt (in % of total villages),514,34,3130,1996,2018,6.1,THIN
+DAK.INFR.CR,Total Specific Allocation Grant for Infrastructure (in IDR Billion),459,27,2797,2003,2009,6.1,THIN
+DAK.INFR.ROD.CR,Total Specific Allocation Grant for Infrastructure Sector (Subsect: Road) (in IDR Billion),459,26,2735,2003,2009,6.0,THIN
+DAK.EDU.CR,Total Specific Allocation Grant for Education (in IDR Billion),451,0,2691,2003,2009,6.0,THIN
+SH.HOSP.TOTL,Number of hospitals,514,34,3036,1996,2018,5.9,THIN
+DAK.HE.CR,Total Specific Allocation Grant for Health (in IDR Billion),462,21,2685,2003,2009,5.8,THIN
+HOU.MLT.MAIN.ZS,Household Access to Fixed Line Phone Connection (in % of total Household),469,33,2468,1996,2011,5.3,THIN
+DAK.INFR.IRIG.CR,Total Specific Allocation Grant for Infrastructure Sector (Subsect: Irrigation) (in IDR Billion),424,26,2173,2003,2009,5.1,THIN
+DAK.FSH.CR,Total Specific Allocation Grant for Fishery (in IDR Billion),458,0,2187,2004,2009,4.8,THIN
+DAK.INFR.H2O.CR,Total Specific Allocation Grant for Infrastructure Sector (Subsect: Water) (in IDR Billion),459,0,2007,2005,2009,4.4,THIN
+DAK.AGR.CR,Total Specific Allocation Grant for Agriculture (in IDR Billion),457,0,1829,2005,2009,4.0,THIN
+SP.URB.TOTL.ZS,Percentage of Population in Urban Areas (in % of Total Population),477,33,1880,2000,2011,3.9,THIN
+SP.RUR.TOTL.ZS,Rural population (% of total population),468,32,1829,2000,2011,3.9,THIN
+ROD.VILG.OTHR.ZS,Villages with road: Other (in % of total villages),514,34,1876,1996,2018,3.6,THIN
+DAK.ENVR.CR,Total Specific Allocation Grant for Environment (in IDR Billion),460,0,1614,2006,2009,3.5,THIN
+ROD.DIST.GOOD.BM.KM,Length of District Road: Good (in km) (Bina Marga Data),433,32,1301,1999,2008,3.0,THIN
+ROD.DIST.LDMG.BM.KM,Length of District Road: Light Damage (in km) (Bina Marga Data),432,32,1298,1999,2008,3.0,THIN
+SP.POP.0014.TO,"Population ages 0-14, total",497,33,970,2005,2010,2.0,THIN
+SP.POP.1564.TO,"Population ages 15-64, total",497,33,970,2005,2010,2.0,THIN
+SP.POP.65UP.TO,"Population ages 65 and above, total",497,33,967,2005,2010,1.9,THIN
+SE.TCHR.PRM,"Number of Teacher: Primary Level (in number of people, 2009 data only)",471,33,504,2009,2009,1.1,THIN
+SE.TCHR.JRSEC,"Number of Teacher: Junior Secondary Level (in number of people, 2009 data only)",470,33,503,2009,2009,1.1,THIN
+SE.TCHR.SRSEC,"Number of Teacher: Senior Secondary Level (in number of people, 2009 data only)",469,33,502,2009,2009,1.1,THIN
+SE.STUD.PRM,"Number of Student: Primary Level (in number of people, 2009 data only)",462,33,495,2009,2009,1.1,THIN
+SE.STUD.JRSEC,"Number of Student: Junior Secondary Level (in number of people, 2009 data only)",456,33,489,2009,2009,1.1,THIN
+SE.STUD.SRSEC,"Number of Student: Senior Secondary Level (in number of people, 2009 data only)",453,33,486,2009,2009,1.1,THIN
+SE.NEXM.SCR.SRSEC,"Average National Exam Score: Senior Secondary Level (out of 100, available only at district level)",491,0,491,2009,2009,1.0,THIN
+TXRV.SHR.ACQ.CR,"Total Tax Revenue Sharing from duty on the acquisition of land and building rights (BPHTB) (in IDR, realizatio",491,3,494,2012,2012,1.0,THIN
+SE.NEXM.SCR.JRSEC,"Average National Exam Score: Junior Secondary Level (out of 100, available only at district level)",479,0,479,2009,2009,1.0,THIN
+SE.NEXM.SCR.PRM,"Average National Exam Score: Primary Level (out of 100, available only at district level)",471,0,471,2009,2009,1.0,THIN
+DAK.HE.BSRV.CR,Total Specific Allocation Grant for Health Sector (Subsect: Basic Services) (in IDR Billion),431,0,431,2009,2009,1.0,THIN
+PALM.LND.TOTL,Palm Oil Land Area: Total (in Hectares),201,22,2119,1996,2010,10.5,SPARSE
+PALM.LND.MTR,Palm Oil Land Area by type of condition: Mature (in Hectares),186,22,1916,1996,2010,10.3,SPARSE
+PALM.LND.IMM,Palm Oil Land Area by type of condition: Immature (in Hectares),200,22,2032,1996,2010,10.2,SPARSE
+PALM.PRD.TOTL,Palm Production: Total (in Tons),185,22,1844,1996,2010,10.0,SPARSE
+PALM.LND.SMHD,Palm Oil Land Area by type of ownership: Smallholder (in Hectares),191,22,1874,1996,2010,9.8,SPARSE
+PALM.PRD.SMHD,Palm Production by type of ownership: Smallholder (in Tons),174,21,1653,1996,2010,9.5,SPARSE
+PALM.LND.SOE,Palm Oil Land Area by type of ownership: State Owned Enterprise (in Hectares),56,19,473,1996,2010,8.4,SPARSE
+PALM.YLD.SMHD,Palm Oil Yield by type of ownership: Smallholder (in Kg/Ha),161,20,1300,1996,2008,8.1,SPARSE
+PALM.PRD.SOE,Palm Production by type of ownership: State Owned Enterprise (in Tons),53,18,426,1996,2010,8.0,SPARSE
+EP.CPI.1996,Consumer Price Index in 42 cities base 1996,42,0,336,1996,2003,8.0,SPARSE
+EP.CPI.2007,Consumer Price Index in 66 cities base 2007,70,0,490,2007,2013,7.0,SPARSE
+EP.CPI.2012,Consumer Price Index in 82 cities base 2012,87,0,604,2013,2019,6.9,SPARSE
+PALM.PRD.PRVT,Palm Production by type of ownership: Private (in Tons),125,22,801,1996,2010,6.4,SPARSE
+PALM.LND.DMG,Palm Oil Land Area by type of condition: Damaged (in Hectares),145,22,865,2001,2010,6.0,SPARSE
+PALM.LND.PRVT,Palm Oil Land Area by type of ownership: Private (in Hectares),141,22,853,1996,2010,6.0,SPARSE
+EP.CPI.2002,Consumer Price Index in 45 cities base 2002,50,0,300,2002,2007,6.0,SPARSE
+PALM.YLD.SOE,Palm Oil Yield by type of ownership: State Owned Enterprise (in Kg/Ha),49,18,284,1996,2008,5.8,SPARSE
+PALM.YLD.PRVT,Palm Oil Yield by type of ownership: Private (in Kg/Ha),112,22,514,1996,2008,4.6,SPARSE
+ROD.DIST.FAIR.BM.KM,Length of District Road: Fair (in km) (Bina Marga Data),393,32,1256,1999,2008,3.2,SPARSE
+ROD.DIST.BDMG.BM.KM,Length of District Road: Bad Damage (in km) (Bina Marga Data),360,32,1148,1999,2008,3.2,SPARSE
+DAK.GOVT.CR,Total Specific Allocation Grant for Government Sector (in IDR Billion),235,4,616,2003,2009,2.6,SPARSE
+FC.XPD.RELG.CR,Religious function expenditure (in IDR),332,26,784,2001,2004,2.4,SPARSE
+DAK.POP.CR,Total Specific Allocation Grant for Demographic (in IDR Billion),379,0,652,2008,2009,1.7,SPARSE
+DAK.FRST.CR,Total Specific Allocation Grant for Forestry (in IDR Billion),155,0,200,2008,2009,1.3,SPARSE
+DAK.HE.RSRV.CR,Total Specific Allocation Grant for Health Sector (Subsect: Recommended Services) (in IDR Billion),224,21,245,2009,2009,1.1,SPARSE
+DAK.TRAD.CR,Total Specific Allocation Grant for Trade (in IDR Billion),240,0,240,2009,2009,1.0,SPARSE
+DAK.VILG.CR,Total Specific Allocation Grant for Village (in IDR Billion),110,0,110,2009,2009,1.0,SPARSE
+EP.CPI.2018,Consumer Price Index in 90 cities base 2018,90,0,90,2020,2020,1.0,SPARSE
+FN.CRED.AGR.TOTL,"Total Credit by Sector: Agriculture (province level, in IDR Million)",0,33,330,2000,2009,0.0,PROVINCE
+FN.CRED.BUS.TOTL,"Total Credit by Sector: Business (province level, in IDR Million)",0,33,330,2000,2009,0.0,PROVINCE
+FN.CRED.CNSP.TOTL,"Total Credit by Utilization: Consumption (province level, in IDR Million)",0,33,330,2000,2009,0.0,PROVINCE
+FN.CRED.CNST.TOTL,"Total Credit by Sector: Construction (province level, in IDR Million)",0,33,330,2000,2009,0.0,PROVINCE
+FN.CRED.INVS.TOTL,"Total credit by Utilization: Investment (province level, in IDR Million)",0,33,330,2000,2009,0.0,PROVINCE
+FN.CRED.MINQ.TOTL,"Total Credit by Sector: Mining and Quarrying (province level, in IDR Million)",0,32,299,2000,2009,0.0,PROVINCE
+FN.CRED.MNF.TOTL,"Total Credit by Sector: Manufacture (province level, in IDR Million)",0,33,329,2000,2009,0.0,PROVINCE
+FN.CRED.SRV.OTHR.TOTL,"Total Credit by Sector: Other Services (province level, in IDR Million)",0,33,330,2000,2009,0.0,PROVINCE
+FN.CRED.SRV.SOCL.TOTL,"Total Credit by Sector: Social Services (province level, in IDR Million)",0,33,329,2000,2009,0.0,PROVINCE
+FN.CRED.TRAD.TOTL,"Total Credit by Sector: Trade (province level, in IDR Million)",0,33,330,2000,2009,0.0,PROVINCE
+FN.CRED.TRAN.TOTL,"Total Credit by Sector: Transportation (province level, in IDR Million)",0,33,330,2000,2009,0.0,PROVINCE
+FN.CRED.UTL.TOTL,"Total Credit by Sector: Utilities (province level, in IDR Million)",0,32,262,2000,2009,0.0,PROVINCE
+FN.CRED.WCAP.TOTL,"Total Credit by Utilization: Working Capital (province level, in IDR Million)",0,33,330,2000,2009,0.0,PROVINCE
+FN.DPST.TOTL,"Total Deposits (province level, in IDR Million)",0,33,330,2000,2009,0.0,PROVINCE
+FN.LOAN.CBK.TOTL,"Total Commercial and Rural Banks Loans Rupiah and Foreign Currency (province level, in IDR Million)",0,33,320,2002,2011,0.0,PROVINCE
+NE.GDI.CON.GOVT.CR,GDP expenditure on general government consumption (in IDR Million),0,33,635,1993,2013,0.0,PROVINCE
+NE.GDI.CON.GOVT.SNA08.CR,"GDP expenditure on general government consumption (in IDR Million), SNA 2008, Current Price",0,34,306,2010,2018,0.0,PROVINCE
+NE.GDI.CON.NPI.CR,GDP expenditure on non profit private institution consumption (in IDR Million),0,33,620,1993,2013,0.0,PROVINCE
+NE.GDI.CON.NPI.SNA08.CR,"GDP expenditure on non profit private institution consumption (in IDR Million), SNA 2008, Current Price",0,34,289,2010,2018,0.0,PROVINCE
+NE.GDI.CON.PRVT.CR,GDP expenditure on private consumption (in IDR Million),0,33,620,1993,2013,0.0,PROVINCE
+NE.GDI.CON.PRVT.SNA08.CR,"GDP expenditure on private consumption (in IDR Million), SNA 2008, Current Price",0,33,297,2010,2018,0.0,PROVINCE
+NE.GDI.EXPT.CR,GDP expenditure on exports (in IDR Million),0,33,635,1993,2013,0.0,PROVINCE
+NE.GDI.EXPT.SNA08.CR,"GDP expenditure on exports (in IDR Million), SNA 2008, Current Price",0,34,306,2010,2018,0.0,PROVINCE
+NE.GDI.FTOT.CR,GDP expenditure on gross fixed capital formation (in IDR Million),0,33,635,1993,2013,0.0,PROVINCE
+NE.GDI.FTOT.SNA08.CR,"GDP expenditure on gross fixed capital formation (in IDR Million), SNA 2008, Current Price",0,34,306,2010,2018,0.0,PROVINCE
+NE.GDI.IMPT.CR,GDP expenditure on imports (in IDR Million),0,33,635,1993,2013,0.0,PROVINCE
+NE.GDI.IMPT.SNA08.CR,"GDP expenditure on imports (in IDR Million), SNA 2008, Current Price",0,34,306,2010,2018,0.0,PROVINCE
+NE.GDI.INEX.SNA08.CR,"GDP expenditure on inter-region net exports (in IDR Million), SNA 2008, Current Price",0,33,297,2010,2018,0.0,PROVINCE
+NE.GDI.STKB.CR,GDP expenditure on changes in stock (in IDR Million),0,33,635,1993,2013,0.0,PROVINCE
+NE.GDI.STKB.SNA08.CR,"GDP expenditure on changes in stock (in IDR Million), SNA 2008, Current Price",0,34,306,2010,2018,0.0,PROVINCE
+NE.GDI.TOTL.CR,Total GDP based on expenditure (in IDR Million),0,33,878,1983,2013,0.0,PROVINCE
+NE.GDI.TOTL.SNA08.CR,"Total GDP based on expenditure (in IDR Million), SNA 2008, Current Price",0,34,306,2010,2018,0.0,PROVINCE
+RES.DPST.CBK,"Outstanding Deposits of Commercial Banks owned by Regional Government (Province Level, in IDR Million)",0,29,145,2002,2006,0.0,PROVINCE
+ROD.DIST.ASPH.KM,"Length of District Road: Asphalt (in km) (BPS Data, Province only)",0,32,232,2001,2008,0.0,PROVINCE
+ROD.DIST.BDMG.KM,"Length of District Road: Bad Damage (in km) (BPS Data, Province only)",0,32,216,2001,2008,0.0,PROVINCE
+ROD.DIST.DIRT.KM,"Length of District Road: Dirt (in km) (BPS Data, Province only)",0,32,225,2001,2008,0.0,PROVINCE
+ROD.DIST.FAIR.KM,"Length of District Road: Fair (in km) (BPS Data, Province only)",0,32,229,2001,2008,0.0,PROVINCE
+ROD.DIST.GOOD.KM,"Length of District Road: Good (in km) (BPS Data, Province only)",0,32,232,2001,2008,0.0,PROVINCE
+ROD.DIST.GRAVL.KM,"Length of District Road: Gravel (in km) (BPS Data, Province only)",0,32,229,2001,2008,0.0,PROVINCE
+ROD.DIST.LDMG.KM,"Length of District Road: Light Damage (in km) (BPS Data, Province only)",0,32,224,2001,2008,0.0,PROVINCE
+ROD.DIST.OTHR.KM,"Length of District Road: Other (in km) (BPS Data, Province only)",0,32,202,2001,2008,0.0,PROVINCE
+ROD.NATL.ASPH.KM,"Length of National Road: Asphalt (in km) (BPS Data, Province only)",0,32,235,2001,2008,0.0,PROVINCE
+ROD.NATL.BDMG.KM,"Length of National Road: Bad Damage (in km) (BPS Data, Province only)",0,29,132,2001,2008,0.0,PROVINCE
+ROD.NATL.DIRT.KM,"Length of National Road: Dirt (in km) (BPS Data, Province only)",0,7,18,2001,2003,0.0,PROVINCE
+ROD.NATL.FAIR.KM,"Length of National Road: Fair (in km) (BPS Data, Province only)",0,31,218,2001,2008,0.0,PROVINCE
+ROD.NATL.GOOD.KM,"Length of National Road: Good (in km) (BPS Data, Province only)",0,32,234,2001,2008,0.0,PROVINCE
+ROD.NATL.GRAVL.KM,"Length of National Road: Gravel (in km) (BPS Data, Province only)",0,32,170,2001,2008,0.0,PROVINCE
+ROD.NATL.LDMG.KM,"Length of National Road: Light Damage (in km) (BPS Data, Province only)",0,30,188,2001,2008,0.0,PROVINCE
+ROD.NATL.OTHR.KM,"Length of National Road: Other (in km) (BPS Data, Province only)",0,6,7,2001,2003,0.0,PROVINCE
+ROD.PROV.ASPH.KM,"Length of Province Road: Asphalt (in km) (BPS Data, Province only)",0,33,234,2001,2008,0.0,PROVINCE
+ROD.PROV.BDMG.KM,"Length of Province Road: Bad Damage (in km) (BPS Data, Province only)",0,33,197,2001,2008,0.0,PROVINCE
+ROD.PROV.DIRT.KM,"Length of Province Road: Dirt (in km) (BPS Data, Province only)",0,32,186,2001,2008,0.0,PROVINCE
+ROD.PROV.FAIR.KM,"Length of Province Road: Fair (in km) (BPS Data, Province only)",0,33,220,2001,2008,0.0,PROVINCE
+ROD.PROV.GOOD.KM,"Length of Province Road: Good (in km) (BPS Data, Province only)",0,33,230,2001,2008,0.0,PROVINCE
+ROD.PROV.GRAVL.KM,"Length of Province Road: Gravel (in km) (BPS Data, Province only)",0,32,209,2001,2008,0.0,PROVINCE
+ROD.PROV.LDMG.KM,"Length of Province Road: Light Damage (in km) (BPS Data, Province only)",0,33,220,2001,2008,0.0,PROVINCE
+ROD.PROV.OTHR.KM,"Length of Province Road: Other (in km) (BPS Data, Province only)",0,32,129,2001,2008,0.0,PROVINCE
+TRAD.EXPT.BVTO,"Export: Beverages and tobacco (province Level, in USD)",0,24,182,1998,2009,0.0,PROVINCE
+TRAD.EXPT.CHEM,"Export: Chemical and related products, nes (province Level, in USD)",0,26,260,1998,2009,0.0,PROVINCE
+TRAD.EXPT.CRUD,"Export: Crude materials, inedible, except fuels (province Level, in USD)",0,26,308,1998,2009,0.0,PROVINCE
+TRAD.EXPT.FLVSK,"Export: Food and Live Animals (province Level, in USD)",0,26,310,1998,2009,0.0,PROVINCE
+TRAD.EXPT.FUEL,"Export: Mineral fuels, lubricants and related materials (province Level, in USD)",0,24,240,1998,2009,0.0,PROVINCE
+TRAD.EXPT.MANF,"Export: Manufactured goods, classified chiefly by material (province Level, in USD)",0,26,303,1998,2009,0.0,PROVINCE
+TRAD.EXPT.MANF.OTHR,"Export: Miscellaneous manufactures articles (province Level, in USD)",0,26,286,1998,2009,0.0,PROVINCE
+TRAD.EXPT.MTRN,"Export: Machinery and transport equipment (province Level, in USD)",0,26,277,1998,2009,0.0,PROVINCE
+TRAD.EXPT.OLFTW,"Export: Animals and vegetable oil, fat and waxes (province Level, in USD)",0,26,245,1998,2009,0.0,PROVINCE
+TRAD.EXPT.OTHR,"Export: Commodities and transaction not elsewhere classified (province Level, in USD)",0,26,145,1998,2009,0.0,PROVINCE
+TRAD.IMPT.BVTO,"Import: Beverages and tobacco (province Level, in USD)",0,21,143,1998,2009,0.0,PROVINCE
+TRAD.IMPT.CHEM,"Import: Chemical and related products, nes (province Level, in USD)",0,25,285,1998,2009,0.0,PROVINCE
+TRAD.IMPT.CRUD,"Import: Crude materials, inedible, except fuels (province Level, in USD)",0,25,268,1998,2009,0.0,PROVINCE
+TRAD.IMPT.FLVSK,"Import: Food and Live Animals (province Level, in USD)",0,25,267,1998,2009,0.0,PROVINCE
+TRAD.IMPT.FUEL,"Import: Mineral fuels, lubricants and related materials (province Level, in USD)",0,25,253,1998,2009,0.0,PROVINCE
+TRAD.IMPT.MANF,"Import: Manufactured goods, classified chiefly by material (province Level, in USD)",0,25,293,1998,2009,0.0,PROVINCE
+TRAD.IMPT.MANF.OTHR,"Import: Miscellaneous manufactures articles (province Level, in USD)",0,25,281,1998,2009,0.0,PROVINCE
+TRAD.IMPT.MTRN,"Import: Machinery and transport equipment (province Level, in USD)",0,25,271,1999,2009,0.0,PROVINCE
+TRAD.IMPT.OLFTW,"Import: Animals and vegetable oil, fat and waxes (province Level, in USD)",0,23,176,1998,2009,0.0,PROVINCE
+TRAD.IMPT.OTHR,"Import: Commodities and transaction not elsewhere classified (province Level, in USD)",0,13,71,1999,2009,0.0,PROVINCE

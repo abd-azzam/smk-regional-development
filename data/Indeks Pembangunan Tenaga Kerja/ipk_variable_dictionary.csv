@@ -1,0 +1,69 @@
+column,type,label_indonesian,main_group,main_indicator_weight,subindicator_weight_within_main,actual_unit,criterion_min,criterion_max,preferred_direction,note
+province_code_bps,identifier,Kode provinsi BPS,metadata,,,text,,,,Two-digit legacy province code for the 34-province geography used in these publications.
+province,identifier,Provinsi,metadata,,,text,,,,Standardized province name.
+year,time,Tahun data,metadata,,,year,,,,"Measurement year, not publication year."
+publication_year,source_metadata,Tahun publikasi,metadata,,,year,,,,Publication edition selected for this row.
+rank_within_year,derived,Peringkat IPK dalam tahun,metadata,,,rank,,,lower,Derived from ipk_composite across the 34 provinces; rank 1 is highest.
+ipk_status,derived,Status IPK,metadata,,,category,,,,Derived using official thresholds in Kepmenaker 206/2017.
+source_file,source_metadata,Nama berkas sumber,metadata,,,text,,,,Attached PDF used for the selected row.
+source_pdf_page,source_metadata,Halaman PDF sumber,metadata,,,PDF page,,,,One-based PDF page number containing the province table.
+ipk_composite,composite_index,Indeks Pembangunan Ketenagakerjaan,all_nine_main_indicators,,,index points,,,higher,"Sum of the nine main indicator indices; status thresholds: <50 Rendah, 50-65.99 Menengah Bawah, 66-79.99 Menengah Atas, >=80 Tinggi."
+idx_labor_planning,main_index,Perencanaan Tenaga Kerja,labor_planning,10,,index points,,,higher,
+idx_provincial_labor_plan,sub_index,Perencanaan Tenaga Kerja Provinsi,labor_planning,10,100,index points,0,100,higher,
+actual_provincial_labor_plan,actual_value,Perencanaan Tenaga Kerja Provinsi,labor_planning,10,100,%,0,100,higher,
+idx_population_and_labor,main_index,Penduduk dan Tenaga Kerja,population_and_labor,10,,index points,,,higher,
+idx_neet_15_24,sub_index,Persentase NEET (15-24 tahun),population_and_labor,10,20,index points,3,40,lower,
+actual_neet_15_24,actual_value,Persentase NEET (15-24 tahun),population_and_labor,10,20,%,3,40,lower,
+idx_working_children_10_17,sub_index,Persentase Anak yang Bekerja (10-17 tahun),population_and_labor,10,20,index points,0,40,lower,
+actual_working_children_10_17,actual_value,Persentase Anak yang Bekerja (10-17 tahun),population_and_labor,10,20,%,0,40,lower,
+idx_open_unemployment_rate,sub_index,Tingkat Penganggur Terbuka (TPT),population_and_labor,10,30,index points,3,15,lower,
+actual_open_unemployment_rate,actual_value,Tingkat Penganggur Terbuka (TPT),population_and_labor,10,30,%,3,15,lower,
+idx_underemployment_rate,sub_index,Persentase Setengah Pengangguran,population_and_labor,10,30,index points,0,15,lower,
+actual_underemployment_rate,actual_value,Persentase Setengah Pengangguran,population_and_labor,10,30,%,0,15,lower,
+idx_job_opportunity,main_index,Kesempatan Kerja,job_opportunity,15,,index points,,,higher,
+idx_formal_workers,sub_index,Persentase Tenaga Kerja Formal,job_opportunity,15,40,index points,20,55,higher,
+actual_formal_workers,actual_value,Persentase Tenaga Kerja Formal,job_opportunity,15,40,%,20,55,higher,
+idx_informal_non_agriculture,sub_index,Proporsi Lapangan Pekerjaan Informal Nonpertanian (LPINP),job_opportunity,15,20,index points,30,85,lower,
+actual_informal_non_agriculture,actual_value,Proporsi Lapangan Pekerjaan Informal Nonpertanian (LPINP),job_opportunity,15,20,%,30,85,lower,
+idx_informal_non_agriculture_male,sub_index,Proporsi LPINP untuk Laki-laki,job_opportunity,15,15,index points,30,85,lower,
+actual_informal_non_agriculture_male,actual_value,Proporsi LPINP untuk Laki-laki,job_opportunity,15,15,%,30,85,lower,
+idx_informal_non_agriculture_female,sub_index,Proporsi LPINP untuk Perempuan,job_opportunity,15,15,index points,30,85,lower,
+actual_informal_non_agriculture_female,actual_value,Proporsi LPINP untuk Perempuan,job_opportunity,15,15,%,30,85,lower,
+idx_informal_agriculture,sub_index,Proporsi Lapangan Pekerjaan Informal Pertanian (LPIP),job_opportunity,15,20,index points,75,100,lower,
+actual_informal_agriculture,actual_value,Proporsi Lapangan Pekerjaan Informal Pertanian (LPIP),job_opportunity,15,20,%,75,100,lower,
+idx_training_and_competency,main_index,Pelatihan dan Kompetensi Kerja,training_and_competency,15,,index points,,,higher,
+idx_training_capacity,sub_index,Tingkat Kapasitas Pelatihan Kerja,training_and_competency,15,30,index points,0,10,higher,
+actual_training_capacity,actual_value,Tingkat Kapasitas Pelatihan Kerja,training_and_competency,15,30,%,0,10,higher,
+idx_training_graduates,sub_index,Tingkat Lulusan Pelatihan Kerja,training_and_competency,15,40,index points,0,10,higher,"This is training-program graduation, not SMK school graduation."
+actual_training_graduates,actual_value,Tingkat Lulusan Pelatihan Kerja,training_and_competency,15,40,%,0,10,higher,"This is training-program graduation, not SMK school graduation."
+idx_accredited_training_institutions,sub_index,Tingkat Lembaga Latihan yang Terakreditasi,training_and_competency,15,30,index points,0,100,higher,
+actual_accredited_training_institutions,actual_value,Tingkat Lembaga Latihan yang Terakreditasi,training_and_competency,15,30,%,0,100,higher,
+idx_labor_productivity,main_index,Produktivitas Tenaga Kerja,labor_productivity,10,,index points,,,higher,
+idx_labor_productivity_level,sub_index,Tingkat Produktivitas Tenaga Kerja,labor_productivity,10,60,index points,25,100,higher,
+actual_labor_productivity_level,actual_value,Tingkat Produktivitas Tenaga Kerja,labor_productivity,10,60,Juta rupiah per tenaga kerja,25,100,higher,
+idx_grdp_growth_per_worker,sub_index,Laju Pertumbuhan PDRB per Tenaga Kerja,labor_productivity,10,40,index points,0.1,10,higher,
+actual_grdp_growth_per_worker,actual_value,Laju Pertumbuhan PDRB per Tenaga Kerja,labor_productivity,10,40,%,0.1,10,higher,
+idx_industrial_relations,main_index,Hubungan Industrial,industrial_relations,10,,index points,,,higher,
+idx_approved_company_regulations,sub_index,Tingkat Peraturan Perusahaan (PP) yang Disahkan,industrial_relations,10,30,index points,0,100,higher,
+actual_approved_company_regulations,actual_value,Tingkat Peraturan Perusahaan (PP) yang Disahkan,industrial_relations,10,30,%,0,100,higher,
+idx_registered_collective_agreements,sub_index,Tingkat Perjanjian Kerja Bersama (PKB) yang Didaftarkan,industrial_relations,10,25,index points,0,100,higher,
+actual_registered_collective_agreements,actual_value,Tingkat Perjanjian Kerja Bersama (PKB) yang Didaftarkan,industrial_relations,10,25,%,0,100,higher,
+idx_bipartite_cooperation_in_companies,sub_index,Tingkat Lembaga Kerja Sama (LKS) Bipartit di Perusahaan,industrial_relations,10,20,index points,0,100,higher,
+actual_bipartite_cooperation_in_companies,actual_value,Tingkat Lembaga Kerja Sama (LKS) Bipartit di Perusahaan,industrial_relations,10,20,%,0,100,higher,
+idx_industrial_disputes,sub_index,Tingkat Perselisihan Hubungan Industrial,industrial_relations,10,25,index points,0,10,lower,
+actual_industrial_disputes,actual_value,Tingkat Perselisihan Hubungan Industrial,industrial_relations,10,25,%,0,10,lower,
+idx_work_environment_conditions,main_index,Kondisi Lingkungan Kerja,work_environment_conditions,10,,index points,,,higher,
+idx_smk3_implementation,sub_index,Tingkat Penerapan SMK3 di Perusahaan,work_environment_conditions,10,40,index points,10,30,higher,"SMK3 means Sistem Manajemen Keselamatan dan Kesehatan Kerja, not Sekolah Menengah Kejuruan."
+actual_smk3_implementation,actual_value,Tingkat Penerapan SMK3 di Perusahaan,work_environment_conditions,10,40,%,10,30,higher,"SMK3 means Sistem Manajemen Keselamatan dan Kesehatan Kerja, not Sekolah Menengah Kejuruan."
+idx_work_accident_rate,sub_index,Tingkat Kecelakaan Kerja,work_environment_conditions,10,30,index points,0,1,lower,
+actual_work_accident_rate,actual_value,Tingkat Kecelakaan Kerja,work_environment_conditions,10,30,%,0,1,lower,
+idx_mandatory_employment_reporting_compliance,sub_index,Tingkat Kepatuhan Wajib Lapor Ketenagakerjaan di Perusahaan,work_environment_conditions,10,30,index points,0,75,higher,
+actual_mandatory_employment_reporting_compliance,actual_value,Tingkat Kepatuhan Wajib Lapor Ketenagakerjaan di Perusahaan,work_environment_conditions,10,30,%,0,75,higher,
+idx_wages_and_worker_welfare,main_index,Pengupahan dan Kesejahteraan Pekerja,wages_and_worker_welfare,10,,index points,,,higher,
+idx_hourly_wage_to_ump,sub_index,Proporsi Besaran Upah Rata-rata per Jam terhadap UMP per Jam,wages_and_worker_welfare,10,100,index points,0,120,higher,
+actual_hourly_wage_to_ump,actual_value,Proporsi Besaran Upah Rata-rata per Jam terhadap UMP per Jam,wages_and_worker_welfare,10,100,%,0,120,higher,
+idx_labor_social_security,main_index,Jaminan Sosial Tenaga Kerja,labor_social_security,10,,index points,,,higher,
+idx_companies_in_bpjs_employment,sub_index,Tingkat Perusahaan yang Menjadi Peserta BPJS Ketenagakerjaan,labor_social_security,10,40,index points,0,15,higher,
+actual_companies_in_bpjs_employment,actual_value,Tingkat Perusahaan yang Menjadi Peserta BPJS Ketenagakerjaan,labor_social_security,10,40,%,0,15,higher,
+idx_workers_in_bpjs_employment,sub_index,Tingkat Pekerja/Buruh/Karyawan yang Menjadi Peserta BPJS Ketenagakerjaan,labor_social_security,10,60,index points,0,20,higher,
+actual_workers_in_bpjs_employment,actual_value,Tingkat Pekerja/Buruh/Karyawan yang Menjadi Peserta BPJS Ketenagakerjaan,labor_social_security,10,60,%,0,20,higher,

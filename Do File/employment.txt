@@ -1,0 +1,20 @@
+	(1)	(2)
+VARIABLES	Model 1	Model 2
+		
+smk_per_100k	-2,671	-478.1
+	(2,354)	(2,085)
+urban_share		62,968***
+		(9,621)
+poverty_rate		58.89
+		(345.9)
+literacy_15up		290.5
+		(399.2)
+ln_pop		53,818***
+		(6,242)
+Constant	48,538***	-717,897***
+	(8,024)	(104,821)
+		
+Observations	339	339
+R-squared	0.002	0.518
+Robust standard errors in parentheses		
+*** p<0.01, ** p<0.05, * p<0.1		

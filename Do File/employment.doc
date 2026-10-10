@@ -1,0 +1,28 @@
+{\rtf1\fs24
+\trowd\trgaph75\trleft-75\intbl\trqc\clbrdrt\brdrs\cellx2016\clbrdrt\brdrs\cellx3456\clbrdrt\brdrs\cellx5184
+\ql \cell\qc (1)\cell\qc (2)\cell\row
+\trowd\trgaph75\trleft-75\trqc\cellx2016\cellx3456\cellx5184
+\trowd\trgaph75\trleft-75\trqc\clbrdrb\brdrs\cellx2016\clbrdrb\brdrs\cellx3456\clbrdrb\brdrs\cellx5184
+\ql VARIABLES\cell\qc Model 1\cell\qc Model 2\cell\row
+\trowd\trgaph75\trleft-75\trqc\cellx2016\cellx3456\cellx5184
+\ql \cell\qc \cell\qc \cell\row
+\ql smk_per_100k\cell\qc -2,671\cell\qc -478.1\cell\row
+\ql \cell\qc (2,354)\cell\qc (2,085)\cell\row
+\ql urban_share\cell\qc \cell\qc 62,968***\cell\row
+\ql \cell\qc \cell\qc (9,621)\cell\row
+\ql poverty_rate\cell\qc \cell\qc 58.89\cell\row
+\ql \cell\qc \cell\qc (345.9)\cell\row
+\ql literacy_15up\cell\qc \cell\qc 290.5\cell\row
+\ql \cell\qc \cell\qc (399.2)\cell\row
+\ql ln_pop\cell\qc \cell\qc 53,818***\cell\row
+\ql \cell\qc \cell\qc (6,242)\cell\row
+\ql Constant\cell\qc 48,538***\cell\qc -717,897***\cell\row
+\ql \cell\qc (8,024)\cell\qc (104,821)\cell\row
+\ql \cell\qc \cell\qc \cell\row
+\ql Observations\cell\qc 339\cell\qc 339\cell\row
+\trowd\trgaph75\trleft-75\trqc\trbrdrb\brdrs\clbrdrb\brdrs\cellx2016\clbrdrb\brdrs\cellx3456\clbrdrb\brdrs\cellx5184
+\ql R-squared\cell\qc 0.002\cell\qc 0.518\cell\row
+\pard\qc
+Robust standard errors in parentheses\par
+*** p<0.01, ** p<0.05, * p<0.1\par
+}

@@ -1,0 +1,1367 @@
+-----------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\Users\HP\Documents\UIII\Research Project\Pak Siro - MORA\data\DAPOER\smk_openings_mod
+> els.log
+  log type:  text
+ opened on:   6 Aug 2026, 07:42:55
+
+. 
+. use "dapoer_wide.dta", clear
+
+. 
+. * ---- GUARD: dapoer_wide.dta is a GENERATED file on constant year-2000 borders
+. * (341 units). This do-file NEVER saves. If a check fails, rebuild it with
+. *     python build_dapoer_2000borders.py
+. quietly count if missing(unit)
+
+. if r(N) > 0 | _N == 0 {
+.     display as error "STOP: no `unit' column. Rebuild dapoer_wide.dta."
+.     exit 459
+. }
+
+. quietly summarize unit, meanonly
+
+. if r(N) == 0 {
+.     display as error "STOP: dapoer_wide.dta looks wrong. Rebuild from the build script."
+.     exit 459
+. }
+
+. capture confirm variable ln_population
+
+. if !_rc {
+.     display as error "STOP: ln_* scratch variables are baked into the file. Rebuild."
+.     exit 459
+. }
+
+. quietly summarize dak_education, meanonly
+
+. if r(max) > 1e15 & !missing(r(max)) {
+.     display as error "STOP: dak_education looks rescaled twice. Rebuild."
+.     exit 459
+. }
+
+. 
+. xtset unit year
+
+Panel variable: unit (unbalanced)
+ Time variable: year, 1983 to 2020, but with gaps
+         Delta: 1 unit
+
+. 
+. *=============================================================================
+. * 1. BUILD THE ANALYSIS VARIABLES
+. *=============================================================================
+. 
+. * --- labour demand. Use the SHARE, not the headcount: ln(emp_industry) and
+. *     ln(population) correlate 0.86, so the headcount is largely a size proxy.
+. generate double emp_share_industry = 100 * emp_industry / emp_total
+(8,354 missing values generated)
+
+. label var emp_share_industry "Industry share of employment (%)"
+
+. 
+. generate double emp_share_agri = 100 * emp_agriculture / emp_total
+(8,269 missing values generated)
+
+. label var emp_share_agri "Agriculture share of employment (%)"
+
+. 
+. * --- manufacturing intensity of output (SNA-2008 series only, 2010 onward)
+. generate double mfg_share_gdp = 100 * gdp_manufacturing_sna08 / gdp_constant_sna08
+(8,343 missing values generated)
+
+. label var mfg_share_gdp "Manufacturing share of GDP (%)"
+
+. 
+. * --- fiscal capacity, per capita. Nominal IDR is fine here ONLY because i.year
+. *     absorbs the common inflation path; the cross-district comparison is what
+. *     identifies the coefficient. Do not read these as real values.
+. generate double rev_pc = revenue_total / population
+(3,612 missing values generated)
+
+. generate double edu_pc = expenditure_education / population
+(6,187 missing values generated)
+
+. generate double ln_rev_pc = ln(rev_pc)
+(3,617 missing values generated)
+
+. generate double ln_edu_pc = ln(edu_pc)
+(6,192 missing values generated)
+
+. label var ln_rev_pc "ln total revenue per capita (nominal)"
+
+. label var ln_edu_pc "ln education spending per capita (nominal)"
+
+. 
+. * --- fiscal COMPOSITION, not level. DAU is the general allocation grant and is
+. *     about two thirds of a district budget, so ln(dau_pc) would be almost the
+. *     same variable as ln_rev_pc. Use shares instead: they say where the money
+. *     comes from without repeating how much of it there is.
+. *     dau_share  = dependence on central transfers
+. *     osr_share  = local tax effort / fiscal autonomy
+. * --- resource dependence. The closest thing this data has to an "extractive"
+. *     measure: revenue that arrives from natural-resource rents rather than from
+. *     taxing residents. Read the caveat in section 3b before using it.
+. generate double res_share = 100 * revenue_dbh_sda_total / revenue_total
+(6,748 missing values generated)
+
+. label var res_share "Natural-resource revenue as % of total revenue"
+
+. 
+. generate double dau_share = 100 * revenue_dau / revenue_total
+(4,321 missing values generated)
+
+. generate double osr_share = 100 * revenue_own_source / revenue_total
+(3,640 missing values generated)
+
+. label var dau_share "DAU as % of total revenue (central transfer dependence)"
+
+. label var osr_share "Own-source revenue as % of total (local tax effort)"
+
+. 
+. * --- urbanisation. Use SUSENAS: urban_share has only ~1,700 observations.
+. *     The 0-1 to 0-100 rescale now happens in the build script, not here.
+. generate double urban_pct = urban_share_susenas
+(4,078 missing values generated)
+
+. label var urban_pct "Urban share of population (%), SUSENAS"
+
+. 
+. * --- feeder pipeline: you cannot fill an SMK without SMP graduates
+. label var enrollment_junior_secondary "Net enrolment ratio, junior secondary (%)"
+
+. 
+. * --- rates above 100 are already set to missing by the build script. Assert
+. *     that rather than assume it: a failure here means a stale dapoer_wide.
+. foreach v in enrollment_junior_secondary enrollment_senior_secondary ///
+>              literacy_15up poverty_rate urban_pct {
+  2.     quietly count if `v' > 100 & !missing(`v')
+  3.     if r(N) > 0 {
+  4.         display as error "STOP: `v' still has " r(N) " values above 100. Rebuild from CSV."
+  5.         exit 459
+  6.     }
+  7. }
+
+. 
+. *=============================================================================
+. * 2. DEFINE THE SAMPLE
+. *
+. * Main sample ends in 2016. Law 23/2014 moved authority over senior secondary
+. * schools from districts to provinces with effect from 2016-17, and the opening
+. * counts collapse from 672 (2016) to 263 (2017). After that the district is no
+. * longer the body deciding to open a school, so a district-level determinants
+. * model is answering a different question. Full sample is run as robustness.
+. *=============================================================================
+. 
+. generate byte insample = !missing(open_smk_total) & inrange(year, 1996, 2016)
+
+. label var insample "Main estimation window"
+
+. 
+. tabulate year if insample & !missing(open_smk_total)
+
+       Year |      Freq.     Percent        Cum.
+------------+-----------------------------------
+       1996 |        312        4.44        4.44
+       1997 |        294        4.19        8.63
+       1998 |        296        4.22       12.85
+       1999 |        338        4.81       17.66
+       2000 |        338        4.81       22.48
+       2001 |        338        4.81       27.29
+       2002 |        338        4.81       32.11
+       2003 |        339        4.83       36.94
+       2004 |        340        4.84       41.78
+       2005 |        340        4.84       46.62
+       2006 |        340        4.84       51.47
+       2007 |        340        4.84       56.31
+       2008 |        340        4.84       61.15
+       2009 |        340        4.84       66.00
+       2010 |        341        4.86       70.85
+       2011 |        341        4.86       75.71
+       2012 |        341        4.86       80.57
+       2013 |        341        4.86       85.43
+       2014 |        341        4.86       90.28
+       2015 |        341        4.86       95.14
+       2016 |        341        4.86      100.00
+------------+-----------------------------------
+      Total |      7,020      100.00
+
+. summarize open_smk_total open_SMK_negeri open_SMK_swasta if insample, detail
+
+             New schools opened this year (from
+                    analysis_panel_full)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%            0              0
+10%            0              0       Obs               7,020
+25%            0              0       Sum of wgt.       7,020
+
+50%            1                      Mean           1.375071
+                        Largest       Std. dev.      2.651465
+75%            2             33
+90%            4             35       Variance       7.030266
+95%            6             36       Skewness       5.089771
+99%           12             41       Kurtosis       44.12297
+
+             New schools opened this year (from
+                    analysis_panel_full)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%            0              0
+10%            0              0       Obs               7,020
+25%            0              0       Sum of wgt.       7,020
+
+50%            0                      Mean           .3706553
+                        Largest       Std. dev.      .8656391
+75%            0              9
+90%            1             10       Variance       .7493311
+95%            2             11       Skewness       4.858391
+99%            4             20       Kurtosis        57.1852
+
+             New schools opened this year (from
+                    analysis_panel_full)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%            0              0
+10%            0              0       Obs               7,020
+25%            0              0       Sum of wgt.       7,020
+
+50%            0                      Mean           1.004416
+                        Largest       Std. dev.      2.434638
+75%            1             33
+90%            3             34       Variance       5.927463
+95%            5             35       Skewness       5.962723
+99%           11             41       Kurtosis       57.17802
+
+. 
+. * how many districts never open a single school in the window? Conditional
+. * fixed-effects Poisson silently drops them - they carry no within information.
+. preserve
+
+.     keep if insample
+(5,025 observations deleted)
+
+.     collapse (max) mx = open_smk_total, by(unit)
+
+.     count
+  341
+
+.     local ntot = r(N)
+
+.     count if mx == 0
+  0
+
+.     display "districts with ZERO openings in window (dropped by FE Poisson): " r(N) " of " `ntot'
+districts with ZERO openings in window (dropped by FE Poisson): 0 of 341
+
+. restore
+
+. 
+. *=============================================================================
+. * 3. MAIN LADDER - each model adds controls and LOSES years.
+. *
+. * Read the N on every line. emp_share_industry only exists from 2007, and
+. * mfg_share_gdp only from 2010, so models 4 and 5 are different samples, not
+. * just different specifications. Compare 4 against 3 re-run on model 4's sample
+. * before concluding that adding employment changed anything.
+. *
+. * exposure(population) puts ln(population) in with its coefficient fixed at 1,
+. * so the models explain openings PER PERSON rather than raw counts. That is the
+. * right normalisation for a count outcome and it keeps population out of the
+. * collinearity problem entirely.
+. *=============================================================================
+. 
+. eststo clear
+
+. 
+. * M1 - baseline: demographics only
+. eststo m1: xtpoisson open_smk_total poverty_rate urban_pct i.year ///
+>     if insample, fe exposure(population) vce(robust)
+note: 2 groups (30 obs) dropped because of all zero outcomes
+
+Iteration 0:  Log pseudolikelihood = -7070.7554  
+Iteration 1:  Log pseudolikelihood = -6471.7969  
+Iteration 2:  Log pseudolikelihood = -6452.5643  
+Iteration 3:  Log pseudolikelihood = -6452.4377  
+Iteration 4:  Log pseudolikelihood = -6452.4377  
+
+Conditional fixed-effects Poisson regression         Number of obs    =  5,113
+Group variable: unit                                 Number of groups =    339
+
+                                                     Obs per group:
+                                                                  min =      7
+                                                                  avg =   15.1
+                                                                  max =     16
+
+                                                     Wald chi2(17)    = 537.78
+Log pseudolikelihood = -6452.4377                    Prob > chi2      = 0.0000
+
+                                     (Std. err. adjusted for clustering on unit)
+--------------------------------------------------------------------------------
+               |               Robust
+open_smk_total | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+  poverty_rate |  -.0092586   .0077821    -1.19   0.234    -.0245113     .005994
+     urban_pct |   .0038679   .0048275     0.80   0.423    -.0055938    .0133296
+               |
+          year |
+         2002  |   .2106335   .1286723     1.64   0.102    -.0415596    .4628267
+         2003  |   .6138891   .1308176     4.69   0.000     .3574914    .8702868
+         2004  |   .9378337   .1354372     6.92   0.000     .6723816    1.203286
+         2005  |   .5504369   .1309823     4.20   0.000     .2937164    .8071574
+         2006  |   .5923325   .1143238     5.18   0.000      .368262     .816403
+         2007  |   1.197619   .1145281    10.46   0.000     .9731481     1.42209
+         2008  |   1.316455   .1301887    10.11   0.000     1.061289     1.57162
+         2009  |   1.298405   .1320095     9.84   0.000     1.039671    1.557138
+         2010  |    1.26321   .1419631     8.90   0.000      .984967    1.541452
+         2011  |   1.346425   .1325649    10.16   0.000     1.086603    1.606248
+         2012  |   1.442876   .1453639     9.93   0.000     1.157968    1.727784
+         2013  |   1.420181   .1536368     9.24   0.000     1.119058    1.721303
+         2014  |   1.323458   .1449112     9.13   0.000     1.039437    1.607478
+         2015  |   1.245471   .1541783     8.08   0.000     .9432868    1.547654
+         2016  |   1.176704   .1625973     7.24   0.000     .8580187    1.495389
+ln(population) |          1  (exposure)
+--------------------------------------------------------------------------------
+
+. 
+. * M2 - add fiscal capacity
+. eststo m2: xtpoisson open_smk_total poverty_rate urban_pct ///
+>     ln_rev_pc ln_edu_pc dau_share i.year ///
+>     if insample, fe exposure(population) vce(robust)
+note: 5 groups (44 obs) dropped because of all zero outcomes
+
+Iteration 0:  Log pseudolikelihood = -4853.7035  
+Iteration 1:  Log pseudolikelihood = -4512.6022  
+Iteration 2:  Log pseudolikelihood = -4505.4016  
+Iteration 3:  Log pseudolikelihood = -4505.3756  
+Iteration 4:  Log pseudolikelihood = -4505.3756  
+
+Conditional fixed-effects Poisson regression         Number of obs    =  3,688
+Group variable: unit                                 Number of groups =    304
+
+                                                     Obs per group:
+                                                                  min =      4
+                                                                  avg =   12.1
+                                                                  max =     15
+
+                                                     Wald chi2(19)    = 340.16
+Log pseudolikelihood = -4505.3756                    Prob > chi2      = 0.0000
+
+                                     (Std. err. adjusted for clustering on unit)
+--------------------------------------------------------------------------------
+               |               Robust
+open_smk_total | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+  poverty_rate |  -.0067352   .0113704    -0.59   0.554    -.0290208    .0155504
+     urban_pct |   .0019432   .0055304     0.35   0.725    -.0088962    .0127826
+     ln_rev_pc |   .2109095   .1330552     1.59   0.113    -.0498739    .4716928
+     ln_edu_pc |  -.0044441   .0368019    -0.12   0.904    -.0765744    .0676862
+     dau_share |  -.0062242   .0031359    -1.98   0.047    -.0123705   -.0000778
+               |
+          year |
+         2003  |   .2984279   .1274754     2.34   0.019     .0485808     .548275
+         2004  |   .5648813   .1303374     4.33   0.000     .3094246    .8203379
+         2005  |   .1639493   .1474252     1.11   0.266    -.1249987    .4528973
+         2006  |   .2174064   .1504728     1.44   0.149    -.0775149    .5123276
+         2007  |   .7745609   .1640731     4.72   0.000     .4529836    1.096138
+         2008  |   .8391073   .1677373     5.00   0.000     .5103483    1.167866
+         2009  |   .7820474   .1815737     4.31   0.000     .4261694    1.137925
+         2010  |   .6910705   .2022163     3.42   0.001     .2947339    1.087407
+         2011  |   .7699382    .221926     3.47   0.001     .3349712    1.204905
+         2012  |   .8547052   .2401083     3.56   0.000     .3841017    1.325309
+         2013  |   .7366925     .25521     2.89   0.004     .2364901    1.236895
+         2014  |   .6453599   .2854895     2.26   0.024     .0858107    1.204909
+         2015  |   .4877115   .2932117     1.66   0.096    -.0869729    1.062396
+         2016  |   .4532036   .3017866     1.50   0.133    -.1382873    1.044695
+ln(population) |          1  (exposure)
+--------------------------------------------------------------------------------
+
+. 
+. * M3 - add the schooling pipeline
+. eststo m3: xtpoisson open_smk_total poverty_rate urban_pct ///
+>     ln_rev_pc ln_edu_pc dau_share enrollment_junior_secondary i.year ///
+>     if insample, fe exposure(population) vce(robust)
+note: 5 groups (44 obs) dropped because of all zero outcomes
+
+Iteration 0:  Log pseudolikelihood = -4850.9681  
+Iteration 1:  Log pseudolikelihood = -4500.4996  
+Iteration 2:  Log pseudolikelihood = -4493.0186  
+Iteration 3:  Log pseudolikelihood = -4492.9887  
+Iteration 4:  Log pseudolikelihood = -4492.9887  
+
+Conditional fixed-effects Poisson regression         Number of obs    =  3,685
+Group variable: unit                                 Number of groups =    304
+
+                                                     Obs per group:
+                                                                  min =      4
+                                                                  avg =   12.1
+                                                                  max =     15
+
+                                                     Wald chi2(20)    = 373.74
+Log pseudolikelihood = -4492.9887                    Prob > chi2      = 0.0000
+
+                                                  (Std. err. adjusted for clustering on unit)
+---------------------------------------------------------------------------------------------
+                            |               Robust
+             open_smk_total | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+----------------------------+----------------------------------------------------------------
+               poverty_rate |   -.003271    .011221    -0.29   0.771    -.0252638    .0187218
+                  urban_pct |   .0000962    .005679     0.02   0.986    -.0110344    .0112268
+                  ln_rev_pc |   .2082165   .1341805     1.55   0.121    -.0547724    .4712054
+                  ln_edu_pc |  -.0060137    .037021    -0.16   0.871    -.0785735    .0665461
+                  dau_share |  -.0053493   .0031226    -1.71   0.087    -.0114695    .0007709
+enrollment_junior_secondary |   .0097863   .0031416     3.12   0.002     .0036288    .0159438
+                            |
+                       year |
+                      2003  |   .2948553   .1266529     2.33   0.020     .0466202    .5430905
+                      2004  |   .5526502   .1291025     4.28   0.000      .299614    .8056864
+                      2005  |   .1763755   .1465367     1.20   0.229    -.1108311     .463582
+                      2006  |   .1786375   .1521145     1.17   0.240    -.1195015    .4767766
+                      2007  |   .7316225   .1662104     4.40   0.000      .405856    1.057389
+                      2008  |   .8094677    .167424     4.83   0.000     .4813228    1.137613
+                      2009  |   .7554541   .1800217     4.20   0.000      .402618     1.10829
+                      2010  |   .6679292   .2006835     3.33   0.001     .2745967    1.061262
+                      2011  |   .7498604   .2215442     3.38   0.001     .3156417    1.184079
+                      2012  |    .807454    .240037     3.36   0.001     .3369901    1.277918
+                      2013  |    .665753    .255982     2.60   0.009     .1640376    1.167468
+                      2014  |   .5445956   .2853094     1.91   0.056    -.0146006    1.103792
+                      2015  |   .3809102    .293833     1.30   0.195    -.1949918    .9568122
+                      2016  |   .3525415   .3027728     1.16   0.244    -.2408822    .9459652
+             ln(population) |          1  (exposure)
+---------------------------------------------------------------------------------------------
+
+. 
+. * M4 - add labour demand. NOTE: 2007 onward only.
+. eststo m4: xtpoisson open_smk_total poverty_rate urban_pct ///
+>     ln_rev_pc ln_edu_pc dau_share enrollment_junior_secondary emp_share_industry i.year ///
+>     if insample, fe exposure(population) vce(robust)
+note: 4 groups (4 obs) dropped because of only one obs per group
+note: 10 groups (67 obs) dropped because of all zero outcomes
+
+Iteration 0:  Log pseudolikelihood = -2540.3781  
+Iteration 1:  Log pseudolikelihood = -2516.8408  
+Iteration 2:  Log pseudolikelihood = -2516.7759  
+Iteration 3:  Log pseudolikelihood = -2516.7759  
+
+Conditional fixed-effects Poisson regression         Number of obs    =  2,036
+Group variable: unit                                 Number of groups =    283
+
+                                                     Obs per group:
+                                                                  min =      2
+                                                                  avg =    7.2
+                                                                  max =      9
+
+                                                     Wald chi2(15)    =  33.30
+Log pseudolikelihood = -2516.7759                    Prob > chi2      = 0.0043
+
+                                                  (Std. err. adjusted for clustering on unit)
+---------------------------------------------------------------------------------------------
+                            |               Robust
+             open_smk_total | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+----------------------------+----------------------------------------------------------------
+               poverty_rate |  -.0111767   .0160178    -0.70   0.485    -.0425712    .0202177
+                  urban_pct |  -.0040265   .0060177    -0.67   0.503     -.015821    .0077679
+                  ln_rev_pc |     .08279   .1506035     0.55   0.583    -.2123874    .3779675
+                  ln_edu_pc |  -.0134703   .0414224    -0.33   0.745    -.0946567    .0677161
+                  dau_share |  -.0031659   .0027321    -1.16   0.247    -.0085208     .002189
+enrollment_junior_secondary |   .0045046   .0039825     1.13   0.258     -.003301    .0123103
+         emp_share_industry |   .0076887   .0113252     0.68   0.497    -.0145082    .0298856
+                            |
+                       year |
+                      2008  |   .1127356   .0950444     1.19   0.236     -.073548    .2990193
+                      2009  |   .0697823   .1056331     0.66   0.509    -.1372548    .2768194
+                      2010  |   .0053084   .1262856     0.04   0.966    -.2422069    .2528236
+                      2011  |   .1191826   .1410539     0.84   0.398     -.157278    .3956433
+                      2012  |   .1852092   .1587993     1.17   0.243    -.1260317    .4964502
+                      2013  |   .0553686   .1780522     0.31   0.756    -.2936073    .4043446
+                      2014  |  -.0415523   .2179496    -0.19   0.849    -.4687256     .385621
+                      2015  |  -.1648008   .2100344    -0.78   0.433    -.5764607     .246859
+             ln(population) |          1  (exposure)
+---------------------------------------------------------------------------------------------
+
+. 
+. * Mark exactly which rows M4 used, so the next model can be run on the same ones.
+. capture drop m4samp
+
+. generate byte m4samp = e(sample)
+
+. 
+. * M4b - M3's specification on M4's sample. Without this you cannot tell whether
+. * a change from M3 to M4 came from adding employment or from losing 1996-2006.
+. eststo m4b: xtpoisson open_smk_total poverty_rate urban_pct ///
+>     ln_rev_pc ln_edu_pc dau_share enrollment_junior_secondary i.year ///
+>     if m4samp, fe exposure(population) vce(robust)
+
+Iteration 0:  Log pseudolikelihood = -2540.3781  
+Iteration 1:  Log pseudolikelihood = -2517.4739  
+Iteration 2:  Log pseudolikelihood = -2517.4083  
+Iteration 3:  Log pseudolikelihood = -2517.4083  
+
+Conditional fixed-effects Poisson regression         Number of obs    =  2,036
+Group variable: unit                                 Number of groups =    283
+
+                                                     Obs per group:
+                                                                  min =      2
+                                                                  avg =    7.2
+                                                                  max =      9
+
+                                                     Wald chi2(14)    =  31.73
+Log pseudolikelihood = -2517.4083                    Prob > chi2      = 0.0044
+
+                                                  (Std. err. adjusted for clustering on unit)
+---------------------------------------------------------------------------------------------
+                            |               Robust
+             open_smk_total | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+----------------------------+----------------------------------------------------------------
+               poverty_rate |  -.0104067   .0158871    -0.66   0.512    -.0415447    .0207314
+                  urban_pct |  -.0036598   .0059431    -0.62   0.538    -.0153081    .0079885
+                  ln_rev_pc |   .0879303   .1511375     0.58   0.561    -.2082937    .3841543
+                  ln_edu_pc |  -.0122347   .0416285    -0.29   0.769     -.093825    .0693555
+                  dau_share |   -.003291   .0027175    -1.21   0.226    -.0086171    .0020352
+enrollment_junior_secondary |   .0046574   .0040181     1.16   0.246    -.0032179    .0125326
+                            |
+                       year |
+                      2008  |   .1108952   .0953619     1.16   0.245    -.0760108    .2978011
+                      2009  |   .0686681   .1053271     0.65   0.514    -.1377692    .2751055
+                      2010  |   .0064534   .1262348     0.05   0.959    -.2409623    .2538691
+                      2011  |   .1222011   .1417487     0.86   0.389    -.1556213    .4000234
+                      2012  |    .191661   .1590863     1.20   0.228    -.1201424    .5034644
+                      2013  |   .0598796   .1778628     0.34   0.736    -.2887251    .4084843
+                      2014  |  -.0392008   .2180396    -0.18   0.857    -.4665506     .388149
+                      2015  |  -.1616985   .2091753    -0.77   0.440    -.5716745    .2482774
+             ln(population) |          1  (exposure)
+---------------------------------------------------------------------------------------------
+
+. 
+. * M5 - add manufacturing intensity. NOTE: 2010 onward only, very short.
+. eststo m5: xtpoisson open_smk_total poverty_rate urban_pct ///
+>     ln_rev_pc ln_edu_pc dau_share osr_share enrollment_junior_secondary ///
+>     emp_share_industry mfg_share_gdp i.year ///
+>     if insample, fe exposure(population) vce(robust)
+note: 11 groups (11 obs) dropped because of only one obs per group
+note: 14 groups (57 obs) dropped because of all zero outcomes
+
+Iteration 0:  Log pseudolikelihood = -1368.5854  
+Iteration 1:  Log pseudolikelihood = -1353.0448  
+Iteration 2:  Log pseudolikelihood = -1352.9964  
+Iteration 3:  Log pseudolikelihood = -1352.9964  
+
+Conditional fixed-effects Poisson regression         Number of obs    =  1,216
+Group variable: unit                                 Number of groups =    263
+
+                                                     Obs per group:
+                                                                  min =      2
+                                                                  avg =    4.6
+                                                                  max =      6
+
+                                                     Wald chi2(14)    =  29.76
+Log pseudolikelihood = -1352.9964                    Prob > chi2      = 0.0082
+
+                                                  (Std. err. adjusted for clustering on unit)
+---------------------------------------------------------------------------------------------
+                            |               Robust
+             open_smk_total | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+----------------------------+----------------------------------------------------------------
+               poverty_rate |  -.0127461   .0498252    -0.26   0.798    -.1104018    .0849095
+                  urban_pct |    -.02396   .0121473    -1.97   0.049    -.0477683   -.0001516
+                  ln_rev_pc |   .1777216   .5339709     0.33   0.739    -.8688421    1.224285
+                  ln_edu_pc |  -.0132093   .0572075    -0.23   0.817     -.125334    .0989154
+                  dau_share |  -.0038211   .0107671    -0.35   0.723    -.0249242    .0172819
+                  osr_share |  -.0152581   .0084256    -1.81   0.070     -.031772    .0012558
+enrollment_junior_secondary |   .0035441   .0058634     0.60   0.546    -.0079481    .0150362
+         emp_share_industry |   .0113232   .0118395     0.96   0.339    -.0118817    .0345281
+              mfg_share_gdp |   .0038672   .0352198     0.11   0.913    -.0651622    .0728967
+                            |
+                       year |
+                      2011  |   .1121224   .1290213     0.87   0.385    -.1407547    .3649995
+                      2012  |   .2095318   .1994564     1.05   0.293    -.1813955    .6004591
+                      2013  |   .0513326   .2586301     0.20   0.843    -.4555732    .5582383
+                      2014  |   .0290984    .317904     0.09   0.927     -.593982    .6521787
+                      2015  |  -.1071578    .344779    -0.31   0.756    -.7829123    .5685967
+             ln(population) |          1  (exposure)
+---------------------------------------------------------------------------------------------
+
+. 
+. *=============================================================================
+. * 3b. RESOURCE DEPENDENCE  ("extractive institutions")
+. *
+. * READ THIS BEFORE INTERPRETING M6.
+. *
+. * Institutions in the Acemoglu-Robinson sense are slow-moving. Anything that is
+. * fixed within a district across 1996-2016 is ABSORBED BY THE DISTRICT FIXED
+. * EFFECT and cannot be estimated here at all. So this is NOT a test of
+. * extractive institutions. What res_share actually measures is the year-to-year
+. * flow of natural-resource revenue, which moves with commodity prices.
+. * Call it resource dependence in the write-up, not institutions.
+. *
+. * Two reasons it is still worth including:
+. *   (a) as a confounder - resource districts are less industrial AND may invest
+. *       differently in schooling, so it could bias emp_share_industry;
+. *   (b) osr_share is the other side of the same idea - a district that raises
+. *       its own taxes has to answer to the people it taxes.
+. *
+. * Cost: res_share exists for about 1,186 of M4's 2,109 rows, so M6 runs on
+. * roughly half of M4. Compare M6 against M6b, not against M4.
+. *=============================================================================
+. 
+. eststo m6: xtpoisson open_smk_total poverty_rate urban_pct ///
+>     ln_rev_pc ln_edu_pc dau_share enrollment_junior_secondary ///
+>     emp_share_industry res_share osr_share i.year ///
+>     if insample, fe exposure(population) vce(robust)
+note: 8 groups (8 obs) dropped because of only one obs per group
+note: 25 groups (94 obs) dropped because of all zero outcomes
+
+Iteration 0:  Log pseudolikelihood = -1101.2279  
+Iteration 1:  Log pseudolikelihood = -1086.7734  
+Iteration 2:  Log pseudolikelihood = -1086.7201  
+Iteration 3:  Log pseudolikelihood = -1086.7201  
+
+Conditional fixed-effects Poisson regression         Number of obs    =  1,067
+Group variable: unit                                 Number of groups =    261
+
+                                                     Obs per group:
+                                                                  min =      2
+                                                                  avg =    4.1
+                                                                  max =      5
+
+                                                     Wald chi2(13)    =  26.42
+Log pseudolikelihood = -1086.7201                    Prob > chi2      = 0.0149
+
+                                                  (Std. err. adjusted for clustering on unit)
+---------------------------------------------------------------------------------------------
+                            |               Robust
+             open_smk_total | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+----------------------------+----------------------------------------------------------------
+               poverty_rate |  -.0138959   .0200053    -0.69   0.487    -.0531056    .0253137
+                  urban_pct |   -.005115   .0054384    -0.94   0.347    -.0157741    .0055441
+                  ln_rev_pc |   .2412071   .2184405     1.10   0.269    -.1869285    .6693427
+                  ln_edu_pc |   .0909396    .065626     1.39   0.166     -.037685    .2195643
+                  dau_share |  -.0019651   .0041316    -0.48   0.634    -.0100629    .0061327
+enrollment_junior_secondary |   .0019478   .0051007     0.38   0.703    -.0080495     .011945
+         emp_share_industry |   .0092259   .0140766     0.66   0.512    -.0183637    .0368155
+                  res_share |  -.0106723   .0075013    -1.42   0.155    -.0253745    .0040299
+                  osr_share |   .0321828    .013253     2.43   0.015     .0062074    .0581583
+                            |
+                       year |
+                      2008  |   .0957977   .1234102     0.78   0.438    -.1460818    .3376772
+                      2009  |   .0052186   .1452617     0.04   0.971    -.2794891    .2899263
+                      2010  |  -.0670134   .1794562    -0.37   0.709    -.4187412    .2847143
+                      2011  |  -.0515105   .2053764    -0.25   0.802    -.4540409    .3510199
+             ln(population) |          1  (exposure)
+---------------------------------------------------------------------------------------------
+
+. 
+. capture drop m6samp
+
+. generate byte m6samp = e(sample)
+
+. 
+. * M6b - M4's specification on M6's rows, so you can tell whether a change came
+. * from adding resource dependence or from losing half the sample.
+. eststo m6b: xtpoisson open_smk_total poverty_rate urban_pct ///
+>     ln_rev_pc ln_edu_pc dau_share enrollment_junior_secondary ///
+>     emp_share_industry i.year ///
+>     if m6samp, fe exposure(population) vce(robust)
+
+Iteration 0:  Log pseudolikelihood = -1101.2279  
+Iteration 1:  Log pseudolikelihood = -1091.4716  
+Iteration 2:  Log pseudolikelihood = -1091.4082  
+Iteration 3:  Log pseudolikelihood = -1091.4081  
+
+Conditional fixed-effects Poisson regression         Number of obs    =  1,067
+Group variable: unit                                 Number of groups =    261
+
+                                                     Obs per group:
+                                                                  min =      2
+                                                                  avg =    4.1
+                                                                  max =      5
+
+                                                     Wald chi2(11)    =  16.77
+Log pseudolikelihood = -1091.4081                    Prob > chi2      = 0.1147
+
+                                                  (Std. err. adjusted for clustering on unit)
+---------------------------------------------------------------------------------------------
+                            |               Robust
+             open_smk_total | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+----------------------------+----------------------------------------------------------------
+               poverty_rate |  -.0051729   .0199777    -0.26   0.796    -.0443285    .0339828
+                  urban_pct |  -.0048626   .0054906    -0.89   0.376     -.015624    .0058989
+                  ln_rev_pc |   .1011067   .2079345     0.49   0.627    -.3064374    .5086507
+                  ln_edu_pc |   .1061872   .0660599     1.61   0.108    -.0232879    .2356623
+                  dau_share |   -.004052   .0034723    -1.17   0.243    -.0108577    .0027536
+enrollment_junior_secondary |   .0019215   .0051355     0.37   0.708     -.008144    .0119869
+         emp_share_industry |    .008283   .0143789     0.58   0.565    -.0198992    .0364652
+                            |
+                       year |
+                      2008  |   .1291799   .1241476     1.04   0.298    -.1141449    .3725047
+                      2009  |   .0514306   .1455902     0.35   0.724    -.2339209    .3367822
+                      2010  |  -.0081457   .1818305    -0.04   0.964    -.3645269    .3482354
+                      2011  |   .0743866   .2009753     0.37   0.711    -.3195178     .468291
+             ln(population) |          1  (exposure)
+---------------------------------------------------------------------------------------------
+
+. 
+. * within variation, so you can see FE has something to work with
+. xtsum res_share osr_share if insample
+
+Variable         |      Mean   Std. dev.       Min        Max |    Observations
+-----------------+--------------------------------------------+----------------
+res_sh~e overall |  5.002619   12.19764          0   85.64198 |     N =    4715
+         between |              11.8411    .103944   71.54626 |     n =     336
+         within  |             5.859197   -49.7497   68.08096 |     T = 14.0327
+                 |                                            |
+osr_sh~e overall |  8.785575   8.016389   .3696046        100 |     N =    6478
+         between |             6.756315   1.312129   68.23148 |     n =     336
+         within  |             4.192789  -12.65942   93.93709 |     T = 19.2798
+
+. 
+. *=============================================================================
+. * 3c. CONFOUNDERS - what to add, and what to TAKE OUT
+. *
+. * "Control for anything that might conflate it" is the wrong instinct in a fixed
+. * effects model, for three reasons:
+. *
+. *   (1) District FE already absorbs every confounder that does not move over
+. *       time. Geography, colonial history, distance to Java, ethnic composition
+. *       - all gone already. Only time-VARYING confounders can bias anything.
+. *       n_children has within/overall = 0.00, which is why it cannot be a control.
+. *
+. *   (2) A control that is itself CAUSED by industry makes the bias worse, not
+. *       better (the "bad control" problem). If industry raises the tax base and
+. *       lowers poverty, then holding revenue and poverty fixed removes part of
+. *       the very channel you are trying to measure.
+. *
+. *   (3) Every control costs sample. M4 is already 2,036 rows on 283 districts.
+. *
+. * So this section does BOTH directions: M7 adds the controls that are free and
+. * defensible, M8 takes out the ones that are probably bad controls.
+. *
+. * Checked before choosing (coverage inside M4's sample, and within/overall):
+. *     enrollment_senior_secondary  100%   0.74
+. *     access_electricity           100%   0.58
+. *     literacy_15up                100%   0.40
+. *     skilled_birth_attendance     100%   0.68
+. *     hh_expenditure_pc             88%   0.89
+. *     revenue_dbh_sda_total         56%   0.64
+. *     schools_senior_secondary      28%   0.56   <- want it, cannot afford it
+. *     n_children                   100%   0.00   <- absorbed by FE, useless
+. *=============================================================================
+. 
+. * M7 - add the pre-determined controls that cost no sample at all.
+. *      access_electricity is infrastructure and mostly centrally funded, and
+. *      literacy_15up is a stock built up over earlier decades, so neither is
+. *      plausibly caused by this year's industrial employment.
+. eststo m7: xtpoisson open_smk_total poverty_rate urban_pct ///
+>     ln_rev_pc ln_edu_pc dau_share enrollment_junior_secondary ///
+>     emp_share_industry access_electricity literacy_15up i.year ///
+>     if insample, fe exposure(population) vce(robust)
+note: 4 groups (4 obs) dropped because of only one obs per group
+note: 10 groups (67 obs) dropped because of all zero outcomes
+
+Iteration 0:  Log pseudolikelihood = -2540.3781  
+Iteration 1:  Log pseudolikelihood = -2515.7588  
+Iteration 2:  Log pseudolikelihood = -2515.6924  
+Iteration 3:  Log pseudolikelihood = -2515.6924  
+
+Conditional fixed-effects Poisson regression         Number of obs    =  2,036
+Group variable: unit                                 Number of groups =    283
+
+                                                     Obs per group:
+                                                                  min =      2
+                                                                  avg =    7.2
+                                                                  max =      9
+
+                                                     Wald chi2(17)    =  35.86
+Log pseudolikelihood = -2515.6924                    Prob > chi2      = 0.0048
+
+                                                  (Std. err. adjusted for clustering on unit)
+---------------------------------------------------------------------------------------------
+                            |               Robust
+             open_smk_total | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+----------------------------+----------------------------------------------------------------
+               poverty_rate |  -.0075353    .016989    -0.44   0.657    -.0408332    .0257625
+                  urban_pct |  -.0039321   .0059757    -0.66   0.511    -.0156442    .0077801
+                  ln_rev_pc |   .1041292   .1555937     0.67   0.503    -.2008289    .4090873
+                  ln_edu_pc |  -.0136162   .0411692    -0.33   0.741    -.0943063    .0670739
+                  dau_share |  -.0040428    .002877    -1.41   0.160    -.0096817     .001596
+enrollment_junior_secondary |    .004111   .0040759     1.01   0.313    -.0038775    .0120995
+         emp_share_industry |   .0079944   .0112779     0.71   0.478    -.0141099    .0300988
+         access_electricity |   .0074455   .0065168     1.14   0.253    -.0053271    .0202181
+              literacy_15up |  -.0003649   .0192044    -0.02   0.985    -.0380048     .037275
+                            |
+                       year |
+                      2008  |   .1001121   .0951012     1.05   0.292    -.0862829     .286507
+                      2009  |   .0514373   .1061367     0.48   0.628    -.1565868    .2594613
+                      2010  |  -.0215282   .1292798    -0.17   0.868    -.2749119    .2318556
+                      2011  |   .0826913     .14437     0.57   0.567    -.2002687    .3656514
+                      2012  |   .1455901   .1629114     0.89   0.371    -.1737104    .4648906
+                      2013  |   .0121879    .181694     0.07   0.947    -.3439258    .3683016
+                      2014  |  -.0908691   .2209833    -0.41   0.681    -.5239884    .3422501
+                      2015  |  -.2296682   .2162748    -1.06   0.288    -.6535589    .1942226
+             ln(population) |          1  (exposure)
+---------------------------------------------------------------------------------------------
+
+. 
+. * M8 - PARSIMONIOUS. Drops poverty_rate and ln_rev_pc, which are the two most
+. *      likely bad controls: industry plausibly lowers poverty and raises the tax
+. *      base, so conditioning on them closes part of the path from industry to
+. *      school openings. Run on M4's rows so the comparison is like-for-like.
+. *      If emp_share_industry is going to appear anywhere, it is here.
+. eststo m8: xtpoisson open_smk_total urban_pct dau_share ///
+>     enrollment_junior_secondary emp_share_industry access_electricity ///
+>     literacy_15up i.year ///
+>     if m4samp, fe exposure(population) vce(robust)
+
+Iteration 0:  Log pseudolikelihood = -2540.3781  
+Iteration 1:  Log pseudolikelihood = -2516.4027  
+Iteration 2:  Log pseudolikelihood =  -2516.344  
+Iteration 3:  Log pseudolikelihood =  -2516.344  
+
+Conditional fixed-effects Poisson regression         Number of obs    =  2,036
+Group variable: unit                                 Number of groups =    283
+
+                                                     Obs per group:
+                                                                  min =      2
+                                                                  avg =    7.2
+                                                                  max =      9
+
+                                                     Wald chi2(14)    =  36.38
+Log pseudolikelihood = -2516.344                     Prob > chi2      = 0.0009
+
+                                                  (Std. err. adjusted for clustering on unit)
+---------------------------------------------------------------------------------------------
+                            |               Robust
+             open_smk_total | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+----------------------------+----------------------------------------------------------------
+                  urban_pct |   -.004134   .0061465    -0.67   0.501    -.0161808    .0079129
+                  dau_share |  -.0041296   .0029573    -1.40   0.163    -.0099257    .0016666
+enrollment_junior_secondary |   .0041218   .0040848     1.01   0.313    -.0038843    .0121279
+         emp_share_industry |   .0078442    .011416     0.69   0.492    -.0145308    .0302191
+         access_electricity |   .0075107   .0063915     1.18   0.240    -.0050165    .0200378
+              literacy_15up |   .0029346   .0183033     0.16   0.873    -.0329391    .0388083
+                            |
+                       year |
+                      2008  |   .1175867   .0883505     1.33   0.183     -.055577    .2907504
+                      2009  |   .0803378   .0900941     0.89   0.373    -.0962434    .2569189
+                      2010  |   .0237704   .0994696     0.24   0.811    -.1711864    .2187271
+                      2011  |   .1488943   .1047194     1.42   0.155     -.056352    .3541405
+                      2012  |   .2284375   .1039598     2.20   0.028     .0246801     .432195
+                      2013  |   .1038475   .1180303     0.88   0.379    -.1274878    .3351827
+                      2014  |   .0135263   .1382199     0.10   0.922    -.2573798    .2844323
+                      2015  |  -.0827246   .1341481    -0.62   0.537    -.3456502    .1802009
+             ln(population) |          1  (exposure)
+---------------------------------------------------------------------------------------------
+
+. 
+. * Is schools_senior_secondary (the existing stock) worth the sample it costs?
+. * Reported so you can see the trade rather than guess at it.
+. eststo m9: xtpoisson open_smk_total urban_pct dau_share ///
+>     enrollment_junior_secondary emp_share_industry schools_senior_secondary ///
+>     i.year if insample, fe exposure(population) vce(robust)
+note: 11 groups (11 obs) dropped because of only one obs per group
+note: 27 groups (67 obs) dropped because of all zero outcomes
+
+Iteration 0:  Log pseudolikelihood = -679.78139  
+Iteration 1:  Log pseudolikelihood = -673.26921  
+Iteration 2:  Log pseudolikelihood = -673.26389  
+Iteration 3:  Log pseudolikelihood = -673.26389  
+
+Conditional fixed-effects Poisson regression         Number of obs    =    702
+Group variable: unit                                 Number of groups =    248
+
+                                                     Obs per group:
+                                                                  min =      2
+                                                                  avg =    2.8
+                                                                  max =      3
+
+                                                     Wald chi2(7)     =   7.00
+Log pseudolikelihood = -673.26389                    Prob > chi2      = 0.4292
+
+                                                  (Std. err. adjusted for clustering on unit)
+---------------------------------------------------------------------------------------------
+                            |               Robust
+             open_smk_total | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+----------------------------+----------------------------------------------------------------
+                  urban_pct |   .0032008   .0092573     0.35   0.730    -.0149432    .0213449
+                  dau_share |  -.0137679   .0091075    -1.51   0.131    -.0316183    .0040826
+enrollment_junior_secondary |   .0090513   .0071622     1.26   0.206    -.0049864    .0230889
+         emp_share_industry |   .0081994   .0177641     0.46   0.644    -.0266176    .0430164
+   schools_senior_secondary |  -.0008509   .0011579    -0.73   0.462    -.0031203    .0014186
+                            |
+                       year |
+                      2011  |  -.0133651   .1390507    -0.10   0.923    -.2858994    .2591692
+                      2014  |  -.0989096     .18027    -0.55   0.583    -.4522323    .2544132
+             ln(population) |          1  (exposure)
+---------------------------------------------------------------------------------------------
+
+. 
+. capture which esttab
+
+. if !_rc {
+.     esttab m1 m2 m3 m4 m4b m5 m6 m6b m7 m8 m9, ///
+>         keep(poverty_rate urban_pct ln_rev_pc ln_edu_pc dau_share osr_share ///
+>              res_share enrollment_junior_secondary emp_share_industry ///
+>              access_electricity literacy_15up schools_senior_secondary mfg_share_gdp) ///
+>         b(3) se(3) star(* 0.10 ** 0.05 *** 0.01) ///
+>         stats(N N_g, labels("Observations" "Districts")) ///
+>         title("Determinants of SMK openings - conditional FE Poisson, 1996-2016")
+
+Determinants of SMK openings - conditional FE Poisson, 1996-2016
+-----------------------------------------------------------------------------------------------------
+> ---------------------------------------------------------------------------------------
+                      (1)             (2)             (3)             (4)             (5)            
+>  (6)             (7)             (8)             (9)            (10)            (11)   
+             open_smk_t~l    open_smk_t~l    open_smk_t~l    open_smk_t~l    open_smk_t~l    open_smk
+> _t~l    open_smk_t~l    open_smk_t~l    open_smk_t~l    open_smk_t~l    open_smk_t~l   
+-----------------------------------------------------------------------------------------------------
+> ---------------------------------------------------------------------------------------
+open_smk_t~l                                                                                         
+>                                                                                        
+poverty_rate       -0.009          -0.007          -0.003          -0.011          -0.010          -0
+> .013          -0.014          -0.005          -0.008                                   
+                  (0.008)         (0.011)         (0.011)         (0.016)         (0.016)         (0.
+> 050)         (0.020)         (0.020)         (0.017)                                   
+
+urban_pct           0.004           0.002           0.000          -0.004          -0.004          -0
+> .024**        -0.005          -0.005          -0.004          -0.004           0.003   
+                  (0.005)         (0.006)         (0.006)         (0.006)         (0.006)         (0.
+> 012)         (0.005)         (0.005)         (0.006)         (0.006)         (0.009)   
+
+ln_rev_pc                           0.211           0.208           0.083           0.088           0
+> .178           0.241           0.101           0.104                                   
+                                  (0.133)         (0.134)         (0.151)         (0.151)         (0.
+> 534)         (0.218)         (0.208)         (0.156)                                   
+
+ln_edu_pc                          -0.004          -0.006          -0.013          -0.012          -0
+> .013           0.091           0.106          -0.014                                   
+                                  (0.037)         (0.037)         (0.041)         (0.042)         (0.
+> 057)         (0.066)         (0.066)         (0.041)                                   
+
+dau_share                          -0.006**        -0.005*         -0.003          -0.003          -0
+> .004          -0.002          -0.004          -0.004          -0.004          -0.014   
+                                  (0.003)         (0.003)         (0.003)         (0.003)         (0.
+> 011)         (0.004)         (0.003)         (0.003)         (0.003)         (0.009)   
+
+e~junior_s~y                                        0.010***        0.005           0.005           0
+> .004           0.002           0.002           0.004           0.004           0.009   
+                                                  (0.003)         (0.004)         (0.004)         (0.
+> 006)         (0.005)         (0.005)         (0.004)         (0.004)         (0.007)   
+
+emp_share_~y                                                        0.008                           0
+> .011           0.009           0.008           0.008           0.008           0.008   
+                                                                  (0.011)                         (0.
+> 012)         (0.014)         (0.014)         (0.011)         (0.011)         (0.018)   
+
+osr_share                                                                                          -0
+> .015*          0.032**                                                                 
+                                                                                                  (0.
+> 008)         (0.013)                                                                   
+
+mfg_share_~p                                                                                        0
+> .004                                                                                   
+                                                                                                  (0.
+> 035)                                                                                   
+
+res_share                                                                                            
+>               -0.011                                                                   
+                                                                                                     
+>              (0.008)                                                                   
+
+access_ele~y                                                                                         
+>                                                0.007           0.008                   
+                                                                                                     
+>                                              (0.007)         (0.006)                   
+
+literacy_1~p                                                                                         
+>                                               -0.000           0.003                   
+                                                                                                     
+>                                              (0.019)         (0.018)                   
+
+schools_se~y                                                                                         
+>                                                                               -0.001   
+                                                                                                     
+>                                                                              (0.001)   
+-----------------------------------------------------------------------------------------------------
+> ---------------------------------------------------------------------------------------
+Observations     5113.000        3688.000        3685.000        2036.000        2036.000        1216
+> .000        1067.000        1067.000        2036.000        2036.000         702.000   
+Districts         339.000         304.000         304.000         283.000         283.000         263
+> .000         261.000         261.000         283.000         283.000         248.000   
+-----------------------------------------------------------------------------------------------------
+> ---------------------------------------------------------------------------------------
+Standard errors in parentheses
+* p<0.10, ** p<0.05, *** p<0.01
+. }
+
+. else display as error "esttab not installed. Run: ssc install estout"
+
+. 
+. *=============================================================================
+. * 4. PUBLIC vs PRIVATE
+. *
+. * These have different decision-makers. Public SMK follow central and district
+. * policy; private SMK follow local demand. Pooling them averages the mechanism
+. * away. Public openings are 84% zeros, so expect many districts to drop.
+. *=============================================================================
+. 
+. eststo clear
+
+. 
+. eststo pub: xtpoisson open_SMK_negeri poverty_rate urban_pct ///
+>     ln_rev_pc ln_edu_pc dau_share enrollment_junior_secondary emp_share_industry i.year ///
+>     if insample, fe exposure(population) vce(robust)
+note: 4 groups (4 obs) dropped because of only one obs per group
+note: 42 groups (307 obs) dropped because of all zero outcomes
+
+Iteration 0:  Log pseudolikelihood = -1231.9073  
+Iteration 1:  Log pseudolikelihood = -1208.0003  
+Iteration 2:  Log pseudolikelihood = -1207.8013  
+Iteration 3:  Log pseudolikelihood = -1207.8013  
+
+Conditional fixed-effects Poisson regression         Number of obs    =  1,796
+Group variable: unit                                 Number of groups =    251
+
+                                                     Obs per group:
+                                                                  min =      2
+                                                                  avg =    7.2
+                                                                  max =      9
+
+                                                     Wald chi2(15)    =  37.23
+Log pseudolikelihood = -1207.8013                    Prob > chi2      = 0.0012
+
+                                                  (Std. err. adjusted for clustering on unit)
+---------------------------------------------------------------------------------------------
+                            |               Robust
+            open_SMK_negeri | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+----------------------------+----------------------------------------------------------------
+               poverty_rate |   .0014139   .0290211     0.05   0.961    -.0554664    .0582943
+                  urban_pct |  -.0112069   .0097499    -1.15   0.250    -.0303164    .0079027
+                  ln_rev_pc |  -.1152138   .2290884    -0.50   0.615    -.5642189    .3337912
+                  ln_edu_pc |   .0535229   .0835708     0.64   0.522    -.1102728    .2173186
+                  dau_share |   .0028225   .0059208     0.48   0.634    -.0087822    .0144271
+enrollment_junior_secondary |   .0139091   .0086561     1.61   0.108    -.0030566    .0308748
+         emp_share_industry |   .0085003   .0213725     0.40   0.691     -.033389    .0503896
+                            |
+                       year |
+                      2008  |   .0629434   .1503108     0.42   0.675    -.2316604    .3575471
+                      2009  |  -.0487071   .1913475    -0.25   0.799    -.4237413     .326327
+                      2010  |  -.0208246   .2353164    -0.09   0.929    -.4820364    .4403872
+                      2011  |  -.1953225   .2581846    -0.76   0.449     -.701355    .3107101
+                      2012  |  -.0219635   .2851942    -0.08   0.939    -.5809338    .5370068
+                      2013  |  -.2487924   .3165082    -0.79   0.432    -.8691371    .3715523
+                      2014  |   -.590769   .3513562    -1.68   0.093    -1.279415    .0978766
+                      2015  |  -.4855708    .334793    -1.45   0.147    -1.141753    .1706116
+             ln(population) |          1  (exposure)
+---------------------------------------------------------------------------------------------
+
+. 
+. eststo prv: xtpoisson open_SMK_swasta poverty_rate urban_pct ///
+>     ln_rev_pc ln_edu_pc dau_share enrollment_junior_secondary emp_share_industry i.year ///
+>     if insample, fe exposure(population) vce(robust)
+note: 4 groups (4 obs) dropped because of only one obs per group
+note: 36 groups (236 obs) dropped because of all zero outcomes
+
+Iteration 0:  Log pseudolikelihood = -2023.4726  
+Iteration 1:  Log pseudolikelihood = -1988.5802  
+Iteration 2:  Log pseudolikelihood =  -1988.355  
+Iteration 3:  Log pseudolikelihood =  -1988.355  
+
+Conditional fixed-effects Poisson regression         Number of obs    =  1,867
+Group variable: unit                                 Number of groups =    257
+
+                                                     Obs per group:
+                                                                  min =      2
+                                                                  avg =    7.3
+                                                                  max =      9
+
+                                                     Wald chi2(15)    =  32.21
+Log pseudolikelihood = -1988.355                     Prob > chi2      = 0.0060
+
+                                                  (Std. err. adjusted for clustering on unit)
+---------------------------------------------------------------------------------------------
+                            |               Robust
+            open_SMK_swasta | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+----------------------------+----------------------------------------------------------------
+               poverty_rate |  -.0274901    .018418    -1.49   0.136    -.0635887    .0086086
+                  urban_pct |  -.0038124   .0073896    -0.52   0.606    -.0182957    .0106708
+                  ln_rev_pc |  -.0413161   .1707439    -0.24   0.809     -.375968    .2933357
+                  ln_edu_pc |  -.0188987   .0477635    -0.40   0.692    -.1125135     .074716
+                  dau_share |  -.0007538    .003106    -0.24   0.808    -.0068415    .0053338
+enrollment_junior_secondary |   .0011917   .0046741     0.25   0.799    -.0079693    .0103528
+         emp_share_industry |    .004469   .0123617     0.36   0.718    -.0197596    .0286975
+                            |
+                       year |
+                      2008  |     .18828    .121793     1.55   0.122    -.0504299    .4269899
+                      2009  |   .1687555   .1285435     1.31   0.189    -.0831852    .4206962
+                      2010  |   .1082917   .1476992     0.73   0.463    -.1811933    .3977768
+                      2011  |   .3356833   .1642087     2.04   0.041     .0138401    .6575265
+                      2012  |   .3830465   .1824343     2.10   0.036     .0254818    .7406111
+                      2013  |   .2853401   .2054953     1.39   0.165    -.1174234    .6881036
+                      2014  |   .2649622   .2559489     1.04   0.301    -.2366885    .7666128
+                      2015  |   .1700628   .2449009     0.69   0.487     -.309934    .6500597
+             ln(population) |          1  (exposure)
+---------------------------------------------------------------------------------------------
+
+. 
+. capture which esttab
+
+. if !_rc {
+.     esttab pub prv, b(3) se(3) star(* 0.10 ** 0.05 *** 0.01) ///
+>         keep(poverty_rate urban_pct ln_rev_pc ln_edu_pc dau_share ///
+>              enrollment_junior_secondary emp_share_industry) ///
+>         mtitles("Public (negeri)" "Private (swasta)") ///
+>         stats(N N_g, labels("Observations" "Districts"))
+
+--------------------------------------------
+                      (1)             (2)   
+             Public (ne~)    Private (s~)   
+--------------------------------------------
+main                                        
+poverty_rate        0.001          -0.027   
+                  (0.029)         (0.018)   
+
+urban_pct          -0.011          -0.004   
+                  (0.010)         (0.007)   
+
+ln_rev_pc          -0.115          -0.041   
+                  (0.229)         (0.171)   
+
+ln_edu_pc           0.054          -0.019   
+                  (0.084)         (0.048)   
+
+dau_share           0.003          -0.001   
+                  (0.006)         (0.003)   
+
+e~junior_s~y        0.014           0.001   
+                  (0.009)         (0.005)   
+
+emp_share_~y        0.009           0.004   
+                  (0.021)         (0.012)   
+--------------------------------------------
+Observations     1796.000        1867.000   
+Districts         251.000         257.000   
+--------------------------------------------
+Standard errors in parentheses
+* p<0.10, ** p<0.05, *** p<0.01
+. }
+
+. 
+. *=============================================================================
+. * 5. ROBUSTNESS
+. *=============================================================================
+. 
+. * 5a. Full window including the post-2017 regime. If results move, the 2017
+. *     authority transfer is doing the work, not your covariates.
+. xtpoisson open_smk_total poverty_rate urban_pct ln_rev_pc ln_edu_pc dau_share ///
+>     enrollment_junior_secondary emp_share_industry i.year ///
+>     if !missing(open_smk_total) & year >= 1996, ///
+>     fe exposure(population) vce(robust)
+note: 1 group (1 obs) dropped because of only one obs per group
+note: 9 groups (81 obs) dropped because of all zero outcomes
+
+Iteration 0:  Log pseudolikelihood = -4421.3694  
+Iteration 1:  Log pseudolikelihood = -3711.8463  
+Iteration 2:  Log pseudolikelihood = -3691.4953  
+Iteration 3:  Log pseudolikelihood = -3691.3574  
+Iteration 4:  Log pseudolikelihood = -3691.3574  
+
+Conditional fixed-effects Poisson regression         Number of obs    =  3,195
+Group variable: unit                                 Number of groups =    289
+
+                                                     Obs per group:
+                                                                  min =      4
+                                                                  avg =   11.1
+                                                                  max =     13
+
+                                                     Wald chi2(19)    = 347.00
+Log pseudolikelihood = -3691.3574                    Prob > chi2      = 0.0000
+
+                                                  (Std. err. adjusted for clustering on unit)
+---------------------------------------------------------------------------------------------
+                            |               Robust
+             open_smk_total | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+----------------------------+----------------------------------------------------------------
+               poverty_rate |  -.0057845   .0159946    -0.36   0.718    -.0371334    .0255644
+                  urban_pct |  -.0140546   .0061219    -2.30   0.022    -.0260532    -.002056
+                  ln_rev_pc |   .0261757   .1404254     0.19   0.852    -.2490531    .3014045
+                  ln_edu_pc |  -.0146299   .0415649    -0.35   0.725    -.0960957    .0668358
+                  dau_share |  -.0019389   .0026383    -0.73   0.462    -.0071098    .0032321
+enrollment_junior_secondary |   -.001566   .0039937    -0.39   0.695    -.0093935    .0062615
+         emp_share_industry |   .0072971   .0121617     0.60   0.549    -.0165393    .0311336
+                            |
+                       year |
+                      2008  |   .1790731   .0986469     1.82   0.069    -.0142714    .3724175
+                      2009  |   .1641502   .1111807     1.48   0.140    -.0537599    .3820604
+                      2010  |   .1448618   .1252316     1.16   0.247    -.1005877    .3903113
+                      2011  |   .2785112   .1501957     1.85   0.064     -.015867    .5728894
+                      2012  |   .3634796   .1657528     2.19   0.028       .03861    .6883491
+                      2013  |   .2647109   .1785121     1.48   0.138    -.0851664    .6145883
+                      2014  |   .1720286   .2131819     0.81   0.420    -.2458003    .5898574
+                      2015  |   .0874625   .1831338     0.48   0.633    -.2714732    .4463982
+                      2017  |  -.7930215   .2133164    -3.72   0.000    -1.211114    -.374929
+                      2018  |  -1.007013   .2225011    -4.53   0.000    -1.443107   -.5709186
+                      2019  |    -1.3551   .2555379    -5.30   0.000    -1.855945   -.8542547
+                      2020  |  -1.186448    .251033    -4.73   0.000    -1.678464   -.6944323
+             ln(population) |          1  (exposure)
+---------------------------------------------------------------------------------------------
+
+. 
+. * 5b. Linear fixed effects on the same sample, for comparison ONLY.
+. *     Expect it to differ. A linear model on a 59%-zero outcome can predict
+. *     negative openings; it is here to show the difference, not as an estimate.
+. generate double open_pc = 100000 * open_smk_total / population
+(274 missing values generated)
+
+. label var open_pc "SMK openings per 100,000 people"
+
+. xtreg open_pc poverty_rate urban_pct ln_rev_pc ln_edu_pc dau_share ///
+>     enrollment_junior_secondary emp_share_industry i.year ///
+>     if insample, fe vce(cluster unit)
+
+Fixed-effects (within) regression               Number of obs     =      2,107
+Group variable: unit                            Number of groups  =        297
+
+R-squared:                                      Obs per group:
+     Within  = 0.0124                                         min =          1
+     Between = 0.0266                                         avg =        7.1
+     Overall = 0.0011                                         max =          9
+
+                                                F(15, 296)        =       1.32
+corr(u_i, Xb) = -0.3948                         Prob > F          =     0.1889
+
+                                                (Std. err. adjusted for 297 clusters in unit)
+---------------------------------------------------------------------------------------------
+                            |               Robust
+                    open_pc | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+----------------------------+----------------------------------------------------------------
+               poverty_rate |  -.0061644   .0052166    -1.18   0.238    -.0164308    .0041019
+                  urban_pct |  -.0017079   .0020435    -0.84   0.404    -.0057296    .0023138
+                  ln_rev_pc |  -.0465538    .065205    -0.71   0.476     -.174878    .0817703
+                  ln_edu_pc |   .0091809   .0154212     0.60   0.552    -.0211682    .0395299
+                  dau_share |   .0006873   .0012903     0.53   0.595    -.0018521    .0032266
+enrollment_junior_secondary |   .0030506   .0013839     2.20   0.028     .0003272    .0057741
+         emp_share_industry |   .0029943   .0033259     0.90   0.369     -.003551    .0095396
+                            |
+                       year |
+                      2008  |   .0333142   .0298873     1.11   0.266    -.0255044    .0921328
+                      2009  |   .0448628   .0317272     1.41   0.158    -.0175766    .1073022
+                      2010  |   .0226225   .0341063     0.66   0.508    -.0444991    .0897441
+                      2011  |    .050295   .0434359     1.16   0.248    -.0351874    .1357774
+                      2012  |   .0717731   .0500397     1.43   0.153    -.0267055    .1702517
+                      2013  |   .0423278    .060032     0.71   0.481    -.0758158    .1604714
+                      2014  |   .0356673   .0699627     0.51   0.611    -.1020201    .1733546
+                      2015  |   .0440005   .0747214     0.59   0.556    -.1030519    .1910529
+                            |
+                      _cons |    .679743   .9559687     0.71   0.478    -1.201614      2.5611
+----------------------------+----------------------------------------------------------------
+                    sigma_u |  .23671796
+                    sigma_e |  .32568766
+                        rho |  .34566737   (fraction of variance due to u_i)
+---------------------------------------------------------------------------------------------
+
+. 
+. * 5c. Negative binomial. CAVEAT: Stata's xtnbreg, fe is not a true fixed-effects
+. *     estimator in the usual sense (Allison & Waterman 2002) - it does not sweep
+. *     out a district-specific intercept the way xtpoisson, fe does. Read it as a
+. *     sensitivity check on the point estimates only, never as the main result.
+. capture noisily xtnbreg open_smk_total poverty_rate urban_pct ///
+>     ln_rev_pc ln_edu_pc dau_share enrollment_junior_secondary emp_share_industry i.year ///
+>     if insample, fe
+note: 4 groups (4 obs) dropped because of only one obs per group
+note: 10 groups (67 obs) dropped because of all zero outcomes
+
+Iteration 0:  Log likelihood = -2575.6041  
+Iteration 1:  Log likelihood = -2466.3546  
+Iteration 2:  Log likelihood = -2462.0042  
+Iteration 3:  Log likelihood = -2461.9809  
+Iteration 4:  Log likelihood = -2461.9809  
+
+Conditional FE negative binomial regression          Number of obs    =  2,036
+Group variable: unit                                 Number of groups =    283
+
+                                                     Obs per group:
+                                                                  min =      2
+                                                                  avg =    7.2
+                                                                  max =      9
+
+                                                     Wald chi2(15)    =  35.13
+Log likelihood = -2461.9809                          Prob > chi2      = 0.0024
+
+---------------------------------------------------------------------------------------------
+             open_smk_total | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+----------------------------+----------------------------------------------------------------
+               poverty_rate |  -.0110748   .0121398    -0.91   0.362    -.0348684    .0127187
+                  urban_pct |  -.0031772   .0041948    -0.76   0.449    -.0113989    .0050444
+                  ln_rev_pc |  -.1296993   .1264368    -1.03   0.305    -.3775108    .1181123
+                  ln_edu_pc |    .006781   .0442121     0.15   0.878    -.0798732    .0934351
+                  dau_share |  -.0023323   .0029284    -0.80   0.426    -.0080718    .0034071
+enrollment_junior_secondary |    .005077   .0038851     1.31   0.191    -.0025376    .0126916
+         emp_share_industry |   .0046933   .0078097     0.60   0.548    -.0106134         .02
+                            |
+                       year |
+                      2008  |   .1124773   .0842821     1.33   0.182    -.0527125    .2776672
+                      2009  |   .1051413   .0935221     1.12   0.261    -.0781586    .2884411
+                      2010  |   .1084797   .1096823     0.99   0.323    -.1064936     .323453
+                      2011  |   .2238692    .124514     1.80   0.072    -.0201738    .4679122
+                      2012  |    .325573   .1341492     2.43   0.015     .0626454    .5885005
+                      2013  |    .283088   .1535252     1.84   0.065    -.0178158    .5839917
+                      2014  |   .1657929   .1753298     0.95   0.344    -.1778473    .5094331
+                      2015  |   .1592161   .1754213     0.91   0.364    -.1846034    .5030356
+                            |
+                      _cons |   3.473867   1.873363     1.85   0.064    -.1978571    7.145591
+---------------------------------------------------------------------------------------------
+
+. 
+. * 5d. ppmlhdfe if available - same estimator, better with many fixed effects,
+. *     and it reports separation explicitly.
+. capture which ppmlhdfe
+
+. if !_rc {
+.     ppmlhdfe open_smk_total poverty_rate urban_pct ln_rev_pc ln_edu_pc dau_share ///
+>         enrollment_junior_secondary emp_share_industry ///
+>         if insample, absorb(unit year) exposure(population) vce(cluster unit)
+. }
+
+. else display as text "ppmlhdfe not installed (optional). ssc install ppmlhdfe"
+ppmlhdfe not installed (optional). ssc install ppmlhdfe
+
+. 
+. *=============================================================================
+. * 6. WHAT TO WRITE DOWN
+. *=============================================================================
+. display _newline "{txt}Record from the output above:"
+
+Record from the output above:
+
+. display "  1. N and number of districts on EVERY model - they are not the same sample"
+  1. N and number of districts on EVERY model - they are not the same sample
+
+. display "  2. How many districts FE Poisson dropped for having no openings at all"
+  2. How many districts FE Poisson dropped for having no openings at all
+
+. display "  3. Whether emp_share_industry survives when M4 is compared to M4b"
+  3. Whether emp_share_industry survives when M4 is compared to M4b
+
+. display "  4. Whether the public and private coefficients have the same sign"
+  4. Whether the public and private coefficients have the same sign
+
+. display "  5. Whether 5a (full window) moves the coefficients materially"
+  5. Whether 5a (full window) moves the coefficients materially
+
+. display "  6. Whether res_share does anything, and M6 vs M6b before you believe it"
+  6. Whether res_share does anything, and M6 vs M6b before you believe it
+
+. display "  7. Whether emp_share_industry moves in M8, the spec with the bad controls removed"
+  7. Whether emp_share_industry moves in M8, the spec with the bad controls removed
+
+. 
+. log close
+      name:  <unnamed>
+       log:  C:\Users\HP\Documents\UIII\Research Project\Pak Siro - MORA\data\DAPOER\smk_openings_mod
+> els.log
+  log type:  text
+ closed on:   6 Aug 2026, 07:43:14
+-----------------------------------------------------------------------------------------------------

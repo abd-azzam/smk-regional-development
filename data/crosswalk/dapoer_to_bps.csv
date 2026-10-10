@@ -1,0 +1,515 @@
+﻿geo_name,bps_kode,bps_nama,kab_kota_dapodik,provinsi
+"Aceh Barat Daya, Kab.",1112,KABUPATEN ACEH BARAT DAYA,Kab. Aceh Barat Daya,Aceh
+"Aceh Barat, Kab.",1107,KABUPATEN ACEH BARAT,Kab. Aceh Barat,Aceh
+"Aceh Besar, Kab.",1108,KABUPATEN ACEH BESAR,Kab. Aceh Besar,Aceh
+"Aceh Jaya, Kab.",1116,KABUPATEN ACEH JAYA,Kab. Aceh Jaya,Aceh
+"Aceh Selatan, Kab.",1103,KABUPATEN ACEH SELATAN,Kab. Aceh Selatan,Aceh
+"Aceh Singkil, Kab.",1102,KABUPATEN ACEH SINGKIL,Kab. Aceh Singkil,Aceh
+"Aceh Tamiang, Kab.",1114,KABUPATEN ACEH TAMIANG,Kab. Aceh Tamiang,Aceh
+"Aceh Tengah, Kab.",1106,KABUPATEN ACEH TENGAH,Kab. Aceh Tengah,Aceh
+"Aceh Tenggara, Kab.",1104,KABUPATEN ACEH TENGGARA,Kab. Aceh Tenggara,Aceh
+"Aceh Timur, Kab.",1105,KABUPATEN ACEH TIMUR,Kab. Aceh Timur,Aceh
+"Aceh Utara, Kab.",1111,KABUPATEN ACEH UTARA,Kab. Aceh Utara,Aceh
+"Adm. Kepulauan Seribu, Kab.",3101,KABUPATEN KEPULAUAN SERIBU,Kab. Adm. Kep. Seribu,D.K.I. Jakarta
+"Agam, Kab.",1307,KABUPATEN AGAM,Kab. Agam,Sumatera Barat
+"Alor, Kab.",5307,KABUPATEN ALOR,Kab. Alor,Nusa Tenggara Timur
+"Ambon, Kota",8171,KOTA AMBON,Kota Ambon,Maluku
+"Asahan, Kab.",1208,KABUPATEN ASAHAN,Kab. Asahan,Sumatera Utara
+"Asmat, Kab.",9415,KABUPATEN ASMAT,Kab. Asmat,Papua Selatan
+"Badung, Kab.",5103,KABUPATEN BADUNG,Kab. Badung,Bali
+"Balangan, Kab.",6311,KABUPATEN BALANGAN,Kab. Balangan,Kalimantan Selatan
+"Balikpapan, Kota",6471,KOTA BALIKPAPAN,Kota Balikpapan,Kalimantan Timur
+"Banda Aceh, Kota",1171,KOTA BANDA ACEH,Kota Banda Aceh,Aceh
+"Bandar Lampung, Kota",1871,KOTA BANDAR LAMPUNG,Kota Bandar Lampung,Lampung
+"Bandung Barat, Kab.",3217,KABUPATEN BANDUNG BARAT,Kab. Bandung Barat,Jawa Barat
+"Bandung, Kab.",3204,KABUPATEN BANDUNG,Kab. Bandung,Jawa Barat
+"Bandung, Kota",3273,KOTA BANDUNG,Kota Bandung,Jawa Barat
+"Banggai Kepulauan, Kab.",7201,KABUPATEN BANGGAI KEPULAUAN,Kab. Banggai Kepulauan,Sulawesi Tengah
+"Banggai Laut, Kab.",7211,KABUPATEN BANGGAI LAUT,Kab. Banggai Laut,Sulawesi Tengah
+"Banggai, Kab.",7202,KABUPATEN BANGGAI,Kab. Banggai,Sulawesi Tengah
+"Bangka Barat, Kab.",1903,KABUPATEN BANGKA BARAT,Kab. Bangka Barat,Kepulauan Bangka Belitung
+"Bangka Selatan, Kab.",1905,KABUPATEN BANGKA SELATAN,Kab. Bangka Selatan,Kepulauan Bangka Belitung
+"Bangka Tengah, Kab.",1904,KABUPATEN BANGKA TENGAH,Kab. Bangka Tengah,Kepulauan Bangka Belitung
+"Bangka, Kab.",1901,KABUPATEN BANGKA,Kab. Bangka,Kepulauan Bangka Belitung
+"Bangkalan, Kab.",3526,KABUPATEN BANGKALAN,Kab. Bangkalan,Jawa Timur
+"Bangli, Kab.",5106,KABUPATEN BANGLI,Kab. Bangli,Bali
+"Banjar Baru, Kota",6372,KOTA BANJAR BARU,Kota Banjarbaru,Kalimantan Selatan
+"Banjar, Kab.",6303,KABUPATEN BANJAR,Kab. Banjar,Kalimantan Selatan
+"Banjar, Kota",3279,KOTA BANJAR,Kota Banjar,Jawa Barat
+"Banjarmasin, Kota",6371,KOTA BANJARMASIN,Kota Banjarmasin,Kalimantan Selatan
+"Banjarnegara, Kab.",3304,KABUPATEN BANJARNEGARA,Kab. Banjarnegara,Jawa Tengah
+"Bantaeng, Kab.",7303,KABUPATEN BANTAENG,Kab. Bantaeng,Sulawesi Selatan
+"Bantul, Kab.",3402,KABUPATEN BANTUL,Kab. Bantul,D.I. Yogyakarta
+"Banyuasin, Kab.",1607,KABUPATEN BANYU ASIN,Kab. Banyuasin,Sumatera Selatan
+"Banyumas, Kab.",3302,KABUPATEN BANYUMAS,Kab. Banyumas,Jawa Tengah
+"Banyuwangi, Kab.",3510,KABUPATEN BANYUWANGI,Kab. Banyuwangi,Jawa Timur
+"Barito Kuala, Kab.",6304,KABUPATEN BARITO KUALA,Kab. Barito Kuala,Kalimantan Selatan
+"Barito Selatan, Kab.",6204,KABUPATEN BARITO SELATAN,Kab. Barito Selatan,Kalimantan Tengah
+"Barito Timur, Kab.",6212,KABUPATEN BARITO TIMUR,Kab. Barito Timur,Kalimantan Tengah
+"Barito Utara, Kab.",6205,KABUPATEN BARITO UTARA,Kab. Barito Utara,Kalimantan Tengah
+"Barru, Kab.",7310,KABUPATEN BARRU,Kab. Barru,Sulawesi Selatan
+"Batam, Kota",2171,KOTA B A T A M,Kota Batam,Kepulauan Riau
+"Batang Hari, Kab.",1504,KABUPATEN BATANG HARI,Kab. Batanghari,Jambi
+"Batang, Kab.",3325,KABUPATEN BATANG,Kab. Batang,Jawa Tengah
+"Batu Bara, Kab.",1219,KABUPATEN BATU BARA,Kab. Batu Bara,Sumatera Utara
+"Batu, Kota",3579,KOTA BATU,Kota Batu,Jawa Timur
+"Bau-Bau, Kota",7472,KOTA BAUBAU,Kota Bau Bau,Sulawesi Tenggara
+"Bekasi, Kab.",3216,KABUPATEN BEKASI,Kab. Bekasi,Jawa Barat
+"Bekasi, Kota",3275,KOTA BEKASI,Kota Bekasi,Jawa Barat
+"Belitung Timur, Kab.",1906,KABUPATEN BELITUNG TIMUR,Kab. Belitung Timur,Kepulauan Bangka Belitung
+"Belitung, Kab.",1902,KABUPATEN BELITUNG,Kab. Belitung,Kepulauan Bangka Belitung
+"Belu, Kab.",5306,KABUPATEN BELU,Kab. Belu,Nusa Tenggara Timur
+"Bener Meriah, Kab.",1117,KABUPATEN BENER MERIAH,Kab. Bener Meriah,Aceh
+"Bengkalis, Kab.",1408,KABUPATEN BENGKALIS,Kab. Bengkalis,Riau
+"Bengkayang, Kab.",6102,KABUPATEN BENGKAYANG,Kab. Bengkayang,Kalimantan Barat
+"Bengkulu Selatan, Kab.",1701,KABUPATEN BENGKULU SELATAN,Kab. Bengkulu Selatan,Bengkulu
+"Bengkulu Tengah, Kab.",1709,KABUPATEN BENGKULU TENGAH,Kab. Bengkulu Tengah,Bengkulu
+"Bengkulu Utara, Kab.",1703,KABUPATEN BENGKULU UTARA,Kab. Bengkulu Utara,Bengkulu
+"Bengkulu, Kota",1771,KOTA BENGKULU,Kota Bengkulu,Bengkulu
+"Berau, Kab.",6405,KABUPATEN BERAU,Kab. Berau,Kalimantan Timur
+"Biak Numfor, Kab.",9409,KABUPATEN BIAK NUMFOR,Kab. Biak Numfor,Papua
+"Bima, Kab.",5206,KABUPATEN BIMA,Kab. Bima,Nusa Tenggara Barat
+"Bima, Kota",5272,KOTA BIMA,Kota Bima,Nusa Tenggara Barat
+"Binjai, Kota",1276,KOTA BINJAI,Kota Binjai,Sumatera Utara
+"Bintan, Kab.",2102,KABUPATEN BINTAN,Kab. Bintan,Kepulauan Riau
+"Bireuen, Kab.",1110,KABUPATEN BIREUEN,Kab. Bireuen,Aceh
+"Bitung, Kota",7172,KOTA BITUNG,Kota Bitung,Sulawesi Utara
+"Blitar, Kab.",3505,KABUPATEN BLITAR,Kab. Blitar,Jawa Timur
+"Blitar, Kota",3572,KOTA BLITAR,Kota Blitar,Jawa Timur
+"Blora, Kab.",3316,KABUPATEN BLORA,Kab. Blora,Jawa Tengah
+"Boalemo, Kab.",7501,KABUPATEN BOALEMO,Kab. Boalemo,Gorontalo
+"Bogor, Kab.",3201,KABUPATEN BOGOR,Kab. Bogor,Jawa Barat
+"Bogor, Kota",3271,KOTA BOGOR,Kota Bogor,Jawa Barat
+"Bojonegoro, Kab.",3522,KABUPATEN BOJONEGORO,Kab. Bojonegoro,Jawa Timur
+"Bolaang Mongondow Selatan, Kab.",7110,KABUPATEN BOLAANG MONGONDOW SELATAN,Kab. Bolaang Mongondow Selatan,Sulawesi Utara
+"Bolaang Mongondow Timur, Kab.",7111,KABUPATEN BOLAANG MONGONDOW TIMUR,Kab. Bolaang Mongondow Timur,Sulawesi Utara
+"Bolaang Mongondow Utara, Kab.",7107,KABUPATEN BOLAANG MONGONDOW UTARA,Kab. Bolaang Mongondow Utara,Sulawesi Utara
+"Bolaang Mongondow, Kab.",7101,KABUPATEN BOLAANG MONGONDOW,Kab. Bolaang Mongondow,Sulawesi Utara
+"Bombana, Kab.",7406,KABUPATEN BOMBANA,Kab. Bombana,Sulawesi Tenggara
+"Bondowoso, Kab.",3511,KABUPATEN BONDOWOSO,Kab. Bondowoso,Jawa Timur
+"Bone Bolango, Kab.",7504,KABUPATEN BONE BOLANGO,Kab. Bone Bolango,Gorontalo
+"Bone, Kab.",7311,KABUPATEN BONE,Kab. Bone,Sulawesi Selatan
+"Bontang, Kota",6474,KOTA BONTANG,Kota Bontang,Kalimantan Timur
+"Boven Digoel, Kab.",9413,KABUPATEN BOVEN DIGOEL,Kab. Boven Digoel,Papua Selatan
+"Boyolali, Kab.",3309,KABUPATEN BOYOLALI,Kab. Boyolali,Jawa Tengah
+"Brebes, Kab.",3329,KABUPATEN BREBES,Kab. Brebes,Jawa Tengah
+"Bukittinggi, Kota",1375,KOTA BUKITTINGGI,Kota Bukittinggi,Sumatera Barat
+"Buleleng, Kab.",5108,KABUPATEN BULELENG,Kab. Buleleng,Bali
+"Bulukumba, Kab.",7302,KABUPATEN BULUKUMBA,Kab. Bulukumba,Sulawesi Selatan
+"Bulungan, Kab.",6502,KABUPATEN BULUNGAN,Kab. Bulungan,Kalimantan Utara
+"Bungo, Kab.",1509,KABUPATEN BUNGO,Kab. Bungo,Jambi
+"Buol, Kab.",7207,KABUPATEN BUOL,Kab. Buol,Sulawesi Tengah
+"Buru Selatan, Kab.",8109,KABUPATEN BURU SELATAN,Kab. Buru Selatan,Maluku
+"Buru, Kab.",8104,KABUPATEN BURU,Kab. Buru,Maluku
+"Buton Selatan, Kab.",7415,KABUPATEN BUTON SELATAN,Kab. Buton Selatan,Sulawesi Tenggara
+"Buton Tengah, Kab.",7414,KABUPATEN BUTON TENGAH,Kab. Buton Tengah,Sulawesi Tenggara
+"Buton Utara, Kab.",7409,KABUPATEN BUTON UTARA,Kab. Buton Utara,Sulawesi Tenggara
+"Buton, Kab.",7401,KABUPATEN BUTON,Kab. Buton,Sulawesi Tenggara
+"Ciamis, Kab.",3207,KABUPATEN CIAMIS,Kab. Ciamis,Jawa Barat
+"Cianjur, Kab.",3203,KABUPATEN CIANJUR,Kab. Cianjur,Jawa Barat
+"Cilacap, Kab.",3301,KABUPATEN CILACAP,Kab. Cilacap,Jawa Tengah
+"Cilegon, Kota",3672,KOTA CILEGON,Kota Cilegon,Banten
+"Cimahi, Kota",3277,KOTA CIMAHI,Kota Cimahi,Jawa Barat
+"Cirebon, Kab.",3209,KABUPATEN CIREBON,Kab. Cirebon,Jawa Barat
+"Cirebon, Kota",3274,KOTA CIREBON,Kota Cirebon,Jawa Barat
+"Dairi, Kab.",1210,KABUPATEN DAIRI,Kab. Dairi,Sumatera Utara
+"Deiyai, Kab.",9436,KABUPATEN DEIYAI,Kab. Deiyai,Papua Tengah
+"Deli Serdang, Kab.",1212,KABUPATEN DELI SERDANG,Kab. Deli Serdang,Sumatera Utara
+"Demak, Kab.",3321,KABUPATEN DEMAK,Kab. Demak,Jawa Tengah
+"Denpasar, Kota",5171,KOTA DENPASAR,Kota Denpasar,Bali
+"Depok, Kota",3276,KOTA DEPOK,Kota Depok,Jawa Barat
+"Dharmasraya, Kab.",1311,KABUPATEN DHARMASRAYA,Kab. Dharmasraya,Sumatera Barat
+"Dogiyai, Kab.",9434,KABUPATEN DOGIYAI,Kab. Dogiyai,Papua Tengah
+"Dompu, Kab.",5205,KABUPATEN DOMPU,Kab. Dompu,Nusa Tenggara Barat
+"Donggala, Kab.",7205,KABUPATEN DONGGALA,Kab. Donggala,Sulawesi Tengah
+"Dumai, Kota",1473,KOTA D U M A I,Kota Dumai,Riau
+"Empat Lawang, Kab.",1611,KABUPATEN EMPAT LAWANG,Kab. Empat Lawang,Sumatera Selatan
+"Ende, Kab.",5311,KABUPATEN ENDE,Kab. Ende,Nusa Tenggara Timur
+"Enrekang, Kab.",7316,KABUPATEN ENREKANG,Kab. Enrekang,Sulawesi Selatan
+"Fakfak, Kab.",9101,KABUPATEN FAKFAK,Kab. Fak Fak,Papua Barat
+"Flores Timur, Kab.",5309,KABUPATEN FLORES TIMUR,Kab. Flores Timur,Nusa Tenggara Timur
+"Garut, Kab.",3205,KABUPATEN GARUT,Kab. Garut,Jawa Barat
+"Gayo Lues, Kab.",1113,KABUPATEN GAYO LUES,Kab. Gayo Lues,Aceh
+"Gianyar, Kab.",5104,KABUPATEN GIANYAR,Kab. Gianyar,Bali
+"Gorontalo Utara, Kab.",7505,KABUPATEN GORONTALO UTARA,Kab. Gorontalo Utara,Gorontalo
+"Gorontalo, Kab.",7502,KABUPATEN GORONTALO,Kab. Gorontalo,Gorontalo
+"Gorontalo, Kota",7571,KOTA GORONTALO,Kota Gorontalo,Gorontalo
+"Gowa, Kab.",7306,KABUPATEN GOWA,Kab. Gowa,Sulawesi Selatan
+"Gresik, Kab.",3525,KABUPATEN GRESIK,Kab. Gresik,Jawa Timur
+"Grobogan, Kab.",3315,KABUPATEN GROBOGAN,Kab. Grobogan,Jawa Tengah
+"Gunung Kidul, Kab.",3403,KABUPATEN GUNUNG KIDUL,Kab. Gunungkidul,D.I. Yogyakarta
+"Gunung Mas, Kab.",6211,KABUPATEN GUNUNG MAS,Kab. Gunung Mas,Kalimantan Tengah
+"Gunung Sitoli, Kota",1278,KOTA GUNUNGSITOLI,Kota Gunungsitoli,Sumatera Utara
+"Halmahera Barat, Kab.",8201,KABUPATEN HALMAHERA BARAT,Kab. Halmahera Barat,Maluku Utara
+"Halmahera Selatan, Kab.",8204,KABUPATEN HALMAHERA SELATAN,Kab. Halmahera Selatan,Maluku Utara
+"Halmahera Tengah, Kab.",8202,KABUPATEN HALMAHERA TENGAH,Kab. Halmahera Tengah,Maluku Utara
+"Halmahera Timur, Kab.",8206,KABUPATEN HALMAHERA TIMUR,Kab. Halmahera Timur,Maluku Utara
+"Halmahera Utara, Kab.",8205,KABUPATEN HALMAHERA UTARA,Kab. halmahera Utara,Maluku Utara
+"Hulu Sungai Selatan, Kab.",6306,KABUPATEN HULU SUNGAI SELATAN,Kab. Hulu Sungai Selatan,Kalimantan Selatan
+"Hulu Sungai Tengah, Kab.",6307,KABUPATEN HULU SUNGAI TENGAH,Kab. Hulu Sungai Tengah,Kalimantan Selatan
+"Hulu Sungai Utara, Kab.",6308,KABUPATEN HULU SUNGAI UTARA,Kab. Hulu Sungai Utara,Kalimantan Selatan
+"Humbang Hasundutan, Kab.",1215,KABUPATEN HUMBANG HASUNDUTAN,Kab. Humbang Hasundutan,Sumatera Utara
+"Indragiri Hilir, Kab.",1403,KABUPATEN INDRAGIRI HILIR,Kab. Indragiri Hilir,Riau
+"Indragiri Hulu, Kab.",1402,KABUPATEN INDRAGIRI HULU,Kab. Indragiri Hulu,Riau
+"Indramayu, Kab.",3212,KABUPATEN INDRAMAYU,Kab. Indramayu,Jawa Barat
+"Intan Jaya, Kab.",9435,KABUPATEN INTAN JAYA,Kab. Intan Jaya,Papua Tengah
+"Jakarta Barat, Kota",3174,KOTA JAKARTA BARAT,Kota Adm. Jakarta Barat,D.K.I. Jakarta
+"Jakarta Pusat, Kota",3173,KOTA JAKARTA PUSAT,Kota Adm. Jakarta Pusat,D.K.I. Jakarta
+"Jakarta Selatan, Kota",3171,KOTA JAKARTA SELATAN,Kota Adm. Jakarta Selatan,D.K.I. Jakarta
+"Jakarta Timur, Kota",3172,KOTA JAKARTA TIMUR,Kota Adm. Jakarta Timur,D.K.I. Jakarta
+"Jakarta Utara, Kota",3175,KOTA JAKARTA UTARA,Kota Adm. Jakarta Utara,D.K.I. Jakarta
+"Jambi, Kota",1571,KOTA JAMBI,Kota Jambi,Jambi
+"Jayapura, Kab.",9403,KABUPATEN JAYAPURA,Kab. Jayapura,Papua
+"Jayapura, Kota",9471,KOTA JAYAPURA,Kota Jayapura,Papua
+"Jayawijaya, Kab.",9402,KABUPATEN JAYAWIJAYA,Kab. Jayawijaya,Papua Pegunungan
+"Jember, Kab.",3509,KABUPATEN JEMBER,Kab. Jember,Jawa Timur
+"Jembrana, Kab.",5101,KABUPATEN JEMBRANA,Kab. Jembrana,Bali
+"Jeneponto, Kab.",7304,KABUPATEN JENEPONTO,Kab. Jeneponto,Sulawesi Selatan
+"Jepara, Kab.",3320,KABUPATEN JEPARA,Kab. Jepara,Jawa Tengah
+"Jombang, Kab.",3517,KABUPATEN JOMBANG,Kab. Jombang,Jawa Timur
+"Kaimana, Kab.",9102,KABUPATEN KAIMANA,Kab. Kaimana,Papua Barat
+"Kampar, Kab.",1406,KABUPATEN KAMPAR,Kab. Kampar,Riau
+"Kapuas Hulu, Kab.",6108,KABUPATEN KAPUAS HULU,Kab. Kapuas Hulu,Kalimantan Barat
+"Kapuas, Kab.",6203,KABUPATEN KAPUAS,Kab. Kapuas,Kalimantan Tengah
+"Karanganyar, Kab.",3313,KABUPATEN KARANGANYAR,Kab. Karanganyar,Jawa Tengah
+"Karangasem, Kab.",5107,KABUPATEN KARANG ASEM,Kab. Karangasem,Bali
+"Karawang, Kab.",3215,KABUPATEN KARAWANG,Kab. Karawang,Jawa Barat
+"Karimun, Kab.",2101,KABUPATEN KARIMUN,Kab. Karimun,Kepulauan Riau
+"Karo, Kab.",1211,KABUPATEN KARO,Kab. Karo,Sumatera Utara
+"Katingan, Kab.",6209,KABUPATEN KATINGAN,Kab. Katingan,Kalimantan Tengah
+"Kaur, Kab.",1704,KABUPATEN KAUR,Kab. Kaur,Bengkulu
+"Kayong Utara, Kab.",6111,KABUPATEN KAYONG UTARA,Kab. Kayong Utara,Kalimantan Barat
+"Kebumen, Kab.",3305,KABUPATEN KEBUMEN,Kab. Kebumen,Jawa Tengah
+"Kediri, Kab.",3506,KABUPATEN KEDIRI,Kab. Kediri,Jawa Timur
+"Kediri, Kota",3571,KOTA KEDIRI,Kota Kediri,Jawa Timur
+"Keerom, Kab.",9420,KABUPATEN KEEROM,Kab. Keerom,Papua
+"Kendal, Kab.",3324,KABUPATEN KENDAL,Kab. Kendal,Jawa Tengah
+Kendari City,7471,KOTA KENDARI,Kota Kendari,Sulawesi Tenggara
+"Kep. Siau Tagulandang Biaro, Kab.",7108,KABUPATEN SIAU TAGULANDANG BIARO,Kab. Kep. Siau Tagulandang Biaro,Sulawesi Utara
+"Kepahiang, Kab.",1708,KABUPATEN KEPAHIANG,Kab. Kepahiang,Bengkulu
+"Kepulauan Anambas, Kab.",2105,KABUPATEN KEPULAUAN ANAMBAS,Kab. Kepulauan Anambas,Kepulauan Riau
+"Kepulauan Aru, Kab.",8105,KABUPATEN KEPULAUAN ARU,Kab. Kepulauan Aru,Maluku
+"Kepulauan Mentawai, Kab.",1301,KABUPATEN KEPULAUAN MENTAWAI,Kab. Kepulauan Mentawai,Sumatera Barat
+"Kepulauan Meranti, Kab.",1410,KABUPATEN KEPULAUAN MERANTI,Kab. Kepulauan Meranti,Riau
+"Kepulauan Sangihe, Kab.",7103,KABUPATEN KEPULAUAN SANGIHE,Kab. Kepulauan Sangihe,Sulawesi Utara
+"Kepulauan Selayar, Kab.",7301,KABUPATEN KEPULAUAN SELAYAR,Kab. Kepulauan Selayar,Sulawesi Selatan
+"Kepulauan Sula, Kab.",8203,KABUPATEN KEPULAUAN SULA,Kab. Kepulauan Sula,Maluku Utara
+"Kepulauan Talaud, Kab.",7104,KABUPATEN KEPULAUAN TALAUD,Kab. Kepulauan Talaud,Sulawesi Utara
+"Kepulauan Tidore, Kota",8272,KOTA TIDORE KEPULAUAN,Kota Tidore Kepulauan,Maluku Utara
+"Kepulauan Yapen, Kab.",9408,KABUPATEN KEPULAUAN YAPEN,Kab. Kepulauan Yapen,Papua
+"Kerinci, Kab.",1501,KABUPATEN KERINCI,Kab. Kerinci,Jambi
+"Ketapang, Kab.",6106,KABUPATEN KETAPANG,Kab. Ketapang,Kalimantan Barat
+"Klaten, Kab.",3310,KABUPATEN KLATEN,Kab. Klaten,Jawa Tengah
+"Klungkung, Kab.",5105,KABUPATEN KLUNGKUNG,Kab. Klungkung,Bali
+"Kolaka Timur, Kab.",7411,KABUPATEN KOLAKA TIMUR,Kab. Kolaka Timur,Sulawesi Tenggara
+"Kolaka Utara, Kab.",7408,KABUPATEN KOLAKA UTARA,Kab. Kolaka Utara,Sulawesi Tenggara
+"Kolaka, Kab.",7404,KABUPATEN KOLAKA,Kab. Kolaka,Sulawesi Tenggara
+"Konawe Kepulauan, Kab.",7412,KABUPATEN KONAWE KEPULAUAN,Kab. Konawe Kepulauan,Sulawesi Tenggara
+"Konawe Selatan, Kab.",7405,KABUPATEN KONAWE SELATAN,Kab. Konawe Selatan,Sulawesi Tenggara
+"Konawe Utara, Kab.",7410,KABUPATEN KONAWE UTARA,Kab. Konawe Utara,Sulawesi Tenggara
+"Konawe, Kab.",7403,KABUPATEN KONAWE,Kab. Konawe,Sulawesi Tenggara
+"Kota Baru, Kab.",6302,KABUPATEN KOTA BARU,Kab. Kotabaru,Kalimantan Selatan
+"Kotamobagu, Kota",7174,KOTA KOTAMOBAGU,Kota Kotamobagu,Sulawesi Utara
+"Kotawaringin Barat, Kab.",6201,KABUPATEN KOTAWARINGIN BARAT,Kab. Kotawaringin Barat,Kalimantan Tengah
+"Kotawaringin Timur, Kab.",6202,KABUPATEN KOTAWARINGIN TIMUR,Kab. Kotawaringin Timur,Kalimantan Tengah
+"Kuantan Singingi, Kab.",1401,KABUPATEN KUANTAN SINGINGI,Kab. Kuantan Singingi,Riau
+"Kubu Raya, Kab.",6112,KABUPATEN KUBU RAYA,Kab. Kubu Raya,Kalimantan Barat
+"Kudus, Kab.",3319,KABUPATEN KUDUS,Kab. Kudus,Jawa Tengah
+"Kulon Progo, Kab.",3401,KABUPATEN KULON PROGO,Kab. Kulon Progo,D.I. Yogyakarta
+"Kuningan, Kab.",3208,KABUPATEN KUNINGAN,Kab. Kuningan,Jawa Barat
+"Kupang, Kab.",5303,KABUPATEN KUPANG,Kab. Kupang,Nusa Tenggara Timur
+"Kupang, Kota",5371,KOTA KUPANG,Kota Kupang,Nusa Tenggara Timur
+"Kutai Barat, Kab.",6402,KABUPATEN KUTAI BARAT,Kab. Kutai Barat,Kalimantan Timur
+"Kutai Kartanegara, Kab.",6403,KABUPATEN KUTAI KARTANEGARA,Kab. Kutai Kartanegara,Kalimantan Timur
+"Kutai Timur, Kab.",6404,KABUPATEN KUTAI TIMUR,Kab. Kutai Timur,Kalimantan Timur
+"Labuhan Batu Selatan, Kab.",1222,KABUPATEN LABUHAN BATU SELATAN,Kab. Labuhanbatu Selatan,Sumatera Utara
+"Labuhan Batu Utara, Kab.",1223,KABUPATEN LABUHAN BATU UTARA,Kab. Labuhanbatu Utara,Sumatera Utara
+"Labuhan Batu, Kab.",1207,KABUPATEN LABUHAN BATU,Kab. Labuhanbatu,Sumatera Utara
+"Lahat, Kab.",1604,KABUPATEN LAHAT,Kab. Lahat,Sumatera Selatan
+"Lamandau, Kab.",6207,KABUPATEN LAMANDAU,Kab. Lamandau,Kalimantan Tengah
+"Lamongan, Kab.",3524,KABUPATEN LAMONGAN,Kab. Lamongan,Jawa Timur
+"Lampung Barat, Kab.",1801,KABUPATEN LAMPUNG BARAT,Kab. Lampung Barat,Lampung
+"Lampung Selatan, Kab.",1803,KABUPATEN LAMPUNG SELATAN,Kab. Lampung Selatan,Lampung
+"Lampung Tengah, Kab.",1805,KABUPATEN LAMPUNG TENGAH,Kab. Lampung Tengah,Lampung
+"Lampung Timur, Kab.",1804,KABUPATEN LAMPUNG TIMUR,Kab. Lampung Timur,Lampung
+"Lampung Utara, Kab.",1806,KABUPATEN LAMPUNG UTARA,Kab. Lampung Utara,Lampung
+"Landak, Kab.",6103,KABUPATEN LANDAK,Kab. Landak,Kalimantan Barat
+"Langkat, Kab.",1213,KABUPATEN LANGKAT,Kab. Langkat,Sumatera Utara
+"Langsa, Kota",1173,KOTA LANGSA,Kota Langsa,Aceh
+"Lanny Jaya, Kab.",9430,KABUPATEN LANNY JAYA,Kab. Lanny Jaya,Papua Pegunungan
+"Lebak, Kab.",3602,KABUPATEN LEBAK,Kab. Lebak,Banten
+"Lebong, Kab.",1707,KABUPATEN LEBONG,Kab. Lebong,Bengkulu
+"Lembata, Kab.",5308,KABUPATEN LEMBATA,Kab. Lembata,Nusa Tenggara Timur
+"Lhokseumawe, Kota",1174,KOTA LHOKSEUMAWE,Kota Lhokseumawe,Aceh
+"Limapuluh Kota, Kab",1308,KABUPATEN LIMA PULUH KOTA,Kab. Lima Puluh Kota,Sumatera Barat
+"Lingga, Kab.",2104,KABUPATEN LINGGA,Kab. Lingga,Kepulauan Riau
+"Lombok Barat, Kab.",5201,KABUPATEN LOMBOK BARAT,Kab. Lombok Barat,Nusa Tenggara Barat
+"Lombok Tengah, Kab.",5202,KABUPATEN LOMBOK TENGAH,Kab. Lombok Tengah,Nusa Tenggara Barat
+"Lombok Timur, Kab.",5203,KABUPATEN LOMBOK TIMUR,Kab. Lombok Timur,Nusa Tenggara Barat
+"Lombok Utara, Kab.",5208,KABUPATEN LOMBOK UTARA,Kab. Lombok Utara,Nusa Tenggara Barat
+"Lubuklinggau, Kota",1674,KOTA LUBUKLINGGAU,Kota Lubuk Linggau,Sumatera Selatan
+"Lumajang, Kab.",3508,KABUPATEN LUMAJANG,Kab. Lumajang,Jawa Timur
+"Luwu Timur, Kab.",7325,KABUPATEN LUWU TIMUR,Kab. Luwu Timur,Sulawesi Selatan
+"Luwu Utara, Kab.",7322,KABUPATEN LUWU UTARA,Kab. Luwu Utara,Sulawesi Selatan
+"Luwu, Kab.",7317,KABUPATEN LUWU,Kab. Luwu,Sulawesi Selatan
+"Madiun, Kab.",3519,KABUPATEN MADIUN,Kab. Madiun,Jawa Timur
+"Madiun, Kota",3577,KOTA MADIUN,Kota Madiun,Jawa Timur
+"Magelang, Kab.",3308,KABUPATEN MAGELANG,Kab. Magelang,Jawa Tengah
+"Magelang, Kota",3371,KOTA MAGELANG,Kota Magelang,Jawa Tengah
+"Magetan, Kab.",3520,KABUPATEN MAGETAN,Kab. Magetan,Jawa Timur
+"Mahakam Hulu, Kab.",6411,KABUPATEN MAHAKAM HULU,Kab. Mahakam Ulu,Kalimantan Timur
+"Majalengka, Kab.",3210,KABUPATEN MAJALENGKA,Kab. Majalengka,Jawa Barat
+"Majene, Kab.",7601,KABUPATEN MAJENE,Kab. Majene,Sulawesi Barat
+"Makassar, Kota",7371,KOTA MAKASSAR,Kota Makassar,Sulawesi Selatan
+"Malaka, Kab.",5321,KABUPATEN MALAKA,Kab. Malaka,Nusa Tenggara Timur
+"Malang, Kab.",3507,KABUPATEN MALANG,Kab. Malang,Jawa Timur
+"Malang, Kota",3573,KOTA MALANG,Kota Malang,Jawa Timur
+"Malinau, Kab.",6501,KABUPATEN MALINAU,Kab. Malinau,Kalimantan Utara
+"Maluku Barat Daya, Kab.",8108,KABUPATEN MALUKU BARAT DAYA,Kab. Maluku Barat Daya,Maluku
+"Maluku Tengah, Kab.",8103,KABUPATEN MALUKU TENGAH,Kab. Maluku Tengah,Maluku
+"Maluku Tenggara Barat, Kab.",8101,KABUPATEN MALUKU TENGGARA BARAT,Kab. Kepulauan Tanimbar,Maluku
+"Maluku Tenggara, Kab.",8102,KABUPATEN MALUKU TENGGARA,Kab. Maluku Tenggara,Maluku
+"Mamasa, Kab.",7603,KABUPATEN MAMASA,Kab. Mamasa,Sulawesi Barat
+"Mamberamo Raya, Kab.",9428,KABUPATEN MAMBERAMO RAYA,Kab. Mamberamo Raya,Papua
+"Mamberamo Tengah, Kab.",9431,KABUPATEN MAMBERAMO TENGAH,Kab. Mamberamo Tengah,Papua Pegunungan
+"Mamuju Tengah, Kab.",7606,KABUPATEN MAMUJU TENGAH,Kab. Mamuju Tengah,Sulawesi Barat
+"Mamuju Utara, Kab.",7605,KABUPATEN MAMUJU UTARA,Kab. Pasangkayu,Sulawesi Barat
+"Mamuju, Kab.",7604,KABUPATEN MAMUJU,Kab. Mamuju,Sulawesi Barat
+"Manado, Kota",7171,KOTA MANADO,Kota Manado,Sulawesi Utara
+"Mandailing Natal, Kab",1202,KABUPATEN MANDAILING NATAL,Kab. Mandailing Natal,Sumatera Utara
+"Manggarai Barat, Kab.",5315,KABUPATEN MANGGARAI BARAT,Kab. Manggarai Barat,Nusa Tenggara Timur
+"Manggarai Timur, Kab.",5319,KABUPATEN MANGGARAI TIMUR,Kab. Manggarai Timur,Nusa Tenggara Timur
+"Manggarai, Kab.",5313,KABUPATEN MANGGARAI,Kab. Manggarai,Nusa Tenggara Timur
+"Manokwari Selatan, Kab.",9111,KABUPATEN MANOKWARI SELATAN,Kab. Manokwari Selatan,Papua Barat
+"Manokwari, Kab.",9105,KABUPATEN MANOKWARI,Kab. Manokwari,Papua Barat
+"Mappi, Kab.",9414,KABUPATEN MAPPI,Kab. Mappi,Papua Selatan
+"Maros, Kab.",7308,KABUPATEN MAROS,Kab. Maros,Sulawesi Selatan
+"Mataram, Kota",5271,KOTA MATARAM,Kota Mataram,Nusa Tenggara Barat
+"Maybrat, Kab.",9110,KABUPATEN MAYBRAT,Kab. Maybrat,Papua Barat Daya
+"Medan, Kota",1275,KOTA MEDAN,Kota Medan,Sumatera Utara
+"Melawi, Kab.",6110,KABUPATEN MELAWI,Kab. Melawi,Kalimantan Barat
+"Merangin, Kab.",1502,KABUPATEN MERANGIN,Kab. Merangin,Jambi
+"Merauke, Kab.",9401,KABUPATEN MERAUKE,Kab. Merauke,Papua Selatan
+"Mesuji, Kab.",1811,KABUPATEN MESUJI,Kab. Mesuji,Lampung
+"Metro, Kota",1872,KOTA METRO,Kota Metro,Lampung
+"Mimika, Kab.",9412,KABUPATEN MIMIKA,Kab. Mimika,Papua Tengah
+"Minahasa Selatan, Kab.",7105,KABUPATEN MINAHASA SELATAN,Kab. Minahasa Selatan,Sulawesi Utara
+"Minahasa Tenggara, Kab.",7109,KABUPATEN MINAHASA TENGGARA,Kab. Minahasa Tenggara,Sulawesi Utara
+"Minahasa Utara, Kab.",7106,KABUPATEN MINAHASA UTARA,Kab. Minahasa Utara,Sulawesi Utara
+"Minahasa, Kab.",7102,KABUPATEN MINAHASA,Kab. Minahasa,Sulawesi Utara
+"Mojokerto, Kab.",3516,KABUPATEN MOJOKERTO,Kab. Mojokerto,Jawa Timur
+"Mojokerto, Kota",3576,KOTA MOJOKERTO,Kota Mojokerto,Jawa Timur
+"Morowali Utara, Kab.",7212,KABUPATEN MOROWALI UTARA,Kab. Morowali Utara,Sulawesi Tengah
+"Morowali, Kab.",7203,KABUPATEN MOROWALI,Kab. Morowali,Sulawesi Tengah
+"Muara Enim, Kab.",1603,KABUPATEN MUARA ENIM,Kab. Muara Enim,Sumatera Selatan
+"Muaro Jambi, Kab.",1505,KABUPATEN MUARO JAMBI,Kab. Muaro Jambi,Jambi
+"Mukomuko, Kab.",1706,KABUPATEN MUKOMUKO,Kab. Mukomuko,Bengkulu
+"Muna Barat, Kab.",7413,KABUPATEN MUNA BARAT,Kab. Muna Barat,Sulawesi Tenggara
+"Muna, Kab.",7402,KABUPATEN MUNA,Kab. Muna,Sulawesi Tenggara
+"Murung Raya, Kab.",6213,KABUPATEN MURUNG RAYA,Kab. Murung Raya,Kalimantan Tengah
+"Musi Banyuasin, Kab.",1606,KABUPATEN MUSI BANYUASIN,Kab. Musi Banyuasin,Sumatera Selatan
+"Musi Rawas Utara, Kab.",1613,KABUPATEN MUSI RAWAS UTARA,Kab. Musi Rawas Utara,Sumatera Selatan
+"Musi Rawas, Kab.",1605,KABUPATEN MUSI RAWAS,Kab. Musi Rawas,Sumatera Selatan
+"Nabire, Kab.",9404,KABUPATEN NABIRE,Kab. Nabire,Papua Tengah
+"Nagan Raya, Kab.",1115,KABUPATEN NAGAN RAYA,Kab. Nagan Raya,Aceh
+"Nagekeo, Kab.",5318,KABUPATEN NAGEKEO,Kab. Nagekeo,Nusa Tenggara Timur
+"Natuna, Kab.",2103,KABUPATEN NATUNA,Kab. Natuna,Kepulauan Riau
+"Nduga, Kab.",9429,KABUPATEN NDUGA,Kab. Nduga,Papua Pegunungan
+"Ngada, Kab.",5312,KABUPATEN NGADA,Kab. Ngada,Nusa Tenggara Timur
+"Nganjuk, Kab.",3518,KABUPATEN NGANJUK,Kab. Nganjuk,Jawa Timur
+"Ngawi, Kab.",3521,KABUPATEN NGAWI,Kab. Ngawi,Jawa Timur
+"Nias Barat, Kab.",1225,KABUPATEN NIAS BARAT,Kab. Nias Barat,Sumatera Utara
+"Nias Selatan, Kab.",1214,KABUPATEN NIAS SELATAN,Kab. Nias Selatan,Sumatera Utara
+"Nias Utara, Kab.",1224,KABUPATEN NIAS UTARA,Kab. Nias Utara,Sumatera Utara
+"Nias, Kab.",1201,KABUPATEN NIAS,Kab. Nias,Sumatera Utara
+"Nunukan, Kab.",6504,KABUPATEN NUNUKAN,Kab. Nunukan,Kalimantan Utara
+"Ogan Ilir, Kab.",1610,KABUPATEN OGAN ILIR,Kab. Ogan Ilir,Sumatera Selatan
+"Ogan Komering Ilir, Kab.",1602,KABUPATEN OGAN KOMERING ILIR,Kab. Ogan Komering Ilir,Sumatera Selatan
+"Ogan Komering Ulu Selatan, Kab.",1608,KABUPATEN OGAN KOMERING ULU SELATAN,Kab. Ogan Komering Ulu Selatan,Sumatera Selatan
+"Ogan Komering Ulu Timur, Kab.",1609,KABUPATEN OGAN KOMERING ULU TIMUR,Kab. Ogan Komering Ulu Timur,Sumatera Selatan
+"Ogan Komering Ulu, Kab.",1601,KABUPATEN OGAN KOMERING ULU,Kab. Ogan Komering Ulu,Sumatera Selatan
+"Pacitan, Kab.",3501,KABUPATEN PACITAN,Kab. Pacitan,Jawa Timur
+"Padang Lawas Utara, Kab.",1220,KABUPATEN PADANG LAWAS UTARA,Kab. Padang Lawas Utara,Sumatera Utara
+"Padang Lawas, Kab.",1221,KABUPATEN PADANG LAWAS,Kab. Padang Lawas,Sumatera Utara
+"Padang Panjang, Kota",1374,KOTA PADANG PANJANG,Kota Padang Panjang,Sumatera Barat
+"Padang Pariaman, Kab.",1306,KABUPATEN PADANG PARIAMAN,Kab. Padang Pariaman,Sumatera Barat
+"Padang Sidempuan, Kota",1277,KOTA PADANGSIDIMPUAN,Kota Padang Sidempuan,Sumatera Utara
+"Padang, Kota",1371,KOTA PADANG,Kota Padang,Sumatera Barat
+"Pagar Alam, Kota",1673,KOTA PAGAR ALAM,Kota Pagar Alam,Sumatera Selatan
+"Pakpak Bharat, Kab.",1216,KABUPATEN PAKPAK BHARAT,Kab. Pakpak Bharat,Sumatera Utara
+"Palangkaraya, Kota",6271,KOTA PALANGKA RAYA,Kota Palangka Raya,Kalimantan Tengah
+"Palembang, Kota",1671,KOTA PALEMBANG,Kota Palembang,Sumatera Selatan
+"Palopo, Kota",7373,KOTA PALOPO,Kota Palopo,Sulawesi Selatan
+"Palu, Kota",7271,KOTA PALU,Kota Palu,Sulawesi Tengah
+"Pamekasan, Kab.",3528,KABUPATEN PAMEKASAN,Kab. Pamekasan,Jawa Timur
+"Pandeglang, Kab.",3601,KABUPATEN PANDEGLANG,Kab. Pandeglang,Banten
+"Pangandaran, Kab.",3218,KABUPATEN PANGANDARAN,Kab. Pangandaran,Jawa Barat
+"Pangkajene Kepulauan, Kab.",7309,KABUPATEN PANGKAJENE DAN KEPULAUAN,Kab. Pangkajene Dan Kepulauan,Sulawesi Selatan
+"Pangkal Pinang, Kota",1971,KOTA PANGKAL PINANG,Kota Pangkal Pinang,Kepulauan Bangka Belitung
+"Paniai, Kab.",9410,KABUPATEN PANIAI,Kab. Paniai,Papua Tengah
+"Parepare, Kota",7372,KOTA PAREPARE,Kota Parepare,Sulawesi Selatan
+"Pariaman, Kota",1377,KOTA PARIAMAN,Kota Pariaman,Sumatera Barat
+"Parigi Moutong, Kab.",7208,KABUPATEN PARIGI MOUTONG,Kab. Parigi Moutong,Sulawesi Tengah
+"Pasaman Barat, Kab.",1312,KABUPATEN PASAMAN BARAT,Kab. Pasaman Barat,Sumatera Barat
+"Pasaman, Kab",1309,KABUPATEN PASAMAN,Kab. Pasaman,Sumatera Barat
+"Pasir, Kab.",6401,KABUPATEN PASER,Kab. Paser,Kalimantan Timur
+"Pasuruan, Kab.",3514,KABUPATEN PASURUAN,Kab. Pasuruan,Jawa Timur
+"Pasuruan, Kota",3575,KOTA PASURUAN,Kota Pasuruan,Jawa Timur
+"Pati, Kab.",3318,KABUPATEN PATI,Kab. Pati,Jawa Tengah
+"Payakumbuh, Kota",1376,KOTA PAYAKUMBUH,Kota Payakumbuh,Sumatera Barat
+"Pegunungan Arfak, Kab.",9112,KABUPATEN PEGUNUNGAN ARFAK,Kab. Pegunungan Arfak,Papua Barat
+"Pegunungan Bintang, Kab.",9417,KABUPATEN PEGUNUNGAN BINTANG,Kab. Pegunungan Bintang,Papua Pegunungan
+"Pekalongan, Kab.",3326,KABUPATEN PEKALONGAN,Kab. Pekalongan,Jawa Tengah
+"Pekalongan, Kota",3375,KOTA PEKALONGAN,Kota Pekalongan,Jawa Tengah
+"Pekanbaru, Kota",1471,KOTA PEKANBARU,Kota Pekanbaru,Riau
+"Pelalawan, Kab.",1404,KABUPATEN PELALAWAN,Kab. Pelalawan,Riau
+"Pemalang, Kab.",3327,KABUPATEN PEMALANG,Kab. Pemalang,Jawa Tengah
+"Pematang Siantar, Kota",1273,KOTA PEMATANG SIANTAR,Kota Pematangsiantar,Sumatera Utara
+"Penajam Paser Utara, Kab.",6409,KABUPATEN PENAJAM PASER UTARA,Kab. Penajam Paser Utara,Kalimantan Timur
+"Penukal Abab Lematang Ilir, Kab.",1612,KABUPATEN PENUKAL ABAB LEMATANG ILIR,Kab. Penukal Abab Lematang Ilir,Sumatera Selatan
+"Pesawaran, Kab.",1809,KABUPATEN PESAWARAN,Kab. Pesawaran,Lampung
+"Pesisir Barat, Kab.",1813,KABUPATEN PESISIR BARAT,Kab. Pesisir Barat,Lampung
+"Pesisir Selatan, Kab.",1302,KABUPATEN PESISIR SELATAN,Kab. Pesisir Selatan,Sumatera Barat
+"Pidie Jaya, Kab.",1118,KABUPATEN PIDIE JAYA,Kab. Pidie Jaya,Aceh
+"Pidie, Kab.",1109,KABUPATEN PIDIE,Kab. Pidie,Aceh
+"Pinrang, Kab.",7315,KABUPATEN PINRANG,Kab. Pinrang,Sulawesi Selatan
+"Pohuwato, Kab.",7503,KABUPATEN POHUWATO,Kab. Pohuwato,Gorontalo
+"Polewali Mandar, Kab.",7602,KABUPATEN POLEWALI MANDAR,Kab. Polewali Mandar,Sulawesi Barat
+"Ponorogo, Kab.",3502,KABUPATEN PONOROGO,Kab. Ponorogo,Jawa Timur
+"Pontianak, Kab.",6104,KABUPATEN MEMPAWAH,Kab. Mempawah,Kalimantan Barat
+"Pontianak, Kota",6171,KOTA PONTIANAK,Kota Pontianak,Kalimantan Barat
+"Poso, Kab.",7204,KABUPATEN POSO,Kab. Poso,Sulawesi Tengah
+"Prabumulih, Kota",1672,KOTA PRABUMULIH,Kota Prabumulih,Sumatera Selatan
+"Pringsewu, Kab.",1810,KABUPATEN PRINGSEWU,Kab. Pringsewu,Lampung
+"Probolinggo, Kab.",3513,KABUPATEN PROBOLINGGO,Kab. Probolinggo,Jawa Timur
+"Probolinggo, Kota",3574,KOTA PROBOLINGGO,Kota Probolinggo,Jawa Timur
+"Pulang Pisau, Kab.",6210,KABUPATEN PULANG PISAU,Kab. Pulang Pisau,Kalimantan Tengah
+"Pulau Morotai, Kab.",8207,KABUPATEN PULAU MOROTAI,Kab. Pulau Morotai,Maluku Utara
+"Pulau Taliabu, Kab.",8208,KABUPATEN PULAU TALIABU,Kab. Pulau Taliabu,Maluku Utara
+"Puncak Jaya, Kab.",9411,KABUPATEN PUNCAK JAYA,Kab. Puncak Jaya,Papua Tengah
+"Puncak, Kab.",9433,KABUPATEN PUNCAK,Kab. Puncak,Papua Tengah
+"Purbalingga, Kab.",3303,KABUPATEN PURBALINGGA,Kab. Purbalingga,Jawa Tengah
+"Purwakarta, Kab.",3214,KABUPATEN PURWAKARTA,Kab. Purwakarta,Jawa Barat
+"Purworejo, Kab.",3306,KABUPATEN PURWOREJO,Kab. Purworejo,Jawa Tengah
+"Raja Ampat, Kab.",9108,KABUPATEN RAJA AMPAT,Kab. Raja Ampat,Papua Barat Daya
+"Rejang Lebong, Kab.",1702,KABUPATEN REJANG LEBONG,Kab. Rejang Lebong,Bengkulu
+"Rembang, Kab.",3317,KABUPATEN REMBANG,Kab. Rembang,Jawa Tengah
+"Rokan Hilir, Kab.",1409,KABUPATEN ROKAN HILIR,Kab. Rokan Hilir,Riau
+"Rokan Hulu, Kab.",1407,KABUPATEN ROKAN HULU,Kab. Rokan Hulu,Riau
+"Rote Ndao, Kab.",5314,KABUPATEN ROTE NDAO,Kab. Rote Ndao,Nusa Tenggara Timur
+"Sabang, Kota",1172,KOTA SABANG,Kota Sabang,Aceh
+"Sabu Raijua, Kab.",5320,KABUPATEN SABU RAIJUA,Kab. Sabu Raijua,Nusa Tenggara Timur
+"Salatiga, Kota",3373,KOTA SALATIGA,Kota Salatiga,Jawa Tengah
+"Samarinda, Kota",6472,KOTA SAMARINDA,Kota Samarinda,Kalimantan Timur
+"Sambas, Kab.",6101,KABUPATEN SAMBAS,Kab. Sambas,Kalimantan Barat
+"Samosir, Kab.",1217,KABUPATEN SAMOSIR,Kab. Samosir,Sumatera Utara
+"Sampang, Kab.",3527,KABUPATEN SAMPANG,Kab. Sampang,Jawa Timur
+"Sanggau, Kab.",6105,KABUPATEN SANGGAU,Kab. Sanggau,Kalimantan Barat
+"Sarmi, Kab.",9419,KABUPATEN SARMI,Kab. Sarmi,Papua
+"Sarolangun, Kab.",1503,KABUPATEN SAROLANGUN,Kab. Sarolangun,Jambi
+"Sawahlunto, Kota",1373,KOTA SAWAH LUNTO,Kota Sawahlunto,Sumatera Barat
+"Sekadau, Kab.",6109,KABUPATEN SEKADAU,Kab. Sekadau,Kalimantan Barat
+"Seluma, Kab.",1705,KABUPATEN SELUMA,Kab. Seluma,Bengkulu
+"Semarang, Kab.",3322,KABUPATEN SEMARANG,Kab. Semarang,Jawa Tengah
+"Semarang, Kota",3374,KOTA SEMARANG,Kota Semarang,Jawa Tengah
+"Seram Bagian Barat, Kab.",8106,KABUPATEN SERAM BAGIAN BARAT,Kab. Seram Bagian Barat,Maluku
+"Seram Bagian Timur, Kab.",8107,KABUPATEN SERAM BAGIAN TIMUR,Kab. Seram Bagian Timur,Maluku
+"Serang, Kab.",3604,KABUPATEN SERANG,Kab. Serang,Banten
+"Serang, Kota",3673,KOTA SERANG,Kota Serang,Banten
+"Serdang Bedagai, Kab.",1218,KABUPATEN SERDANG BEDAGAI,Kab. Serdang Bedagai,Sumatera Utara
+"Seruyan, Kab.",6208,KABUPATEN SERUYAN,Kab. Seruyan,Kalimantan Tengah
+"Siak, Kab.",1405,KABUPATEN S I A K,Kab. Siak,Riau
+"Sibolga, Kota",1271,KOTA SIBOLGA,Kota Sibolga,Sumatera Utara
+"Sidenreng Rappang, Kab.",7314,KABUPATEN SIDENRENG RAPPANG,Kab. Sidenreng Rappang,Sulawesi Selatan
+"Sidoarjo, Kab.",3515,KABUPATEN SIDOARJO,Kab. Sidoarjo,Jawa Timur
+"Sigi, Kab.",7210,KABUPATEN SIGI,Kab. Sigi,Sulawesi Tengah
+"Sijunjung, Kab.",1304,KABUPATEN SIJUNJUNG,Kab. Sijunjung,Sumatera Barat
+"Sikka, Kab.",5310,KABUPATEN SIKKA,Kab. Sikka,Nusa Tenggara Timur
+"Simalungun, Kab.",1209,KABUPATEN SIMALUNGUN,Kab. Simalungun,Sumatera Utara
+"Simeulue, Kab.",1101,KABUPATEN SIMEULUE,Kab. Simeulue,Aceh
+"Singkawang, Kota",6172,KOTA SINGKAWANG,Kota Singkawang,Kalimantan Barat
+"Sinjai, Kab.",7307,KABUPATEN SINJAI,Kab. Sinjai,Sulawesi Selatan
+"Sintang, Kab.",6107,KABUPATEN SINTANG,Kab. Sintang,Kalimantan Barat
+"Situbondo, Kab.",3512,KABUPATEN SITUBONDO,Kab. Situbondo,Jawa Timur
+"Sleman, Kab.",3404,KABUPATEN SLEMAN,Kab. Sleman,D.I. Yogyakarta
+"Solok Selatan, Kab.",1310,KABUPATEN SOLOK SELATAN,Kab. Solok Selatan,Sumatera Barat
+"Solok, Kab.",1303,KABUPATEN SOLOK,Kab. Solok,Sumatera Barat
+"Solok, Kota",1372,KOTA SOLOK,Kota Solok,Sumatera Barat
+"Soppeng, Kab.",7312,KABUPATEN SOPPENG,Kab. Soppeng,Sulawesi Selatan
+"Sorong Selatan, Kab.",9106,KABUPATEN SORONG SELATAN,Kab. Sorong Selatan,Papua Barat Daya
+"Sorong, Kab.",9107,KABUPATEN SORONG,Kab. Sorong,Papua Barat Daya
+"Sorong, Kota",9171,KOTA SORONG,Kota Sorong,Papua Barat Daya
+"Sragen, Kab.",3314,KABUPATEN SRAGEN,Kab. Sragen,Jawa Tengah
+"Subang, Kab.",3213,KABUPATEN SUBANG,Kab. Subang,Jawa Barat
+"Subulussalam, Kota",1175,KOTA SUBULUSSALAM,Kota Subulussalam,Aceh
+"Sukabumi, Kab.",3202,KABUPATEN SUKABUMI,Kab. Sukabumi,Jawa Barat
+"Sukabumi, Kota",3272,KOTA SUKABUMI,Kota Sukabumi,Jawa Barat
+"Sukamara, Kab.",6206,KABUPATEN SUKAMARA,Kab. Sukamara,Kalimantan Tengah
+"Sukoharjo, Kab.",3311,KABUPATEN SUKOHARJO,Kab. Sukoharjo,Jawa Tengah
+"Sumba Barat Daya, Kab.",5317,KABUPATEN SUMBA BARAT DAYA,Kab. Sumba Barat Daya,Nusa Tenggara Timur
+"Sumba Barat, Kab.",5301,KABUPATEN SUMBA BARAT,Kab. Sumba Barat,Nusa Tenggara Timur
+"Sumba Tengah, Kab.",5316,KABUPATEN SUMBA TENGAH,Kab. Sumba Tengah,Nusa Tenggara Timur
+"Sumba Timur, Kab.",5302,KABUPATEN SUMBA TIMUR,Kab. Sumba Timur,Nusa Tenggara Timur
+"Sumbawa Barat, Kab.",5207,KABUPATEN SUMBAWA BARAT,Kab. Sumbawa Barat,Nusa Tenggara Barat
+"Sumbawa, Kab.",5204,KABUPATEN SUMBAWA,Kab. Sumbawa,Nusa Tenggara Barat
+"Sumedang, Kab.",3211,KABUPATEN SUMEDANG,Kab. Sumedang,Jawa Barat
+"Sumenep, Kab.",3529,KABUPATEN SUMENEP,Kab. Sumenep,Jawa Timur
+"Sungai Penuh, Kota",1572,KOTA SUNGAI PENUH,Kota Sungai Penuh,Jambi
+"Supiori, Kab.",9427,KABUPATEN SUPIORI,Kab. Supiori,Papua
+"Surabaya, Kota",3578,KOTA SURABAYA,Kota Surabaya,Jawa Timur
+"Surakarta, Kota",3372,KOTA SURAKARTA,Kota Surakarta,Jawa Tengah
+"Tabalong, Kab.",6309,KABUPATEN TABALONG,Kab. Tabalong,Kalimantan Selatan
+"Tabanan, Kab.",5102,KABUPATEN TABANAN,Kab. Tabanan,Bali
+"Takalar, Kab.",7305,KABUPATEN TAKALAR,Kab. Takalar,Sulawesi Selatan
+"Tambrauw, Kab",9109,KABUPATEN TAMBRAUW,Kab. Tambrauw,Papua Barat Daya
+"Tana Tidung, Kab.",6503,KABUPATEN TANA TIDUNG,Kab. Tana Tidung,Kalimantan Utara
+"Tana Toraja, Kab.",7318,KABUPATEN TANA TORAJA,Kab. Tana Toraja,Sulawesi Selatan
+"Tanah Bumbu, Kab.",6310,KABUPATEN TANAH BUMBU,Kab. Tanah Bumbu,Kalimantan Selatan
+"Tanah Datar, Kab.",1305,KABUPATEN TANAH DATAR,Kab. Tanah Datar,Sumatera Barat
+"Tanah Laut, Kab.",6301,KABUPATEN TANAH LAUT,Kab. Tanah Laut,Kalimantan Selatan
+"Tangerang Selatan, Kota",3674,KOTA TANGERANG SELATAN,Kota Tangerang Selatan,Banten
+"Tangerang, Kab.",3603,KABUPATEN TANGERANG,Kab. Tangerang,Banten
+"Tangerang, Kota",3671,KOTA TANGERANG,Kota Tangerang,Banten
+"Tanggamus, Kab.",1802,KABUPATEN TANGGAMUS,Kab. Tanggamus,Lampung
+"Tanjung Balai, Kota",1272,KOTA TANJUNG BALAI,Kota Tanjung Balai,Sumatera Utara
+"Tanjung Jabung Barat, Kab.",1507,KABUPATEN TANJUNG JABUNG BARAT,Kab. Tanjung Jabung Barat,Jambi
+"Tanjung Jabung Timur, Kab.",1506,KABUPATEN TANJUNG JABUNG TIMUR,Kab. Tanjung Jabung Timur,Jambi
+"Tanjung Pinang, Kota",2172,KOTA TANJUNG PINANG,Kota Tanjung Pinang,Kepulauan Riau
+"Tapanuli Selatan, Kab.",1203,KABUPATEN TAPANULI SELATAN,Kab. Tapanuli Selatan,Sumatera Utara
+"Tapanuli Tengah, Kab.",1204,KABUPATEN TAPANULI TENGAH,Kab. Tapanuli Tengah,Sumatera Utara
+"Tapanuli Utara, Kab.",1205,KABUPATEN TAPANULI UTARA,Kab. Tapanuli Utara,Sumatera Utara
+"Tapin, Kab.",6305,KABUPATEN TAPIN,Kab. Tapin,Kalimantan Selatan
+"Tarakan, Kota",6571,KOTA TARAKAN,Kota Tarakan,Kalimantan Utara
+"Tasikmalaya, Kab.",3206,KABUPATEN TASIKMALAYA,Kab. Tasikmalaya,Jawa Barat
+"Tasikmalaya, Kota",3278,KOTA TASIKMALAYA,Kota Tasikmalaya,Jawa Barat
+"Tebing Tinggi, Kota",1274,KOTA TEBING TINGGI,Kota Tebing Tinggi,Sumatera Utara
+"Tebo, Kab.",1508,KABUPATEN TEBO,Kab. Tebo,Jambi
+"Tegal, Kab.",3328,KABUPATEN TEGAL,Kab. Tegal,Jawa Tengah
+"Tegal, Kota",3376,KOTA TEGAL,Kota Tegal,Jawa Tengah
+"Teluk Bintuni, Kab.",9104,KABUPATEN TELUK BINTUNI,Kab. Teluk Bintuni,Papua Barat
+"Teluk Wondama, Kab.",9103,KABUPATEN TELUK WONDAMA,Kab. Teluk Wondama,Papua Barat
+"Temanggung, Kab.",3323,KABUPATEN TEMANGGUNG,Kab. Temanggung,Jawa Tengah
+"Ternate, Kota",8271,KOTA TERNATE,Kota Ternate,Maluku Utara
+"Timor Tengah Selatan, Kab.",5304,KABUPATEN TIMOR TENGAH SELATAN,Kab. Timor Tengah Selatan,Nusa Tenggara Timur
+"Timor Tengah Utara, Kab.",5305,KABUPATEN TIMOR TENGAH UTARA,Kab. Timor Tengah Utara,Nusa Tenggara Timur
+"Toba Samosir, Kab.",1206,KABUPATEN TOBA SAMOSIR,Kab. Toba,Sumatera Utara
+"Tojo Una-Una, Kab.",7209,KABUPATEN TOJO UNA-UNA,Kab. Tojo Una Una,Sulawesi Tengah
+"Toli-Toli, Kab.",7206,KABUPATEN TOLI-TOLI,Kab. Tolitoli,Sulawesi Tengah
+"Tolikara, Kab.",9418,KABUPATEN TOLIKARA,Kab. Tolikara,Papua Pegunungan
+"Tomohon, Kota",7173,KOTA TOMOHON,Kota Tomohon,Sulawesi Utara
+"Toraja Utara, Kab.",7326,KABUPATEN TORAJA UTARA,Kab. Toraja Utara,Sulawesi Selatan
+"Trenggalek, Kab.",3503,KABUPATEN TRENGGALEK,Kab. Trenggalek,Jawa Timur
+"Tual, Kota",8172,KOTA TUAL,Kota Tual,Maluku
+"Tuban, Kab.",3523,KABUPATEN TUBAN,Kab. Tuban,Jawa Timur
+"Tulang Bawang Barat, Kab.",1812,KABUPATEN TULANG BAWANG BARAT,Kab. Tulang Bawang Barat,Lampung
+"Tulang Bawang, Kab.",1808,KABUPATEN TULANGBAWANG,Kab. Tulang Bawang,Lampung
+"Tulungagung, Kab.",3504,KABUPATEN TULUNGAGUNG,Kab. Tulungagung,Jawa Timur
+"Wajo, Kab.",7313,KABUPATEN WAJO,Kab. Wajo,Sulawesi Selatan
+"Wakatobi, Kab.",7407,KABUPATEN WAKATOBI,Kab. Wakatobi,Sulawesi Tenggara
+"Waropen, Kab.",9426,KABUPATEN WAROPEN,Kab. Waropen,Papua
+"Way Kanan, Kab.",1807,KABUPATEN WAY KANAN,Kab. Way Kanan,Lampung
+"Wonogiri, Kab.",3312,KABUPATEN WONOGIRI,Kab. Wonogiri,Jawa Tengah
+"Wonosobo, Kab.",3307,KABUPATEN WONOSOBO,Kab. Wonosobo,Jawa Tengah
+"Yahukimo, Kab.",9416,KABUPATEN YAHUKIMO,Kab. Yahukimo,Papua Pegunungan
+"Yalimo, Kab.",9432,KABUPATEN YALIMO,Kab. Yalimo,Papua Pegunungan
+"Yogyakarta, Kota",3471,KOTA YOGYAKARTA,Kota Yogyakarta,D.I. Yogyakarta

@@ -1,0 +1,12 @@
+	(1)
+VARIABLES	Model 1
+	
+smk_per_100k	-2,671
+	(2,354)
+Constant	48,538***
+	(8,024)
+	
+Observations	339
+R-squared	0.002
+Robust standard errors in parentheses	
+*** p<0.01, ** p<0.05, * p<0.1	
