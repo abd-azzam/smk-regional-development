@@ -1,5 +1,5 @@
-"""Manufacturing share of GDRP and of employment over time: district median and IQR."""
-import pandas as pd, matplotlib
+"""Manufacturing share of GDRP and of employment over time: district medians, one panel."""
+import numpy as np, pandas as pd, matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
@@ -9,24 +9,40 @@ s = pd.DataFrame({"year": d.year,
     "old": d.gdp_manufacturing_pre2010 / d.gdp_constant_pre2010,   # pre-2010 base, ends 2013
     "new": d.gdp_manufacturing_sna08 / d.gdp_constant_sna08,       # SNA 2008 base, from 2010
     "emp": d.emp_industry / d.emp_total})
-s = s.where((s <= 1) | (s.columns == "year")) * 1  # drop impossible shares > 100%
-s.loc[s.year.isin(range(2000, 2007)), "emp"] = float("nan")        # only ~30 districts report before 2007
-g = s.groupby("year")
-yrs = range(2000, 2021)
+for c in ("old", "new", "emp"):
+    s.loc[s[c] > 1, c] = np.nan                                    # impossible shares
+s.loc[s.year < 2007, "emp"] = np.nan                               # only ~30 districts report before 2007
+med = s.groupby("year").median().reindex(range(2000, 2021)) * 100  # missing years stay NaN: gaps, no interpolation
 
-def band(ax, col, color, label):
-    q = g[col].quantile([.25, .5, .75]).unstack().reindex(yrs).dropna()
-    ax.fill_between(q.index, q[.25] * 100, q[.75] * 100, color=color, alpha=.2, lw=0)
-    ax.plot(q.index, q[.5] * 100, color=color, marker="o", ms=3.5, label=label)
-    return g[col].count()
+BLUE, ORANGE, GREY, INK = "#1f4e79", "#b5541c", "#7a7a7a", "#222222"  # blue = output, orange = jobs, grey = old base
+plt.rcParams["font.family"] = ["Arial", "DejaVu Sans"]
+fig, ax = plt.subplots(figsize=(9, 5.2))
+ax.plot(med.index, med.old, color=GREY, lw=1.6, ls=(0, (4, 3)))
+ax.plot(med.index, med.new, color=BLUE, lw=2.4)
+ax.plot(med.index, med.emp, color=ORANGE, lw=2.4)
+for c, col in (("new", BLUE), ("emp", ORANGE)):
+    ax.plot(med.index, med[c], ls="", marker="o", ms=4, color=col)  # dots show real observations (gap at 2016)
 
-fig, (a1, a2) = plt.subplots(2, 1, figsize=(9, 7), sharex=True)
-band(a1, "old", "#8c8c8c", "GDRP, pre-2010 base (to 2013)")
-n = band(a1, "new", "#1f4e79", "GDRP, SNA 2008 base (from 2010)")
-a1.set_ylabel("Manufacturing share of GDRP (%)"); a1.legend(frameon=False, loc="upper left")
-ne = band(a2, "emp", "#b5541c", "Employment")
-a2.set_ylabel("Manufacturing share of employment (%)"); a2.set_xticks(list(yrs)[::2])
-a2.axvline(2016, ls=":", lw=.8, color="grey"); a2.text(2016, a2.get_ylim()[1] * .97, "no 2016 data\n(line interpolated)", fontsize=8, color="grey", ha="center", va="top")
-fig.suptitle(f"Manufacturing share across districts, 2000-2020 (line = median, band = interquartile range)\n"
-             f"districts per year: GDRP {n[n>0].min()}-{n.max()}, employment {ne[ne>0].min()}-{ne.max()}", fontsize=10.5)
-fig.tight_layout(); fig.savefig("Result/mfg_share_over_time.png", dpi=200)
+def tag(x, y, text, color, dy=0):
+    ax.annotate(text, (x, y), xytext=(8, dy), textcoords="offset points", color=color, fontsize=10, va="center", fontweight="bold")
+tag(2020, med.new[2020], "Share of GDRP", BLUE, -6)
+tag(2020, med.emp[2020], "Share of employment", ORANGE, 6)
+ax.annotate("older GDRP series\n(pre-2010 base)", (2004, med.old[2004]), xytext=(0, 16), textcoords="offset points",
+            color=GREY, fontsize=9, ha="center")
+
+ax.set_ylim(0, 10); ax.margins(x=0); ax.set_xlim(2000, 2020); ax.set_xticks(range(2000, 2021, 4))
+ax.yaxis.set_major_formatter(lambda v, _: f"{v:.0f}%")
+ax.grid(axis="y", color="#e3e3e3", lw=.8); ax.set_axisbelow(True)
+for sp in ("top", "right", "left"): ax.spines[sp].set_visible(False)
+ax.tick_params(length=0, labelsize=10, colors=INK)
+fig.subplots_adjust(top=.80, bottom=.17, right=.80)
+fig.text(.075, .93, "Output share of manufacturing held flat; its job share rose after 2015",
+         fontsize=13, fontweight="bold", color=INK, ha="left")
+fig.text(.075, .87, "Median across Indonesian districts (kabupaten and kota), 2000-2020",
+         fontsize=10, color=GREY, ha="left")
+n = s.groupby("year").count()
+fig.text(.075, .04, f"Source: DAPOER. {n.new[n.new>0].min()}-{n.new.max()} districts a year for GDRP, "
+         f"{n.emp[n.emp>0].min()}-{n.emp.max()} for employment. Employment starts in 2007 (fewer than 35 districts report before) "
+         "and has no 2016 data.\nEmployment is the DAPOER industry series, taken to be manufacturing. Its rise after 2015 is not yet checked against the source metadata.",
+         fontsize=7.5, color=GREY, ha="left", va="bottom")
+fig.savefig("Result/mfg_share_over_time.png", dpi=200)
